@@ -1,0 +1,56 @@
+import React, { Fragment, useMemo } from 'react';
+import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/core/styles';
+import UserDetailedHeader from './UserDetailedHeader';
+import UserDetailedSidebar from './UserDetailedSidebar';
+import UserDetailedPageBody from './UserDetailedPageBody';
+import { useFirestoreConnect } from 'react-redux-firebase';
+import { useSelector } from 'react-redux';
+import AuthIsLoaded from '../../../app/common/util/AuthIsLoaded';
+import Spinner from '../../../app/common/util/Spinner';
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1,
+  }
+}));
+
+const UserDetailedPage = ({ theme, match: { params } }) => {
+
+  const classes = useStyles(theme);
+
+  const userProfileQuery = useMemo(() => ({
+    collection: 'users',
+    doc: params.id,
+    storeAs: 'userProfile'
+  }), [params.id]);
+
+  useFirestoreConnect( userProfileQuery);
+
+  const user = useSelector((state) => (state.firestore.data.userProfile));
+  const loaded = useSelector(state => state.firestore.status.requested.userProfile);
+
+  const userFirstName = loaded && user.displayName.substr(0, user.displayName.indexOf(' '));
+
+  return (<Fragment>
+      <Grid container className={classes.root} spacing={5}>
+        <Grid item lg={8} sm={12}>
+          <Grid container className={classes.root}>
+            <Grid item sm={12}>
+              <UserDetailedHeader user={user} userId={params.id}
+              />
+            </Grid>
+            <Grid item sm={12}>
+                <UserDetailedPageBody sectionTitle={`${userFirstName}'s Posts`}/>
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item lg={4} sm={12}>
+          <UserDetailedSidebar/>
+        </Grid>
+      </Grid>
+  </Fragment>);
+
+};
+
+export default UserDetailedPage;

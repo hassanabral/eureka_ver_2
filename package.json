@@ -1,0 +1,51 @@
+{
+  "name": "eureka_ver_2",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^19.0.0",
+    "@ckeditor/ckeditor5-react": "^2.1.0",
+    "@material-ui/core": "^4.9.14",
+    "@material-ui/icons": "^4.9.1",
+    "@reduxjs/toolkit": "^1.3.6",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "cuid": "^2.1.8",
+    "firebase": "^7.14.4",
+    "moment": "^2.25.3",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-html-parser": "^2.0.2",
+    "react-infinite-scroller": "^1.2.4",
+    "react-redux": "^7.2.0",
+    "react-redux-firebase": "^3.4.0",
+    "react-redux-toastr": "^7.6.4",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.1",
+    "redux-firestore": "^0.13.0",
+    "redux-form": "^8.3.5",
+    "revalidate": "^1.2.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
