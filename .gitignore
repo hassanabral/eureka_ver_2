@@ -24,3 +24,7 @@ yarn-error.log*
 
 # WebStorm
 /.idea
+.idea
+
+# Config
+/src/app/firebase.js

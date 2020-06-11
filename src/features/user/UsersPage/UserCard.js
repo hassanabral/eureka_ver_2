@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const UserCard = ({ theme }) => {
+const UserCard = ({ theme, user }) => {
   const classes = useStyles(theme);
 
   return (
@@ -36,18 +36,18 @@ const UserCard = ({ theme }) => {
         <Card className={classes.card}>
           <Grid container className={classes.root} spacing={2}>
             <Grid item md={2.5}>
-              <Link component={RouterLink} to={`/users/1`}>
-                <Avatar className={classes.profile} alt="Remy Sharp"
-                        src=''/>
+              <Link component={RouterLink} to={`/users/${user.id}`}>
+                <Avatar className={classes.profile} alt={user.displayName}
+                        src={user.avatarUrl}/>
               </Link>
             </Grid>
             <Grid item md={12}>
-              <Link variant='h5' color="secondary" component={RouterLink} to={`/users/1`}>John Doe</Link>
+              <Link variant='h5' color="secondary" component={RouterLink} to={`/users/${user.id}`}>{user.displayName}</Link>
               <Typography variant="body1" gutterBottom={true}>
-                Software Engineer at TechUp
+                {user.profession} at {user.company}
               </Typography>
               <Typography variant="body2" gutterBottom={true} >
-                This is john doe!
+                {user.bio}
               </Typography>
               <Box my={2}>
                 <Button size='medium' fullWidth={true} variant='contained' color='secondary'>+ Follow</Button>

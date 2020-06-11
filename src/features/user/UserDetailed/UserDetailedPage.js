@@ -25,23 +25,31 @@ const UserDetailedPage = ({ theme, match: { params } }) => {
     storeAs: 'userProfile'
   }), [params.id]);
 
-  useFirestoreConnect( userProfileQuery);
+  const userPostQuery = useMemo(() => ({
+    collection: 'posts',
+    where: [['authorId', '==', params.id], ['status', '==', 'published']],
+    orderBy: ['date', 'desc'],
+    storeAs: 'userPosts'
+  }), [params.id]);
+
+  useFirestoreConnect(userProfileQuery);
+  useFirestoreConnect(userPostQuery);
 
   const user = useSelector((state) => (state.firestore.data.userProfile));
-  const loaded = useSelector(state => state.firestore.status.requested.userProfile);
+  const userPosts = useSelector((state) => (state.firestore.ordered.userPosts));
 
-  const userFirstName = loaded && user.displayName.substr(0, user.displayName.indexOf(' '));
+  const userFirstName = user?.displayName.substr(0, user.displayName.indexOf(' '));
 
-  return (<Fragment>
+  return (
+    <Fragment>
       <Grid container className={classes.root} spacing={5}>
         <Grid item lg={8} sm={12}>
           <Grid container className={classes.root}>
             <Grid item sm={12}>
-              <UserDetailedHeader user={user} userId={params.id}
-              />
+              {user && <UserDetailedHeader user={user} userId={params.id}/>}
             </Grid>
             <Grid item sm={12}>
-                <UserDetailedPageBody sectionTitle={`${userFirstName}'s Posts`}/>
+              {userFirstName && userPosts && <UserDetailedPageBody posts={userPosts} sectionTitle={`${userFirstName}'s Posts`}/>}
             </Grid>
           </Grid>
         </Grid>
@@ -49,7 +57,7 @@ const UserDetailedPage = ({ theme, match: { params } }) => {
           <UserDetailedSidebar/>
         </Grid>
       </Grid>
-  </Fragment>);
+    </Fragment>);
 
 };
 

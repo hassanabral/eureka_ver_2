@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useMemo } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
@@ -12,6 +12,7 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import CreateIcon from '@material-ui/icons/Create';
 import { Link as RouterLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useFirestoreConnect } from 'react-redux-firebase';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -43,8 +44,18 @@ const useStyles = makeStyles(theme => ({
 const Dashboard = ({ theme }) => {
   const classes = useStyles(theme);
 
-  const { displayName, uid, photoURL} = useSelector((state) => state.firebase.auth);
+  const { displayName, uid} = useSelector((state) => state.firebase.auth);
 
+  const dashboardPostsQuery = {
+    collection: 'posts',
+    where: [['authorId', '==', uid]],
+    orderBy: ['date', 'desc'],
+    storeAs: 'dashboardPosts'
+  };
+
+  useFirestoreConnect(dashboardPostsQuery);
+
+  const dashboardPosts = useSelector((state) => state.firestore.ordered.dashboardPosts);
 
   return <Fragment>
     <Box mb={2}>
@@ -83,14 +94,17 @@ const Dashboard = ({ theme }) => {
       <Box mt={2} mb={0.5}>
         <Divider/>
       </Box>
-      <List className={classes.root}>
-        <Grid container spacing={20}>
-          <DashboardPostCard/>
-          <DashboardPostCard/>
-          <DashboardPostCard/>
-        </Grid>
+      {
+        dashboardPosts?.length > 0 && <List className={classes.root}>
+          <Grid container spacing={20}>
+            {
+              dashboardPosts.map(post => <DashboardPostCard keu={post.id} post={post}/>)
+            }
+          </Grid>
 
-      </List>
+        </List>
+      }
+
     </Card>
   </Fragment>;
 };

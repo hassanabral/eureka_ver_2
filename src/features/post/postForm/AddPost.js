@@ -13,6 +13,10 @@ import { combineValidators, isRequired } from 'revalidate';
 import RichEditor from '../../../app/common/form/RichEditor';
 import { useHistory } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import {getHashtags} from '../../../app/common/util/helpers';
+import { useDispatch } from 'react-redux';
+import { useFirebase, useFirestore } from 'react-redux-firebase';
+import { createPost} from '../postActions';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,28 +30,32 @@ const useStyles = makeStyles(theme => ({
 
 const visibilities = [
   {
-    value: 'public',
-    label: 'Public',
+    value: 'published',
+    label: 'Published',
   },
   {
-    value: 'private',
-    label: 'Private',
+    value: 'unpublished',
+    label: 'Unpublished',
   },
 ];
 
 const validate = combineValidators({
   title: isRequired('Title'),
   body: isRequired('Body'),
-  category: isRequired('Category'),
   status: isRequired('Visibility'),
 });
 
 const AddPost = ({ theme, handleSubmit, invalid, submitting }) => {
   const classes = useStyles(theme);
   const history = useHistory();
+  const dispatch = useDispatch();
+  const firebase = useFirebase();
+  const firestore = useFirestore();
 
-  const createPost = (formData) => {
-
+  const handleCreatePost = async formData => {
+    const newPost = {...formData, hashtags: getHashtags(formData.body)}
+    const post = await dispatch(createPost({firebase, firestore}, newPost));
+    history.push(`/posts/${post.id}`);
   };
 
   return (
@@ -56,7 +64,7 @@ const AddPost = ({ theme, handleSubmit, invalid, submitting }) => {
         <Card className={classes.card}>
           <Typography variant='h3'>Create Post</Typography>
           <Typography variant='subtitle1'>What is on your mind?</Typography>
-          <form onSubmit={handleSubmit(createPost)}>
+          <form onSubmit={handleSubmit(handleCreatePost)}>
             <Box mb={1}>
               <Field
                 required={true}
@@ -94,7 +102,7 @@ const AddPost = ({ theme, handleSubmit, invalid, submitting }) => {
                 name="body"
                 config={
                   {
-                    placeholder:"Enter more details...",
+                    placeholder:"Enter more details (Note: you can add hashtags by including #your-tag)...",
                   }
                 }
                 component={RichEditor}

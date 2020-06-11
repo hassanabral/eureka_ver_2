@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
 const UserDetailedHeader = ({ theme, user, userId }) => {
   const classes = useStyles(theme);
 
-  const {displayName, avatarUrl, profession, company, location, bio, website } = user;
+  const {displayName, avatarUrl, profession, company, location, bio, website, createdAt } = user;
 
   return (
     <Box mb={3}>
@@ -57,7 +57,7 @@ const UserDetailedHeader = ({ theme, user, userId }) => {
             <Typography variant="body1" gutterBottom={true}>
               {bio}
             </Typography>
-            <UserDetailedHeaderInfo location={location} website={website}/>
+            <UserDetailedHeaderInfo location={location} website={website} createdAt={createdAt}/>
             <Box mt={1}>
               <Box component='span' mr={2}>
                 <Typography color="secondary" display="inline" variant="body1">

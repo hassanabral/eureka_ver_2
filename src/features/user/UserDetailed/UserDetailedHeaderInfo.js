@@ -5,6 +5,7 @@ import LinkIcon from '@material-ui/icons/Link';
 import TodayIcon from '@material-ui/icons/Today';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link, Box } from '@material-ui/core';
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -17,7 +18,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const UserDetailedHeaderInfo = ({ theme, location, website}) => {
+const UserDetailedHeaderInfo = ({ theme, location, website, createdAt}) => {
   const classes = useStyles(theme);
 
   return (
@@ -44,7 +45,7 @@ const UserDetailedHeaderInfo = ({ theme, location, website}) => {
         <Typography variant="body2" display="inline"
                     gutterBottom={true}>
           <TodayIcon color="action" className={classes.icon} fontSize='small'/>
-          Joined 3 months ago
+          Joined {moment(createdAt.toDate()).fromNow()}
         </Typography>
       </Box>
     </div>

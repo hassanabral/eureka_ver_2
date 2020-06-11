@@ -4,8 +4,9 @@ import FeedsPageBody from './FeedsPageBody';
 import FeedsPageSidebarRight from './FeedsPageSidebarRight';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import { useFirestoreConnect } from 'react-redux-firebase';
-import { useSelector } from 'react-redux';
+import { useFirebase, useFirestore, useFirestoreConnect } from 'react-redux-firebase';
+import { useDispatch, useSelector } from 'react-redux';
+import { createPost } from '../postActions';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -17,6 +18,17 @@ const FeedsPage = ({ theme}) => {
 
   const { displayName, uid, photoURL} = useSelector((state) => state.firebase.auth);
 
+  const feedQuery = {
+    collection: 'posts',
+    where: ['status', '==', 'published'],
+    orderBy: ['date', 'desc'],
+    storeAs: 'feeds'
+  };
+
+  useFirestoreConnect(feedQuery);
+
+  const feeds = useSelector((state) => (state.firestore.ordered.feeds));
+  console.log({feeds});
 
   const classes = useStyles(theme);
 
@@ -29,7 +41,7 @@ const FeedsPage = ({ theme}) => {
                  <FeedsPageHeader user={{displayName, uid, photoURL}}/>
               </Grid>
             <Grid item sm={12}>
-              <FeedsPageBody/>
+              {feeds && <FeedsPageBody feeds={feeds}/>}
             </Grid>
           </Grid>
         </Grid>

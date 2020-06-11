@@ -232,7 +232,7 @@ function ResponsiveDrawer({ ...props}) {
           </ListItemIcon>
           <ListItemText primary={'Bookmarks'}/>
         </ListItem>
-        <ListItem button key={'Profile'} component={RouterLink} to={`/users/pDgyiwDU4TPLL0WWDkf9NI6BQ193`}>
+        <ListItem button key={'Profile'} component={RouterLink} to={`/users/${auth.uid}`}>
           <ListItemIcon>
             <PersonOutlineIcon/>
           </ListItemIcon>

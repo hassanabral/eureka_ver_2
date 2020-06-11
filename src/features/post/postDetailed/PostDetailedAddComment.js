@@ -5,9 +5,11 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import { Field, reduxForm } from 'redux-form';
 import { combineValidators, isRequired } from 'revalidate';
-import TextArea from '../../../app/common/form/TextArea';
-
-import { TextField } from '@material-ui/core';
+import RichEditor from '../../../app/common/form/RichEditor';
+import { addComment, createPost } from '../postActions';
+import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useFirebase, useFirestore } from 'react-redux-firebase';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -19,36 +21,40 @@ const validate = combineValidators({
   commentBody: isRequired('Comment body'),
 });
 
-const PostDetailedAddComment = ({ theme}) => {
+const PostDetailedAddComment = ({ theme, postId, handleSubmit, invalid, submitting}) => {
+  const dispatch = useDispatch();
+  const firebase = useFirebase();
+  const firestore = useFirestore();
+
+  const handleAddComment = async formData => {
+    await dispatch(addComment({firebase, firestore}, formData, postId));
+  }
+
   const classes = useStyles(theme);
   return (
       <Fragment>
-        <form>
-          <Typography variant='h4'>
-            Comment
-          </Typography>
-          {/*<Field*/}
-          {/*  required*/}
-          {/*  name="commentBody"*/}
-          {/*  label="Add Comment"*/}
-          {/*  multiline={true}*/}
-          {/*  fullWidth={true}*/}
-          {/*  rows="3"*/}
-          {/*  component={TextArea}*/}
-          {/*/>*/}
-          <TextField
-            fullWidth
-            placeholder='Add a comment...'
-            multiline
-            rows={3}
-            rowsMax={6}
+        <form onSubmit={handleSubmit(handleAddComment)}>
+          <Box mb={2}>
+            <Typography variant='h4'>
+              Comment
+            </Typography>
+          </Box>
+          <Field
+            name="commentBody"
+            label="Add Comment"
+            config={
+              {
+                placeholder:"Add a comment...",
+              }
+            }
+            component={RichEditor}
           />
           <Box display='flex' flexDirection='row-reverse' mt={2}>
-            <Button variant='contained' color='primary'>Submit</Button>
+            <Button disabled={invalid || submitting} type='submit'  variant='contained' color='primary'>Submit</Button>
           </Box>
         </form>
       </Fragment>
   )
 };
 
-export default PostDetailedAddComment;
+export default reduxForm({ form: 'addCommentForm', validate})(PostDetailedAddComment);

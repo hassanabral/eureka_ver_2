@@ -4,8 +4,25 @@ import { Typography } from '@material-ui/core';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
+import { useFirestoreConnect } from 'react-redux-firebase';
+import { useSelector } from 'react-redux';
 
-const PostDetailedComments = ({...props}) => {
+const PostDetailedComments = ({postId}) => {
+
+  const postCommentsQuery = {
+    collection: 'posts',
+    doc: postId,
+    subcollections: [{ collection: "comments" }],
+    orderBy: ['date', 'desc'],
+    storeAs: 'postComments'
+  };
+
+  useFirestoreConnect(postCommentsQuery);
+
+
+
+  const postComments = useSelector((state) => state.firestore.ordered.postComments);
+
   return (
     <Fragment>
       <Box my={2} mx={1}>
@@ -19,9 +36,9 @@ const PostDetailedComments = ({...props}) => {
           <Button style={{textTransform: 'capitalize'}}>Likes</Button>
         </ButtonGroup>
       </Box>
-      <PostDetailedComment/>
-      <PostDetailedComment/>
-      <PostDetailedComment/>
+      {
+        postComments?.length > 0 && postComments.map(comment => <PostDetailedComment key={comment.id} comment={comment}/>)
+      }
     </Fragment>);
 };
 

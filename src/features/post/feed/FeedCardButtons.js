@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const FeedCardButtons = ({theme}) => {
+const FeedCardButtons = ({theme, likeCount, commentCount, savedCount}) => {
   const classes = useStyles(theme);
   const buttonColor = 'action';
 
@@ -27,7 +27,7 @@ const FeedCardButtons = ({theme}) => {
         <Typography variant="body2" display="inline" gutterBottom={true} >
           <Link className={classes.button} color={buttonColor}>
             <ThumbUpOutlinedIcon color={buttonColor} className={classes.icon} fontSize='small'/>
-            4
+            {likeCount}
           </Link>
         </Typography>
       </Box>
@@ -35,7 +35,7 @@ const FeedCardButtons = ({theme}) => {
         <Typography variant="body2" display="inline" gutterBottom={true}>
           <Link component={RouterLink} to={`/posts/1`} color="secondary">
             <ChatBubbleOutlineIcon color="action" className={classes.icon} fontSize='small'/>
-            4
+            {commentCount}
           </Link>
         </Typography>
       </Box>

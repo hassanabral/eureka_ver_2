@@ -13,6 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const PostDetailedReply = ({ theme }) => {
+const PostDetailedReply = ({ theme, reply }) => {
 
   const buttonColor = 'gray';
 
@@ -45,17 +46,17 @@ const PostDetailedReply = ({ theme }) => {
           <Box style={{display: 'flex', justifyContent: 'space-between'}}>
             <Box mb={2} component='span'>
               <Chip
-                avatar={  <Avatar alt='John Doe'
-                                  src=''/>}
-                label='John Doe'
+                avatar={  <Avatar alt={reply.authorName}
+                                  src={reply.authorPhotoURL}/>}
+                label={reply.authorName}
                 clickable
                 color="primary"
                 component={RouterLink}
-                to={`/users/1`}
+                to={`/users/${reply.authorId}`}
               />
               <Box ml={1} component='span'>
                 <Typography variant="body2" style={{color: '#757575'}} paragraph={true} display='inline'>
-                  Posted 2 months ago
+                  Posted {reply?.date && moment(reply.date.toDate()).fromNow()}
                 </Typography>
               </Box>
 
@@ -71,14 +72,14 @@ const PostDetailedReply = ({ theme }) => {
           </Box>
 
 
-          <Typography variant='body1' paragraph={true}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut, veniam?</Typography>
+          <Typography variant='body1' paragraph={true}>{reply.commentBody}</Typography>
 
           <Box mb={1}>
             <Box mb={0} mr={2} component='span'>
               <Typography mb={0} variant="body2" display="inline" gutterBottom={true}>
                 <Link mb={0} className={classes.button}  style={{color: `${buttonColor}`}}>
                   <FavoriteIcon style={{color: `${buttonColor}`}} className={classes.icon} fontSize='small'/>
-                  4
+                  {reply.likeCount}
                 </Link>
               </Typography>
             </Box>

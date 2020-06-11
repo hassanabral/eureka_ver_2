@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const UserDetailedPageBody = ({ theme, sectionTitle }) => {
+const UserDetailedPageBody = ({ theme, sectionTitle, posts }) => {
   const classes = useStyles(theme);
 
   return (
@@ -35,9 +35,16 @@ const UserDetailedPageBody = ({ theme, sectionTitle }) => {
           <Divider/>
         </Box>
         <List className={classes.root}>
-            <FeedCard elevateCard={false} marginY={0} dividerBottom={true}/>
-            <FeedCard elevateCard={false} marginY={0} dividerBottom={true}/>
-            <FeedCard elevateCard={false} marginY={0} dividerBottom={true}/>
+          {
+            posts.length > 0 && posts.map(post =>
+              <FeedCard
+                post={post}
+                elevateCard={false}
+                marginY={0}
+                dividerBottom={true}
+              />)
+          }
+
         </List>
       </Card>
     </Fragment>

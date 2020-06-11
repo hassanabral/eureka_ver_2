@@ -8,7 +8,7 @@ const Bookmarks = () => {
     <Fragment>
       <Grid container spacing={5}>
         <Grid item lg={8} sm={12}>
-          <UserDetailedPageBody sectionTitle={'Bookmarks'}/>
+          {/*<UserDetailedPageBody sectionTitle={'Bookmarks'}/>*/}
         </Grid>
         <Grid item lg={4} sm={12}>
           <BookmarksSidebarRight/>

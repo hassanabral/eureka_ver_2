@@ -6,12 +6,14 @@ import Card from '@material-ui/core/Card';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import red from '@material-ui/core/colors/red';
-import { useFirebase } from "react-redux-firebase";
-import { useHistory } from "react-router-dom";
+import { isEmpty, isLoaded, useFirebase, useFirestore } from 'react-redux-firebase';
+import { Redirect, useHistory } from 'react-router-dom';
 import { Container } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import bgImage from './darkblueBg.jpg';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import { useSelector } from 'react-redux';
+import Spinner from '../../app/common/util/Spinner';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -39,25 +41,30 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Landing = ({ theme }) => {
+  const history = useHistory();
   const firebase = useFirebase();
-
-  const signInWithGoogle = () => {
-    firebase
-      .login({
-        provider: "google",
-        type: "popup",
-      })
-      .then(() => {
-        history.push("/feed");
-      });
-  };
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-    signInWithGoogle();
+  const firestore = useFirestore();
+  const auth = useSelector(state => state.firebase.auth);
+  if (isLoaded(auth) && !isEmpty(auth)) {
+    history.push('/feed');
   }
 
-  const history = useHistory();
+  const signInWithGoogle = async () => {
+    const user = await firebase.login({ provider: "google", type: "popup"});
+    if (user.additionalUserInfo.isNewUser) {
+      await firebase.updateProfile({
+        createdAt: firestore.FieldValue.serverTimestamp(),
+      })
+    }
+        history.push("/feed");
+
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    await signInWithGoogle();
+  }
+
 
   const classes = useStyles(theme);
 

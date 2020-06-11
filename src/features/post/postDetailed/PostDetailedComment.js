@@ -16,6 +16,8 @@ import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import PostDetailedReplyForm from './PostDetailedReplyForm';
 import PostDetailedReplies from './PostDetailedReplies';
+import moment from 'moment';
+import ReactHtmlParser from 'react-html-parser';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -32,11 +34,11 @@ const useStyles = makeStyles(theme => ({
     marginRight: '4px'
   },
   button: {
-    padding: 1
+    paddingBottom: 0
   }
 }));
 
-const PostDetailedComment = ({ theme }) => {
+const PostDetailedComment = ({ theme, comment }) => {
 
   const [toggleReplies, setToggleReplies] = useState(false);
   const [toggleReplyForm, setToggleReplyForm] = useState(false);
@@ -44,32 +46,33 @@ const PostDetailedComment = ({ theme }) => {
   const buttonColor = 'gray';
 
   const classes = useStyles(theme);
+
   return (
     <Fragment>
       <Box mb={2}>
         <Card className={classes.card}>
-          <Box style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Box mb={2} component='span'>
+          <Box mb={0} style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box mb={0} component='span'>
               <Chip
-                avatar={<Avatar alt='John Doe'
-                                src=''/>}
-                label='John Doe'
+                avatar={<Avatar alt={comment.authorName}
+                                src={comment.authorPhotoURL}/>}
+                label={comment.authorName}
                 clickable
                 color="primary"
                 component={RouterLink}
-                to={`/users/1`}
+                to={`/users/${comment.authorId}`}
               />
               <Box ml={1} component='span'>
                 <Typography variant="body2" style={{ color: '#757575' }} paragraph={true}
                             display='inline'>
-                  Posted 2 months ago
+                  Posted {comment?.date && moment(comment.date.toDate()).fromNow()}
                 </Typography>
               </Box>
 
             </Box>
             {
-              <Box component='span'>
-                <IconButton aria-label="delete" style={{ color: '#ba1818' }}>
+              <Box component='span' mb={0} pb={0}>
+                <IconButton className={classes.button} aria-label="delete" style={{ color: '#ba1818' }}>
                   <DeleteIcon fontSize="medium"/>
                 </IconButton>
               </Box>
@@ -78,8 +81,9 @@ const PostDetailedComment = ({ theme }) => {
           </Box>
 
 
-          <Typography variant='body1' paragraph={true}>Lorem ipsum dolor sit amet,
-            consectetur adipisicing elit. Ut, veniam?</Typography>
+          <Typography variant='body1' paragraph={true}>
+            {ReactHtmlParser(comment.commentBody)}
+          </Typography>
 
           <Box mb={1}>
             <Box mb={0} mr={2} component='span'>
@@ -88,7 +92,7 @@ const PostDetailedComment = ({ theme }) => {
                       style={{ color: `${buttonColor}` }}>
                   <FavoriteIcon style={{ color: `${buttonColor}` }}
                                 className={classes.icon} fontSize='small'/>
-                  4
+                  {comment.likeCount}
                 </Link>
               </Typography>
             </Box>
@@ -102,7 +106,7 @@ const PostDetailedComment = ({ theme }) => {
             </Box>
           </Box>
           {toggleReplyForm &&
-          <PostDetailedReplyForm setToggleReplyForm={setToggleReplyForm}/>}
+          <PostDetailedReplyForm setToggleReplyForm={setToggleReplyForm} commentId={comment.id}/>}
           <Box mb={0}>
             <Button className={classes.button}
                     onClick={() => setToggleReplies(!toggleReplies)}
@@ -112,10 +116,10 @@ const PostDetailedComment = ({ theme }) => {
                     disableElevation={true}
                     disableFocusRipple={true}
                     startIcon={toggleReplies ? <ArrowDropUpIcon/> : <ArrowDropDownIcon/>}>
-              {toggleReplies ? 'Hide' : 'View'} 3 replies
+              {toggleReplies ? 'Hide' : 'View'} {comment.commentCount} replies
             </Button>
           </Box>
-          {toggleReplies && <PostDetailedReplies/>}
+          {toggleReplies && <PostDetailedReplies commentId={comment.id}/>}
         </Card>
       </Box>
     </Fragment>

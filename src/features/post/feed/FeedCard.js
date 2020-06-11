@@ -1,9 +1,9 @@
-import React, {Fragment} from 'react';
+import React, { Fragment } from 'react';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link'
+import Link from '@material-ui/core/Link';
 import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import FeedCardButtons from './FeedCardButtons';
@@ -12,6 +12,8 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import moment from 'moment';
+import { stripTags, truncate } from '../../../app/common/util/helpers';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,38 +36,43 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-const FeedCard = ({theme, elevateCard = true, marginY = 2, dividerBottom = false}) => {
+const FeedCard = ({ theme, elevateCard = true, marginY = 2, dividerBottom = false, post }) => {
   const classes = useStyles(theme);
+  const renderBody = stripTags(truncate(post.body, 200));
+  const isLongText = renderBody.substr(renderBody.length - 4, renderBody.length) ===
+    '... ';
 
   return (
     <Fragment>
       <Box my={marginY}>
-        <Card className={!elevateCard ? classes.cardUserPage : classes.cardIdeasPage} variant={!elevateCard ? '' : 'outlined'} elevation={elevateCard ? 1 : 0}>
+        <Card className={!elevateCard ? classes.cardUserPage : classes.cardIdeasPage}
+              variant={!elevateCard ? '' : 'outlined'} elevation={elevateCard ? 1 : 0}>
           <Grid container className={classes.root} spacing={1}>
-            <Grid item xs={12} style={{paddingBottom: 0}}>
-              <Box style={{display: 'flex', justifyContent: 'space-between'}}>
+            <Grid item xs={12} style={{ paddingBottom: 0 }}>
+              <Box style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box component='span'>
-                  <Link variant='h6' color="secondary" component={RouterLink} to={`/posts/1`}>How to train pokemon?</Link>
+                  <Link variant='h6' color="secondary" component={RouterLink}
+                        to={`/posts/${post.id}`}>{post.title}</Link>
                 </Box>
-                  <Box>
-                    <IconButton  component={RouterLink}
-                                 to={`/posts/edit/1`}
-                                 aria-label="edit"
-                                 color='primary'>
-                      <EditIcon fontSize="medium" />
-                    </IconButton>
-                      <IconButton aria-label="delete"
-                                  style={{ color: '#ba1818' }}>
-                        <DeleteIcon fontSize="medium"/>
-                      </IconButton>
-                  </Box>
+                <Box>
+                  <IconButton component={RouterLink}
+                              to={`/posts/edit/${post.id}`}
+                              aria-label="edit"
+                              color='primary'>
+                    <EditIcon fontSize="medium"/>
+                  </IconButton>
+                  <IconButton aria-label="delete"
+                              style={{ color: '#ba1818' }}>
+                    <DeleteIcon fontSize="medium"/>
+                  </IconButton>
+                </Box>
               </Box>
             </Grid>
             <Grid item sm={2.5}>
               <Box mt={0.5}>
-                <Link component={RouterLink} to={`/users/1`}>
-                  <Avatar alt='John Doe'
-                          src=''/>
+                <Link component={RouterLink} to={`/users/${post.authorId}`}>
+                  <Avatar alt={post.authorName}
+                          src={post.authorPhotoURL}/>
                 </Link>
               </Box>
 
@@ -73,20 +80,23 @@ const FeedCard = ({theme, elevateCard = true, marginY = 2, dividerBottom = false
             </Grid>
             <Grid item sm={6}>
               <Box mt={0.5}>
-                <Link variant='body2' color="secondary" component={RouterLink} to={`/users/1`}>John Doe</Link>
+                <Link variant='body2' color="secondary" component={RouterLink}
+                      to={`/users/${post.authorId}`}>{post.authorName}</Link>
               </Box>
               <Box mt={0.5}>
-                <Typography variant="body2" style={{color: '#757575'}}>
-                  Written 3 months ago
+                <Typography variant="body2" style={{ color: '#757575' }}>
+                  Written {moment(post.date.toDate()).fromNow()}
                 </Typography>
               </Box>
             </Grid>
             <Grid item md={12}>
               <Typography variant="body1" paragraph={true}>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. A animi cum eius exercitationem fugit, magnam magni maiores maxime nemo odit pariatur quia quod repellat repudiandae sit vel velit voluptate voluptatem...
-               <Link variant='body1' component={RouterLink} to={`/posts/1`}>(more)</Link>
+                {renderBody}
+                {isLongText && <Link variant='body1' component={RouterLink}
+                                     to={`/posts/${post.id}`}>(more)</Link>}
               </Typography>
-              <FeedCardButtons/>
+              <FeedCardButtons likeCount={post.likeCount} commentCount={post.commentCount}
+                               savedCount={post.savedCount}/>
             </Grid>
           </Grid>
         </Card>

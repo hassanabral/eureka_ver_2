@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import { withRouter } from 'react-router-dom';
+import { useHistory, withRouter } from 'react-router-dom';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Field, reduxForm } from 'redux-form';
 import { combineValidators, isRequired } from 'revalidate';
@@ -13,6 +13,10 @@ import TextInput from '../../../app/common/form/TextInput';
 import SelectInput from '../../../app/common/form/SelectInput';
 import RichEditor from '../../../app/common/form/RichEditor';
 import Spinner from '../../../app/common/util/Spinner';
+import { useDispatch } from 'react-redux';
+import { useFirebase, useFirestore } from 'react-redux-firebase';
+import { updateProfile } from '../../user/userActions';
+import { updatePost } from '../postActions';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -24,54 +28,44 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-
-const appTypes = [
-  {
-    value: 'ios',
-    label: 'IOS',
-  },
-  {
-    value: 'android',
-    label: 'Android',
-  },
-  {
-    value: 'webapp',
-    label: 'Web App',
-  },
-  {
-    value: 'desktopapp',
-    label: 'Desktop App',
-  },
-];
-
 const visibilities = [
   {
-    value: 'public',
-    label: 'Public',
+    value: 'published',
+    label: 'Published',
   },
   {
-    value: 'private',
-    label: 'Private',
+    value: 'unpublished',
+    label: 'Unpublished',
   },
 ];
 
-// const validate = combineValidators({
-//   title: isRequired('Title'),
-//   body: isRequired('Body'),
-//   category: isRequired('Category'),
-//   status: isRequired('Visibility'),
-// });
+const validate = combineValidators({
+  title: isRequired('Title'),
+  body: isRequired('Body'),
+  status: isRequired('Visibility'),
+});
 
-const EditPost = ({ theme }) => {
+const EditPost = ({ theme, handleSubmit, pristine, invalid, submitting, postId }) => {
   const classes = useStyles(theme);
+
+  const dispatch = useDispatch();
+  const firestore = useFirestore();
+  const history = useHistory();
+
+  const handleUpdatePost = useCallback(
+    (formData) => {
+      return dispatch(updatePost({ firestore }, formData, history, postId));
+    }, [firestore, dispatch]
+  );
 
   return (
     <Grid container className={classes.root} spacing={5}>
       <Grid item lg={8} sm={12}>
         <Card className={classes.card}>
           <Typography variant='h3'>Edit Post</Typography>
-          <Typography variant='subtitle1'>Update and save your post <span style={{visibility: 'hidden'}}>sssssssss</span></Typography>
-          <form>
+          <Typography variant='subtitle1'>Update and save your post <span
+            style={{ visibility: 'hidden' }}>sssssssss</span></Typography>
+          <form onSubmit={handleSubmit(handleUpdatePost)}>
             <Box mb={1}>
               <Field
                 required={true}
@@ -91,7 +85,7 @@ const EditPost = ({ theme }) => {
                 name="status"
                 label="Visibility"
                 defaultValue={visibilities[1].value}
-                style={{minWidth: 100}}
+                style={{ minWidth: 100 }}
                 component={SelectInput}
               >
                 {visibilities.map(option => (
@@ -107,7 +101,7 @@ const EditPost = ({ theme }) => {
                 config={
                   {
                     alignment: {
-                      options: [ 'left', 'center', 'justify', 'right']
+                      options: ['left', 'center', 'justify', 'right']
                     }
                   }
                 }
@@ -116,7 +110,11 @@ const EditPost = ({ theme }) => {
             </Box>
 
             <Box mt={3}>
-              <Button type='submit' variant='outlined' color='primary' fullWidth={true}>Save</Button>
+              <Button disabled={pristine || invalid || submitting}
+                      type='submit'
+                      variant='outlined'
+                      color='primary'
+                      fullWidth={true}>Save</Button>
             </Box>
           </form>
 
@@ -124,7 +122,12 @@ const EditPost = ({ theme }) => {
       </Grid>
       <Grid item lg={4} sm={12}>
       </Grid>
-    </Grid>)
+    </Grid>);
 };
 
-export default EditPost;
+export default reduxForm({
+  form: 'editPostForm',
+  enableReinitialize: true,
+  destroyOnUnmount: false,
+  validate
+})(EditPost);

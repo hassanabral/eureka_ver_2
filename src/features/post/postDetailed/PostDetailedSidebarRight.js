@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useMemo } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
@@ -6,6 +6,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import UserDetailedHeaderInfo from '../../user/UserDetailed/UserDetailedHeaderInfo';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import { useFirestoreConnect } from 'react-redux-firebase';
+import { useSelector } from 'react-redux';
+import Spinner from '../../../app/common/util/Spinner';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -21,29 +24,38 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const PostDetailedSidebarRight = ({ theme }) => {
+const PostDetailedSidebarRight = ({ theme, authorId }) => {
   const classes = useStyles(theme);
+
+  const userProfileQuery = useMemo(() => ({
+    collection: 'users',
+    doc: authorId,
+    storeAs: 'userProfile'
+  }), [authorId]);
+
+  useFirestoreConnect(userProfileQuery);
+
+  const user = useSelector((state) => (state.firestore.data.userProfile));
+  if(!user) return <Spinner/>;
 
   return (
     <Fragment>
       <Grid container className={classes.root} spacing={2}>
         <Grid item md={2.5}>
-          <Avatar className={classes.profile} alt='John Doe'
-                  src=''/>
+          <Avatar className={classes.profile} alt={user.displayName}
+                  src={user.avatarUrl}/>
         </Grid>
         <Grid item md={12}>
           <Typography variant="h4">
-            John Doe
+            {user.displayName}
           </Typography>
           <Typography variant="h6" gutterBottom={true}>
-            Software Engineer at TechUp
+            {user.profession} at {user.company}
           </Typography>
           <Typography variant="body1" gutterBottom={true}>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut excepturi
-            explicabo fugiat illum laborum magni modi officiis quas repudiandae voluptate!
-            Error esse expedita impedit ipsa magni nihil, odit quas velit.
+            {user.bio}
           </Typography>
-          <UserDetailedHeaderInfo/>
+          <UserDetailedHeaderInfo location={user.location} website={user.website} createdAt={user.createdAt}/>
           <Box my={2}>
             <Button size='large' fullWidth={true} variant='contained' color='secondary'>+
               Follow</Button>

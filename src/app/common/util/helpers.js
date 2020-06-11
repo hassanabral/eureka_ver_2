@@ -11,5 +11,14 @@ export const truncate = (str, len) => {
 };
 
 export const stripTags = (input) => {
-  return input.replace(/<(?:.|\n)*?>/gm, '');
+  return input.replace(/<(?:.|\n)*?>/gm, '').replace(/&nbsp;/gi,'');
 };
+
+export const getHashtags = input => {
+  const regex = /#[^ :\n\t\.,\?\/’'!]+/g;
+  return input.match(regex).map(hastag => {
+    let temp = hastag.replace(/[><]/, "");
+    temp = temp.replace('&nbsp;', "");
+    return temp.replace('#', '');
+  })
+}

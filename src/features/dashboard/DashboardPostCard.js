@@ -11,6 +11,9 @@ import FeedCardButtons from '../post/feed/FeedCardButtons';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import moment from 'moment';
+import ReactHtmlParser from 'react-html-parser';
+import { stripTags, truncate } from '../../app/common/util/helpers';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -38,8 +41,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const DashboardPostCard = ({ theme}) => {
+const DashboardPostCard = ({ theme, post}) => {
   const classes = useStyles(theme);
+  const renderBody = stripTags(truncate(post.body, 200));
+  const isLongText = renderBody.substr(renderBody.length - 4, renderBody.length) ===
+    '... ';
 
   return (
     <Fragment>
@@ -48,24 +54,26 @@ const DashboardPostCard = ({ theme}) => {
           <Grid container className={classes.root} spacing={2}>
             <Grid item md={12}>
               <Link variant='h5' color="secondary" component={RouterLink}
-                    to={`/posts/1`}>How to train pokemon?</Link>
+                    to={`/posts/${post.id}`}>{post.title}</Link>
               <Box mt={0.5} mb={1}>
                 <Typography variant="body2" style={{ color: '#757575' }}>
-                  Written 3 days ago
+                  Written on {moment(post.date.toDate()).format('LL')}
                 </Typography>
               </Box>
               <Typography variant="body1" paragraph={true}>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorem id non perspiciatis placeat sequi voluptate! Adipisci consequatur, cum cupiditate eligendi eveniet illo iure laborum minus molestiae quam sapiente vel, vero!
-                <Link variant='body1' component={RouterLink} to={`/posts/1`}>(more)</Link>
+                {renderBody}
+                {isLongText && <Link variant='body1' component={RouterLink}
+                                     to={`/posts/${post.id}`}>(more)</Link>}
               </Typography>
               <Box mb={2}>
-                <FeedCardButtons/>
+                <FeedCardButtons likeCount={post.likeCount} commentCount={post.commentCount}
+                                 savedCount={post.savedCount}/>
               </Box>
               <Box mt={2}>
                 <ButtonGroup size='small' aria-label="button group">
                   <Button color='primary'
                           component={RouterLink}
-                          to={`/posts/edit/1`}
+                          to={`/posts/edit/${post.id}`}
                           startIcon={<EditIcon/>}>
                     Edit
                   </Button>

@@ -24,6 +24,7 @@ import SettingsPage from './features/user/Settings/SettingsPage';
 import PrivateRoute from './app/common/util/PrivateRoute';
 import { useSelector } from 'react-redux';
 import Spinner from './app/common/util/Spinner';
+import EditPostWrapper from './features/post/postForm/EditPostWrapper';
 
 const theme = createMuiTheme({
   palette: {
@@ -110,8 +111,8 @@ function App () {
                           <AddPost/>
                         </PrivateRoute>
                         <Route exact path='/posts/:id' component={PostDetailed}/>
-                        <PrivateRoute exact path='/ideas/edit/:id'>
-                          <EditPost/>
+                        <PrivateRoute exact path='/posts/edit/:id'>
+                          <EditPostWrapper/>
                         </PrivateRoute>
                         <PrivateRoute exact path='/dashboard'>
                           <Dashboard/>

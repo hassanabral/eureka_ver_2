@@ -1,14 +1,13 @@
 import React, {Fragment} from 'react';
 import FeedCard from './FeedCard';
 
-const FeedsPageBody = ({...props}) => {
+const FeedsPageBody = ({feeds}) => {
 
   return (
     <Fragment>
-      <FeedCard/>
-      <FeedCard/>
-      <FeedCard/>
-      <FeedCard/>
+      {
+        feeds.length > 0 && feeds.map(feed => <FeedCard post={feed}/>)
+      }
     </Fragment>
   );
 };
