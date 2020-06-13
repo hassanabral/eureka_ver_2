@@ -19,8 +19,6 @@ const PostDetailedComments = ({postId}) => {
 
   useFirestoreConnect(postCommentsQuery);
 
-
-
   const postComments = useSelector((state) => state.firestore.ordered.postComments);
 
   return (

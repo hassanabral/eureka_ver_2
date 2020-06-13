@@ -31,10 +31,9 @@ export const addComment = ({ firebase, firestore }, formData, postId) => {
   };
 };
 
-export const addReply = ({ firestore }, formData, commentId) => {
+export const addReply = ({ firestore }, formData, commentId, setReplies, replies) => {
   return async (dispatch, getState) => {
     const user = getState().firebase.auth;
-    console.log({ commentId });
     try {
       const newReply = createNewComment(formData, user, firestore);
 
@@ -44,9 +43,9 @@ export const addReply = ({ firestore }, formData, commentId) => {
         querySnapshot.forEach((doc) => {
           doc.ref.collection('comments').add(newReply).then(
             (doc) => {
-              doc.update({ id: doc.id });
+               doc.update({ id: doc.id });
             }
-          );
+          )
         });
       }).catch(function (error) {
         console.log('Error getting documents: ', error);
@@ -73,29 +72,23 @@ export const updatePost = ({ firestore }, formData, history, postId) => {
   };
 };
 
-export const getReplies = (firestore, commentId) => {
-  return async (dispatch, getState) => {
-    try {
-      const commentRef = firestore.collectionGroup('comments')
-        .where('id', '==', commentId);
-      const otherReplies = commentRef.get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          doc.ref.collection('comments').orderBy('date', 'desc')
-            .get().then((repliesSnap) => {
-              const replies = repliesSnap.docs.map(doc => doc.data());
-              console.log({ replies });
-              return replies;
-            }
-          )
-        });
-      }).catch(function (error) {
-        console.log('Error getting documents: ', error);
-      });
-      return otherReplies;
+export const getReplies = async (firestore, commentId, setReplies) => {
+  try {
+    const commentRef = await firestore.collectionGroup('comments')
+      .where('id', '==', commentId);
+    const querySnapshot = await commentRef.get();
+    await querySnapshot.forEach((doc) => {
+      doc.ref.collection('comments').orderBy('date', 'desc')
+        .onSnapshot((repliesSnap) => {
+            const replies = repliesSnap.docs.map(doc => doc.data());
+            setReplies(replies);
+          }
+        )
+    })
 
-    } catch (error) {
-      toastr.error('Oops', 'Something went wrong');
-    }
+  } catch (error) {
+    console.log('Error getting documents: ', error);
+    toastr.error('Oops', 'Something went wrong');
   }
 };
 
