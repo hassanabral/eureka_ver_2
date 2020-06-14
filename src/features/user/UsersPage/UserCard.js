@@ -35,7 +35,7 @@ const UserCard = ({ theme, user }) => {
       <Grid item lg={4} md={6} sm={12} xl={3}>
         <Card className={classes.card}>
           <Grid container className={classes.root} spacing={2}>
-            <Grid item md={2.5}>
+            <Grid item>
               <Link component={RouterLink} to={`/users/${user.id}`}>
                 <Avatar className={classes.profile} alt={user.displayName}
                         src={user.avatarUrl}/>

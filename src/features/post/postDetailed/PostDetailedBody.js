@@ -11,6 +11,7 @@ import BookmarkIcon from '@material-ui/icons/Bookmark';
 import moment from 'moment';
 import ReactHtmlParser from 'react-html-parser';
 import EditIcon from '@material-ui/icons/Edit';
+import FeedCardButtons from '../feed/FeedCardButtons';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -33,7 +34,7 @@ const PostDetailedBody = ({ theme, post, isAuthenticated, isAuthenticatedUser })
       </Box>
       <Box mb={2}>
         <Grid container spacing={2}>
-          <Grid item sm={2.5}>
+          <Grid item>
             <Link component={RouterLink} to={`/users/${post.authorId}`}>
               <Avatar alt={post.authorName}
                       src={post.authorPhotoURL}/>
@@ -76,10 +77,10 @@ const PostDetailedBody = ({ theme, post, isAuthenticated, isAuthenticatedUser })
         </Grid>
       </Box>
 
-      <Box mb={2}>
+      <Box mb={1}>
           {
             post.hashtags.map(hashtag =>
-              <Box mr={1} component='span'>
+              <Box key={hashtag} mr={1} component='span'>
                 <Typography display='inline' variant="body2" className={classes.hashtag}
                             style={{ backgroundColor: 'yellow' }}>
                   #{hashtag}
@@ -89,12 +90,12 @@ const PostDetailedBody = ({ theme, post, isAuthenticated, isAuthenticatedUser })
           }
       </Box>
 
-      <Box my={4}>
-        <Typography variant='body1' paragraph={true}>
+      <Box mt={3} mb={2}>
           {ReactHtmlParser(post.body)}
-        </Typography>
       </Box>
 
+      <FeedCardButtons likeCount={post.likeCount} commentCount={post.commentCount}
+                       savedCount={post.savedCount} postId={id}/>
     </Fragment>
   );
 };

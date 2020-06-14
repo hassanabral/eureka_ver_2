@@ -6,7 +6,7 @@ const FeedsPageBody = ({feeds}) => {
   return (
     <Fragment>
       {
-        feeds.length > 0 && feeds.map(feed => <FeedCard post={feed}/>)
+        feeds.length > 0 && feeds.map(feed => <FeedCard key={feed.id} post={feed}/>)
       }
     </Fragment>
   );

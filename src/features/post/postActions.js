@@ -15,6 +15,46 @@ export const createPost = ({ firebase, firestore }, newPost) => {
   };
 };
 
+export const likeOrUnlike = ({ firebase, firestore }, postId) => {
+  return async (dispatch, getState) => {
+    const {uid} = getState().firebase.auth;
+    const likeId = `${uid}_${postId}`;
+    try {
+      const likeRef = await firestore.collection('likes').doc(likeId);
+      likeRef.get()
+        .then((docSnapshot) => {
+          if (docSnapshot.exists) {
+            likeRef.delete();
+          } else {
+            likeRef.set({
+              userId: uid,
+              postId
+            });
+          }
+        });
+    } catch (error) {
+      console.log('error', error);
+      toastr.error('Oops', 'Something went wrong');
+    }
+  };
+};
+
+export const toggleLike = (firestore, postId, setLike) => {
+  return async (dispatch, getState) => {
+    const {uid} = getState().firebase.auth;
+    const likeId = `${uid}_${postId}`;
+    try {
+      firestore.collection('likes').doc(likeId).onSnapshot((likeSnapShot) => {
+        const alreadyLiked = likeSnapShot.exists;
+        setLike(alreadyLiked);
+      })
+    } catch (error) {
+      console.log('err', error);
+      toastr.error('Oops', 'Something went wrong');
+    }
+  };
+};
+
 export const addComment = ({ firebase, firestore }, formData, postId) => {
   return async (dispatch, getState) => {
     const user = getState().firebase.auth;
@@ -31,7 +71,7 @@ export const addComment = ({ firebase, firestore }, formData, postId) => {
   };
 };
 
-export const addReply = ({ firestore }, formData, commentId, setReplies, replies) => {
+export const addReply = ({ firestore }, formData, commentId) => {
   return async (dispatch, getState) => {
     const user = getState().firebase.auth;
     try {

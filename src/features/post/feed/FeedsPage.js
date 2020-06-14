@@ -28,7 +28,6 @@ const FeedsPage = ({ theme}) => {
   useFirestoreConnect(feedQuery);
 
   const feeds = useSelector((state) => (state.firestore.ordered.feeds));
-  console.log({feeds});
 
   const classes = useStyles(theme);
 

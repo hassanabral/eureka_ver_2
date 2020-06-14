@@ -36,7 +36,7 @@ const FeedsPageHeader = ({ theme, user }) => {
     <Fragment>
       <Card className={classes.card}>
         <Grid container className={classes.root} spacing={2}>
-          <Grid item sm={2.5}>
+          <Grid item>
             <Link component={RouterLink} to={`/users/${uid}`}>
               <Avatar className={classes.profile} alt={displayName}
                       src={photoURL}/>

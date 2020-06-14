@@ -41,7 +41,7 @@ const PostDetailedSidebarRight = ({ theme, authorId }) => {
   return (
     <Fragment>
       <Grid container className={classes.root} spacing={2}>
-        <Grid item md={2.5}>
+        <Grid item>
           <Avatar className={classes.profile} alt={user.displayName}
                   src={user.avatarUrl}/>
         </Grid>

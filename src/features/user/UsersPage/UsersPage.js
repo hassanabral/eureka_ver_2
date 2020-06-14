@@ -47,9 +47,9 @@ const UsersPage = ({ theme }) => {
           <Divider/>
         </Box>
         <List className={classes.root}>
-          <Grid container spacing={20}>
+          <Grid container>
             {
-              users?.length > 0 && users.map(user => <UserCard user={user}/>)
+              users?.length > 0 && users.map(user => <UserCard key={user.id} user={user}/>)
             }
           </Grid>
         </List>

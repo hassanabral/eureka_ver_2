@@ -46,7 +46,7 @@ const FeedCard = ({ theme, elevateCard = true, marginY = 2, dividerBottom = fals
     <Fragment>
       <Box my={marginY}>
         <Card className={!elevateCard ? classes.cardUserPage : classes.cardIdeasPage}
-              variant={!elevateCard ? '' : 'outlined'} elevation={elevateCard ? 1 : 0}>
+              variant={!elevateCard ? 'elevation' : 'outlined'} elevation={elevateCard ? 1: 0}>
           <Grid container className={classes.root} spacing={1}>
             <Grid item xs={12} style={{ paddingBottom: 0 }}>
               <Box style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -59,16 +59,16 @@ const FeedCard = ({ theme, elevateCard = true, marginY = 2, dividerBottom = fals
                               to={`/posts/edit/${post.id}`}
                               aria-label="edit"
                               color='primary'>
-                    <EditIcon fontSize="medium"/>
+                    <EditIcon fontSize="default"/>
                   </IconButton>
                   <IconButton aria-label="delete"
                               style={{ color: '#ba1818' }}>
-                    <DeleteIcon fontSize="medium"/>
+                    <DeleteIcon fontSize="default"/>
                   </IconButton>
                 </Box>
               </Box>
             </Grid>
-            <Grid item sm={2.5}>
+            <Grid item>
               <Box mt={0.5}>
                 <Link component={RouterLink} to={`/users/${post.authorId}`}>
                   <Avatar alt={post.authorName}
@@ -96,7 +96,7 @@ const FeedCard = ({ theme, elevateCard = true, marginY = 2, dividerBottom = fals
                                      to={`/posts/${post.id}`}>(more)</Link>}
               </Typography>
               <FeedCardButtons likeCount={post.likeCount} commentCount={post.commentCount}
-                               savedCount={post.savedCount}/>
+                               savedCount={post.savedCount} postId={post.id}/>
             </Grid>
           </Grid>
         </Card>

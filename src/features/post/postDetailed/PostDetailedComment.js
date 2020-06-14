@@ -51,8 +51,8 @@ const PostDetailedComment = ({ theme, comment, commentOrReply = 'comment', showR
   const classes = useStyles(theme);
 
   const body = (<Fragment>
-    <Box mb={!isReply && 0} style={{ display: 'flex', justifyContent: 'space-between' }}>
-      <Box mb={!isReply ? 0 : 2} component='span'>
+    <Box  style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Box mb={isReply ? 2 : 0} component='span'>
         <Chip
           avatar={<Avatar alt={comment.authorName}
                           src={comment.authorPhotoURL}/>}
@@ -73,7 +73,7 @@ const PostDetailedComment = ({ theme, comment, commentOrReply = 'comment', showR
       {
         <Box component='span' mb={0} pb={0}>
           <IconButton className={classes.button} aria-label="delete" style={{ color: '#ba1818' }}>
-            <DeleteIcon fontSize="medium"/>
+            <DeleteIcon fontSize="default"/>
           </IconButton>
         </Box>
       }
@@ -81,9 +81,9 @@ const PostDetailedComment = ({ theme, comment, commentOrReply = 'comment', showR
     </Box>
 
 
-    <Typography variant='body1' paragraph={true}>
+    {/*<Typography variant='body1' paragraph={true}>*/}
       {ReactHtmlParser(comment.commentBody)}
-    </Typography>
+    {/*</Typography>*/}
 
     <Box mb={1}>
       <Box mb={0} mr={2} component='span'>

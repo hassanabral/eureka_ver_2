@@ -38,6 +38,7 @@ const UserDetailedPageBody = ({ theme, sectionTitle, posts }) => {
           {
             posts.length > 0 && posts.map(post =>
               <FeedCard
+                key={post.id}
                 post={post}
                 elevateCard={false}
                 marginY={0}

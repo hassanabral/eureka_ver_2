@@ -39,7 +39,7 @@ const UserDetailedHeader = ({ theme, user, userId }) => {
     <Box mb={3}>
       <Card className={classes.card}>
         <Grid container className={classes.root} spacing={2}>
-          <Grid item md={2.5}>
+          <Grid item>
             <Avatar className={classes.profile} alt={displayName}
                     src={avatarUrl}/>
           </Grid>

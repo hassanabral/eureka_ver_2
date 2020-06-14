@@ -96,9 +96,9 @@ const Dashboard = ({ theme }) => {
       </Box>
       {
         dashboardPosts?.length > 0 && <List className={classes.root}>
-          <Grid container spacing={20}>
+          <Grid container>
             {
-              dashboardPosts.map(post => <DashboardPostCard keu={post.id} post={post}/>)
+              dashboardPosts.map(post => <DashboardPostCard key={post.id} post={post}/>)
             }
           </Grid>
 
