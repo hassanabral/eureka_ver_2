@@ -38,9 +38,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const PostDetailedComment = ({ theme, comment, commentOrReply = 'comment' }) => {
+const PostDetailedComment = ({ theme, comment, commentOrReply = 'comment', showReplies = false }) => {
 
-  const [toggleReplies, setToggleReplies] = useState(true);
+  const [toggleReplies, setToggleReplies] = useState(showReplies);
   const [toggleReplyForm, setToggleReplyForm] = useState(false);
   const [replies, setReplies] = useState([]);
 

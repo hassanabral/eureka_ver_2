@@ -35,7 +35,7 @@ const PostDetailedComments = ({postId}) => {
         </ButtonGroup>
       </Box>
       {
-        postComments?.length > 0 && postComments.map(comment => <PostDetailedComment key={comment.id} comment={comment}/>)
+        postComments?.length > 0 && postComments.map(comment => <PostDetailedComment key={comment.id} comment={comment} showReplies={true}/>)
       }
     </Fragment>);
 };
