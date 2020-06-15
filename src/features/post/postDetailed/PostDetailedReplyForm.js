@@ -22,6 +22,7 @@ const PostDetailedReplyForm = ({ setToggleReplyForm, commentId, handleSubmit, in
     await dispatch(addReply({ firestore },
       { ...formData, commentBody: `<p>${formData.commentBody}</p>` },
       commentId, setToggleReplies));
+    setToggleReplyForm(false);
   };
 
   return (
