@@ -12,6 +12,11 @@ import moment from 'moment';
 import ReactHtmlParser from 'react-html-parser';
 import EditIcon from '@material-ui/icons/Edit';
 import FeedCardButtons from '../feed/FeedCardButtons';
+import { deletePost } from '../postActions';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import { useFirestore } from 'react-redux-firebase';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -20,12 +25,22 @@ const useStyles = makeStyles(theme => ({
   hashtag: {
     padding: theme.spacing(0.5),
     borderRadius: theme.spacing(0.5)
+  },
+  deleteButton: {
+    color: '#f44336',
+    borderColor: '#f44336',
+    '&:hover': {
+      backgroundColor: '#ffebee'
+    }
   }
 
 }));
 
 const PostDetailedBody = ({ theme, post, isAuthenticated, isAuthenticatedUser }) => {
   const classes = useStyles(theme);
+  const firestore = useFirestore();
+  const dispatch = useDispatch();
+
   const {id} = useParams();
   return (
     <Fragment>
@@ -52,15 +67,17 @@ const PostDetailedBody = ({ theme, post, isAuthenticated, isAuthenticatedUser })
           {isAuthenticated &&
           <Box mt={2} mb={1} ml={2} component='span'>
             {isAuthenticatedUser ? (
-              <Button
-                variant="outlined"
-                color="primary"
-                size='small'
-                component={RouterLink} to={`/posts/edit/${id}`}
-                startIcon={<EditIcon/>}
-              >
-                Edit
-              </Button>
+              <ButtonGroup size='small' aria-label="button group">
+                <Button color='primary'
+                        component={RouterLink}
+                        to={`/posts/edit/${id}`}
+                        startIcon={<EditIcon/>}>
+                  Edit
+                </Button>
+                <Button
+                  onClick={() => deletePost(firestore, id)}
+                  className={classes.deleteButton} startIcon={<DeleteIcon/>}>Delete</Button>
+              </ButtonGroup>
             ) : (
               <Button
                 variant="outlined"

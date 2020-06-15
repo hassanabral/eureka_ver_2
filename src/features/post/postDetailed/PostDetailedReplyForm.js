@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {TextField} from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import { Field, reduxForm } from 'redux-form';
@@ -13,15 +13,16 @@ const validate = combineValidators({
   commentBody: isRequired('Reply body'),
 });
 
-const PostDetailedReplyForm = ({setToggleReplyForm, commentId, handleSubmit, invalid, submitting}) => {
+const PostDetailedReplyForm = ({ setToggleReplyForm, commentId, handleSubmit, invalid, submitting }) => {
 
   const dispatch = useDispatch();
-  const firebase = useFirebase();
   const firestore = useFirestore();
 
   const handleAddReply = async formData => {
-    await dispatch(addReply({firestore}, formData, commentId));
-  }
+    await dispatch(addReply({ firestore },
+      { ...formData, commentBody: `<p>${formData.commentBody}</p>` },
+      commentId));
+  };
 
   return (
     <Box>
@@ -36,9 +37,11 @@ const PostDetailedReplyForm = ({setToggleReplyForm, commentId, handleSubmit, inv
           component={TextArea}
         />
         <Box display='flex' flexDirection='row-reverse' m={1}>
-          <Button disabled={invalid || submitting} type='submit' variant='contained' color='primary'>Reply</Button>
+          <Button disabled={invalid || submitting} type='submit' variant='contained'
+                  color='primary'>Reply</Button>
           <Box component='span' mr={1}>
-            <Button color='secondary' onClick={() => setToggleReplyForm(false)}>Cancel</Button>
+            <Button color='secondary'
+                    onClick={() => setToggleReplyForm(false)}>Cancel</Button>
           </Box>
         </Box>
       </form>
@@ -46,4 +49,4 @@ const PostDetailedReplyForm = ({setToggleReplyForm, commentId, handleSubmit, inv
   );
 };
 
-export default reduxForm({ form: 'addReplyForm', validate})(PostDetailedReplyForm);
+export default reduxForm({ form: 'addReplyForm', validate })(PostDetailedReplyForm);

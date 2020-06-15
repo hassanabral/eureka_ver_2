@@ -20,7 +20,7 @@ const FeedsPage = ({ theme}) => {
 
   const feedQuery = {
     collection: 'posts',
-    where: ['status', '==', 'published'],
+    where: [['status', '==', 'published'], ['deleted', '==', false]],
     orderBy: ['date', 'desc'],
     storeAs: 'feeds'
   };

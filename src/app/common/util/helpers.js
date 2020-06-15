@@ -16,7 +16,11 @@ export const stripTags = (input) => {
 
 export const getHashtags = input => {
   const regex = /#[^ :\n\t\.,\?\/’'!]+/g;
-  return input.match(regex).map(hastag => {
+  const hashtagsTemp = input.match(regex);
+
+  if(!hashtagsTemp) return [];
+
+  return hashtagsTemp.map(hastag => {
     let temp = hastag.replace(/[><]/, "");
     temp = temp.replace('&nbsp;', "");
     return temp.replace('#', '');

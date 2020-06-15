@@ -18,6 +18,9 @@ import PostDetailedReplyForm from './PostDetailedReplyForm';
 import PostDetailedReplies from './PostDetailedReplies';
 import moment from 'moment';
 import ReactHtmlParser from 'react-html-parser';
+import { deleteComment, deletePost } from '../postActions';
+import { isEmpty, isLoaded, useFirestore } from 'react-redux-firebase';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -43,6 +46,11 @@ const PostDetailedComment = ({ theme, comment, commentOrReply = 'comment', showR
   const [toggleReplies, setToggleReplies] = useState(showReplies);
   const [toggleReplyForm, setToggleReplyForm] = useState(false);
   const [replies, setReplies] = useState([]);
+  const firestore = useFirestore();
+
+  const auth = useSelector(state => state.firebase.auth);
+  const isAuthenticated = isLoaded(auth) && !isEmpty(auth);
+  const isAuthenticatedUser = comment?.authorId === auth?.uid;
 
   const isReply = commentOrReply === 'reply';
 
@@ -51,8 +59,8 @@ const PostDetailedComment = ({ theme, comment, commentOrReply = 'comment', showR
   const classes = useStyles(theme);
 
   const body = (<Fragment>
-    <Box  style={{ display: 'flex', justifyContent: 'space-between' }}>
-      <Box mb={isReply ? 2 : 0} component='span'>
+    <Box style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Box mb={0} component='span'>
         <Chip
           avatar={<Avatar alt={comment.authorName}
                           src={comment.authorPhotoURL}/>}
@@ -70,20 +78,21 @@ const PostDetailedComment = ({ theme, comment, commentOrReply = 'comment', showR
         </Box>
 
       </Box>
-      {
-        <Box component='span' mb={0} pb={0}>
-          <IconButton className={classes.button} aria-label="delete" style={{ color: '#ba1818' }}>
-            <DeleteIcon fontSize="default"/>
-          </IconButton>
-        </Box>
+      {isAuthenticated && isAuthenticatedUser &&
+      <Box component='span' mb={0} pb={0}>
+        <IconButton onClick={() => deleteComment(firestore, comment.id)}
+                    className={classes.button} aria-label="delete"
+                    style={{ color: '#ba1818' }}>
+          <DeleteIcon fontSize="default"/>
+        </IconButton>
+      </Box>
       }
 
     </Box>
-
-
-    {/*<Typography variant='body1' paragraph={true}>*/}
+    <Box>
       {ReactHtmlParser(comment.commentBody)}
-    {/*</Typography>*/}
+    </Box>
+
 
     <Box mb={1}>
       <Box mb={0} mr={2} component='span'>
@@ -106,7 +115,8 @@ const PostDetailedComment = ({ theme, comment, commentOrReply = 'comment', showR
       </Box>
     </Box>
     {toggleReplyForm &&
-    <PostDetailedReplyForm setToggleReplyForm={setToggleReplyForm} commentId={comment.id}/>}
+    <PostDetailedReplyForm setToggleReplyForm={setToggleReplyForm}
+                           commentId={comment.id}/>}
     <Box mb={0}>
       <Button className={classes.button}
               onClick={() => setToggleReplies(!toggleReplies)}
@@ -119,8 +129,9 @@ const PostDetailedComment = ({ theme, comment, commentOrReply = 'comment', showR
         {toggleReplies ? 'Hide' : 'View'} {comment.commentCount} replies
       </Button>
     </Box>
-    {toggleReplies && <PostDetailedReplies commentId={comment.id} replies={replies} setReplies={setReplies}/>}
-  </Fragment>)
+    {toggleReplies && <PostDetailedReplies commentId={comment.id} replies={replies}
+                                           setReplies={setReplies}/>}
+  </Fragment>);
 
   return (
     <Fragment>

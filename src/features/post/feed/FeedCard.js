@@ -14,6 +14,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import moment from 'moment';
 import { stripTags, truncate } from '../../../app/common/util/helpers';
+import { useDispatch, useSelector } from 'react-redux';
+import { isEmpty, isLoaded, useFirestore } from 'react-redux-firebase';
+import {deletePost} from '../postActions';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -41,12 +44,18 @@ const FeedCard = ({ theme, elevateCard = true, marginY = 2, dividerBottom = fals
   const renderBody = stripTags(truncate(post.body, 200));
   const isLongText = renderBody.substr(renderBody.length - 4, renderBody.length) ===
     '... ';
+  const auth = useSelector(state => state.firebase.auth);
+  const isAuthenticated = isLoaded(auth) && !isEmpty(auth);
+  const isAuthenticatedUser = post?.authorId === auth?.uid;
+  const firestore = useFirestore();
+  const dispatch = useDispatch();
 
   return (
     <Fragment>
       <Box my={marginY}>
         <Card className={!elevateCard ? classes.cardUserPage : classes.cardIdeasPage}
-              variant={!elevateCard ? 'elevation' : 'outlined'} elevation={elevateCard ? 1: 0}>
+              variant={!elevateCard ? 'elevation' : 'outlined'}
+              elevation={elevateCard ? 1 : 0}>
           <Grid container className={classes.root} spacing={1}>
             <Grid item xs={12} style={{ paddingBottom: 0 }}>
               <Box style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -54,18 +63,18 @@ const FeedCard = ({ theme, elevateCard = true, marginY = 2, dividerBottom = fals
                   <Link variant='h6' color="secondary" component={RouterLink}
                         to={`/posts/${post.id}`}>{post.title}</Link>
                 </Box>
-                <Box>
+                {isAuthenticated && isAuthenticatedUser && <Box>
                   <IconButton component={RouterLink}
                               to={`/posts/edit/${post.id}`}
                               aria-label="edit"
                               color='primary'>
                     <EditIcon fontSize="default"/>
                   </IconButton>
-                  <IconButton aria-label="delete"
+                  <IconButton onClick={() => deletePost(firestore, post.id)} aria-label="delete"
                               style={{ color: '#ba1818' }}>
                     <DeleteIcon fontSize="default"/>
                   </IconButton>
-                </Box>
+                </Box>}
               </Box>
             </Grid>
             <Grid item>

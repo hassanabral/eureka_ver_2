@@ -25,8 +25,9 @@ const FeedCardButtons = ({ theme, likeCount, commentCount, savedCount, postId })
   const classes = useStyles(theme);
 
   const [like, setLike] = useState();
-  const buttonColor = like ? 'primary' : 'secondary';
-  const iconColor = like ? 'primary' : 'action';
+  const [likeCountState, setLikeCountState] = useState(likeCount);
+  const likeButtonColor = like ? 'primary' : 'secondary';
+  const likeIconColor = like ? 'primary' : 'action';
 
   const dispatch = useDispatch();
   const firebase = useFirebase();
@@ -34,17 +35,26 @@ const FeedCardButtons = ({ theme, likeCount, commentCount, savedCount, postId })
 
   useEffect(() => {
     dispatch(toggleLike(firestore, postId, setLike));
-  }, [postId])
+  }, [postId]);
+
+  const handleOnLike = () => {
+    dispatch(likeOrUnlike({ firebase, firestore }, postId));
+    if(like) {
+      setLikeCountState(likeCountState - 1);
+    } else {
+      setLikeCountState(likeCountState + 1);
+    }
+  }
 
   return (
     <Box mb={1} mt={1.5}>
       <Box mr={2.5} component={'span'}>
         <Typography variant="body2" display="inline" gutterBottom={true}>
-          <Link onClick={() => dispatch(likeOrUnlike({ firebase, firestore }, postId))}
-                className={classes.button} color={buttonColor}>
-            <ThumbUpOutlinedIcon color={iconColor} className={classes.icon}
+          <Link onClick={handleOnLike}
+                className={classes.button} color={likeButtonColor}>
+            <ThumbUpOutlinedIcon color={likeIconColor} className={classes.icon}
                                  fontSize='small'/>
-            {likeCount}
+            {likeCountState}
           </Link>
         </Typography>
       </Box>

@@ -48,7 +48,7 @@ const Dashboard = ({ theme }) => {
 
   const dashboardPostsQuery = {
     collection: 'posts',
-    where: [['authorId', '==', uid]],
+    where: [['authorId', '==', uid], ['deleted', '==', false]],
     orderBy: ['date', 'desc'],
     storeAs: 'dashboardPosts'
   };

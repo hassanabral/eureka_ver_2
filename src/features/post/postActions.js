@@ -15,6 +15,34 @@ export const createPost = ({ firebase, firestore }, newPost) => {
   };
 };
 
+export const deletePost = async (firestore, postId) => {
+    try {
+      await firestore.collection('posts').doc(postId).update({
+        deleted: true,
+        body: '<p>[Deleted]</p>'
+      });
+      toastr.success('Success!', 'Post has been deleted');
+    } catch (error) {
+      console.log('err', error);
+      toastr.error('Oops', 'Something went wrong');
+    }
+};
+
+export const deleteComment = async (firestore, commentId) => {
+  try {
+    const commentRef = await firestore.collectionGroup('comments')
+      .where('id', '==', commentId);
+    const querySnapshot = await commentRef.get();
+    await querySnapshot.docs[0].ref.update({
+        commentBody: '<p>[Deleted]</p>'
+      })
+    toastr.success('Success!', 'Comment has been deleted');
+  } catch (error) {
+    console.log('err', error);
+    toastr.error('Oops', 'Something went wrong');
+  }
+};
+
 export const likeOrUnlike = ({ firebase, firestore }, postId) => {
   return async (dispatch, getState) => {
     const {uid} = getState().firebase.auth;
@@ -154,6 +182,7 @@ const createNewPost = (newPostData, user, firestore) => {
     authorId: uid,
     authorName: displayName,
     authorPhotoURL: photoURL,
+    deleted: false,
     likeCount: 0,
     commentCount: 0,
     savedCount: 0
