@@ -13,7 +13,7 @@ const validate = combineValidators({
   commentBody: isRequired('Reply body'),
 });
 
-const PostDetailedReplyForm = ({ setToggleReplyForm, commentId, handleSubmit, invalid, submitting }) => {
+const PostDetailedReplyForm = ({ setToggleReplyForm, commentId, handleSubmit, invalid, submitting, setToggleReplies }) => {
 
   const dispatch = useDispatch();
   const firestore = useFirestore();
@@ -21,7 +21,7 @@ const PostDetailedReplyForm = ({ setToggleReplyForm, commentId, handleSubmit, in
   const handleAddReply = async formData => {
     await dispatch(addReply({ firestore },
       { ...formData, commentBody: `<p>${formData.commentBody}</p>` },
-      commentId));
+      commentId, setToggleReplies));
   };
 
   return (

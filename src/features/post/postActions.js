@@ -16,16 +16,16 @@ export const createPost = ({ firebase, firestore }, newPost) => {
 };
 
 export const deletePost = async (firestore, postId) => {
-    try {
-      await firestore.collection('posts').doc(postId).update({
-        deleted: true,
-        body: '<p>[Deleted]</p>'
-      });
-      toastr.success('Success!', 'Post has been deleted');
-    } catch (error) {
-      console.log('err', error);
-      toastr.error('Oops', 'Something went wrong');
-    }
+  try {
+    await firestore.collection('posts').doc(postId).update({
+      deleted: true,
+      body: '<p>[Deleted]</p>'
+    });
+    toastr.success('Success!', 'Post has been deleted');
+  } catch (error) {
+    console.log('err', error);
+    toastr.error('Oops', 'Something went wrong');
+  }
 };
 
 export const deleteComment = async (firestore, commentId) => {
@@ -34,8 +34,8 @@ export const deleteComment = async (firestore, commentId) => {
       .where('id', '==', commentId);
     const querySnapshot = await commentRef.get();
     await querySnapshot.docs[0].ref.update({
-        commentBody: '<p>[Deleted]</p>'
-      })
+      commentBody: '<p>[Deleted]</p>'
+    });
     toastr.success('Success!', 'Comment has been deleted');
   } catch (error) {
     console.log('err', error);
@@ -45,7 +45,7 @@ export const deleteComment = async (firestore, commentId) => {
 
 export const likeOrUnlike = ({ firebase, firestore }, postId) => {
   return async (dispatch, getState) => {
-    const {uid} = getState().firebase.auth;
+    const { uid } = getState().firebase.auth;
     const likeId = `${uid}_${postId}`;
     try {
       const likeRef = await firestore.collection('likes').doc(likeId);
@@ -69,7 +69,7 @@ export const likeOrUnlike = ({ firebase, firestore }, postId) => {
 
 export const likeOrUnlikeComment = ({ firebase, firestore }, commentId) => {
   return async (dispatch, getState) => {
-    const {uid} = getState().firebase.auth;
+    const { uid } = getState().firebase.auth;
     const likeId = `${uid}_${commentId}`;
     try {
       const likeRef = await firestore.collection('likesComment').doc(likeId);
@@ -93,13 +93,13 @@ export const likeOrUnlikeComment = ({ firebase, firestore }, commentId) => {
 
 export const toggleLikeComment = (firestore, commentId, setLike) => {
   return async (dispatch, getState) => {
-    const {uid} = getState().firebase.auth;
+    const { uid } = getState().firebase.auth;
     const likeId = `${uid}_${commentId}`;
     try {
       firestore.collection('likesComment').doc(likeId).onSnapshot((likeSnapShot) => {
         const alreadyLiked = likeSnapShot.exists;
         setLike(alreadyLiked);
-      })
+      });
     } catch (error) {
       console.log('err', error);
       toastr.error('Oops', 'Something went wrong');
@@ -109,13 +109,13 @@ export const toggleLikeComment = (firestore, commentId, setLike) => {
 
 export const toggleLike = (firestore, postId, setLike) => {
   return async (dispatch, getState) => {
-    const {uid} = getState().firebase.auth;
+    const { uid } = getState().firebase.auth;
     const likeId = `${uid}_${postId}`;
     try {
       firestore.collection('likes').doc(likeId).onSnapshot((likeSnapShot) => {
         const alreadyLiked = likeSnapShot.exists;
         setLike(alreadyLiked);
-      })
+      });
     } catch (error) {
       console.log('err', error);
       toastr.error('Oops', 'Something went wrong');
@@ -139,7 +139,7 @@ export const addComment = ({ firebase, firestore }, formData, postId) => {
   };
 };
 
-export const addReply = ({ firestore }, formData, commentId) => {
+export const addReply = ({ firestore }, formData, commentId, setToggleReplies) => {
   return async (dispatch, getState) => {
     const user = getState().firebase.auth;
     try {
@@ -151,9 +151,11 @@ export const addReply = ({ firestore }, formData, commentId) => {
         querySnapshot.forEach((doc) => {
           doc.ref.collection('comments').add(newReply).then(
             (doc) => {
-               doc.update({ id: doc.id });
+              doc.update({ id: doc.id }).then(
+                () => setToggleReplies(true)
+              );
             }
-          )
+          );
         });
       }).catch(function (error) {
         console.log('Error getting documents: ', error);
@@ -191,8 +193,8 @@ export const getReplies = async (firestore, commentId, setReplies) => {
             const replies = repliesSnap.docs.map(doc => doc.data());
             setReplies(replies);
           }
-        )
-    })
+        );
+    });
 
   } catch (error) {
     console.log('Error getting documents: ', error);

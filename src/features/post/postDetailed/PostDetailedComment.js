@@ -144,18 +144,21 @@ const PostDetailedComment = ({ theme, comment, commentOrReply = 'comment', showR
     </Box>
     {toggleReplyForm &&
     <PostDetailedReplyForm setToggleReplyForm={setToggleReplyForm}
-                           commentId={comment.id}/>}
+                           commentId={comment.id} setToggleReplies={setToggleReplies}/>}
     <Box mb={0}>
-      <Button className={classes.button}
-              onClick={() => setToggleReplies(!toggleReplies)}
-              variant='text'
-              color='primary'
-              disableRipple={true}
-              disableElevation={true}
-              disableFocusRipple={true}
-              startIcon={toggleReplies ? <ArrowDropUpIcon/> : <ArrowDropDownIcon/>}>
-        {toggleReplies ? 'Hide' : 'View'} {comment.commentCount} replies
-      </Button>
+      {comment.commentCount > 0 &&
+        <Button className={classes.button}
+                onClick={() => setToggleReplies(!toggleReplies)}
+                variant='text'
+                color='primary'
+                disableRipple={true}
+                disableElevation={true}
+                disableFocusRipple={true}
+                startIcon={toggleReplies ? <ArrowDropUpIcon/> : <ArrowDropDownIcon/>}>
+          {toggleReplies ? 'Hide' : 'View'} {comment.commentCount} replies
+        </Button>
+      }
+
     </Box>
     {toggleReplies && <PostDetailedReplies commentId={comment.id} replies={replies}
                                            setReplies={setReplies}/>}
