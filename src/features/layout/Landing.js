@@ -1,19 +1,14 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import red from '@material-ui/core/colors/red';
 import { isEmpty, isLoaded, useFirebase, useFirestore } from 'react-redux-firebase';
-import { Redirect, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Container } from '@material-ui/core';
-import Paper from '@material-ui/core/Paper';
 import bgImage from './darkblueBg.jpg';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { useSelector } from 'react-redux';
-import Spinner from '../../app/common/util/Spinner';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -56,12 +51,10 @@ const Landing = ({ theme }) => {
         createdAt: firestore.FieldValue.serverTimestamp(),
       })
     }
-        history.push("/feed");
-
+    return user;
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const handleLogin = async () => {
     await signInWithGoogle();
   }
 
@@ -76,7 +69,7 @@ const Landing = ({ theme }) => {
         </Box>
         <Typography variant='h6' paragraph>Connect with your friends and share your story.</Typography>
         <Box mt={3}>
-          <Button variant='outlined' className={classes.button} size="large" onClick={handleLogin}>Login with Google</Button>
+          <Button variant='outlined' className={classes.button} size="large" onClick={() => handleLogin()}>Login with Google</Button>
         </Box>
       </Container>
     </div>

@@ -30,10 +30,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const UserDetailedHeader = ({ theme, user, userId }) => {
+const UserDetailedHeader = ({ theme, user }) => {
   const classes = useStyles(theme);
 
-  const {displayName, avatarUrl, profession, company, location, bio, website, createdAt } = user;
+  const { displayName, avatarUrl, profession, company, location, bio, website, createdAt } = user;
 
   return (
     <Box mb={3}>
@@ -47,17 +47,18 @@ const UserDetailedHeader = ({ theme, user, userId }) => {
             <Typography variant="h4">
               {displayName}
             </Typography>
-            {<Typography variant="h6" gutterBottom={true}>
+            {profession && company && <Typography variant="h6" gutterBottom={true}>
               {profession} at {company}
             </Typography>}
-              <Box my={1.5}>
-                <Button size='medium' fullWidth={false} variant='contained'
-                        color='secondary'>+ Follow</Button>
-              </Box>
+            <Box my={1.5}>
+              <Button size='medium' fullWidth={false} variant='contained'
+                      color='secondary'>+ Follow</Button>
+            </Box>
             <Typography variant="body1" gutterBottom={true}>
               {bio}
             </Typography>
-            <UserDetailedHeaderInfo location={location} website={website} createdAt={createdAt}/>
+            <UserDetailedHeaderInfo location={location} website={website}
+                                    createdAt={createdAt}/>
             <Box mt={1}>
               <Box component='span' mr={2}>
                 <Typography color="secondary" display="inline" variant="body1">

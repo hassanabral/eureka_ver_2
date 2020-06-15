@@ -23,7 +23,7 @@ const UserDetailedHeaderInfo = ({ theme, location, website, createdAt}) => {
 
   return (
     <div className={classes.root}>
-      {<Box component='span' mr={2.5}>
+      {location && <Box component='span' mr={2.5}>
         <Typography variant="body2" display="inline"
                     gutterBottom={true}>
           <LocationOnOutlinedIcon color="action" className={classes.icon}
@@ -31,7 +31,7 @@ const UserDetailedHeaderInfo = ({ theme, location, website, createdAt}) => {
           {location}
         </Typography>
       </Box>}
-      {<Box component='span' mr={2.5}>
+      {website && <Box component='span' mr={2.5}>
 
        <Typography variant="body2" display="inline"
                     gutterBottom={true}>

@@ -15,7 +15,6 @@ import UserDetailedPage from './features/user/UserDetailed/UserDetailedPage';
 import UsersPage from './features/user/UsersPage/UsersPage';
 import AddPost from './features/post/postForm/AddPost';
 import PostDetailed from './features/post/postDetailed/PostDetailed';
-import EditPost from './features/post/postForm/EditPost';
 import Dashboard from './features/dashboard/Dashboard';
 import Bookmarks from './features/post/bookmarks/Bookmarks';
 import TagsPage from './features/post/tag/TagsPage';
@@ -104,7 +103,8 @@ function App () {
                         <PrivateRoute exact path = "/edit-profile">
                           <SettingsPage/>
                         </PrivateRoute>
-                        <PrivateRoute exact path = "/feed">
+                        {/*<Route exact path='/feed' component={FeedsPage}/>*/}
+                        <PrivateRoute exact path="/feed">
                           <FeedsPage/>
                         </PrivateRoute>
                         <PrivateRoute exact path='/posts/add' >

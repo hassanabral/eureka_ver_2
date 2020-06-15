@@ -24,6 +24,7 @@ const useStyles = makeStyles(theme => ({
 
 const UserDetailedPageBody = ({ theme, sectionTitle, posts }) => {
   const classes = useStyles(theme);
+  const isBookmarkPage = sectionTitle === 'Bookmarks';
 
   return (
     <Fragment>
@@ -36,14 +37,20 @@ const UserDetailedPageBody = ({ theme, sectionTitle, posts }) => {
         </Box>
         <List className={classes.root}>
           {
-            posts.length > 0 && posts.map(post =>
+            posts.length > 0 ? posts.map(post =>
               <FeedCard
                 key={post.id}
                 post={post}
                 elevateCard={false}
                 marginY={0}
                 dividerBottom={true}
-              />)
+              />) : (
+              <Box mt={1}>
+                {!isBookmarkPage && <Typography>
+                  User hasn't written any posts.
+                </Typography>}
+              </Box>
+            )
           }
 
         </List>

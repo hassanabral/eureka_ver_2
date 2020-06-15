@@ -6,8 +6,6 @@ import UserDetailedSidebar from './UserDetailedSidebar';
 import UserDetailedPageBody from './UserDetailedPageBody';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
-import AuthIsLoaded from '../../../app/common/util/AuthIsLoaded';
-import Spinner from '../../../app/common/util/Spinner';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -38,7 +36,7 @@ const UserDetailedPage = ({ theme, match: { params } }) => {
   const user = useSelector((state) => (state.firestore.data.userProfile));
   const userPosts = useSelector((state) => (state.firestore.ordered.userPosts));
 
-  const userFirstName = user?.displayName.substr(0, user.displayName.indexOf(' '));
+  const userFirstName = user?.displayName?.substr(0, user.displayName.indexOf(' '));
 
   return (
     <Fragment>

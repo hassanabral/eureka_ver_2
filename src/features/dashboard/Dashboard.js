@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from 'react';
+import React, { Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
@@ -13,6 +13,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import { Link as RouterLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useFirestoreConnect } from 'react-redux-firebase';
+import Link from '@material-ui/core/Link';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -44,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 const Dashboard = ({ theme }) => {
   const classes = useStyles(theme);
 
-  const { displayName, uid} = useSelector((state) => state.firebase.auth);
+  const { displayName, uid } = useSelector((state) => state.firebase.auth);
 
   const dashboardPostsQuery = {
     collection: 'posts',
@@ -95,14 +96,20 @@ const Dashboard = ({ theme }) => {
         <Divider/>
       </Box>
       {
-        dashboardPosts?.length > 0 && <List className={classes.root}>
+        dashboardPosts?.length > 0 ? (<List className={classes.root}>
           <Grid container>
             {
               dashboardPosts.map(post => <DashboardPostCard key={post.id} post={post}/>)
             }
           </Grid>
 
-        </List>
+        </List>) : <Box mt={2}>
+          <Typography>
+            You have't written any posts. Click <Link component={RouterLink}
+                                                      to='/posts/add'>here</Link> to create
+            a post.
+          </Typography>
+        </Box>
       }
 
     </Card>

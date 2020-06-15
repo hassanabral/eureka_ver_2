@@ -43,9 +43,9 @@ const UserCard = ({ theme, user }) => {
             </Grid>
             <Grid item md={12}>
               <Link variant='h5' color="secondary" component={RouterLink} to={`/users/${user.id}`}>{user.displayName}</Link>
-              <Typography variant="body1" gutterBottom={true}>
+              {user.profession && user.company && <Typography variant="body1" gutterBottom={true}>
                 {user.profession} at {user.company}
-              </Typography>
+              </Typography>}
               <Typography variant="body2" gutterBottom={true} >
                 {user.bio}
               </Typography>
