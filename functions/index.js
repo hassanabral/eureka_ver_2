@@ -6,7 +6,7 @@ const FieldValue = admin.firestore.FieldValue;
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
-exports.incrementLikeCount =
+exports.incrementPostLikeCount =
   functions.firestore.document('likes/{likeId}').onCreate(like => {
     const newLike = like.data();
     const postId = newLike.postId;
@@ -18,7 +18,7 @@ exports.incrementLikeCount =
       .update({ likeCount: FieldValue.increment(1) });
   });
 
-exports.decrementLikeCount =
+exports.decrementPostLikeCount =
   functions.firestore.document('likes/{likeId}').onDelete(like => {
     const newLike = like.data();
     const postId = newLike.postId;
@@ -83,3 +83,33 @@ exports.incrementCommentCountLvl4 =
           `posts/${postId}/comments/${commentId1}/comments/${commentId2}/comments/${commentId3}`)
         .update({ commentCount: FieldValue.increment(1) });
     });
+
+exports.incrementCommentLikeCount =
+  functions.firestore.document('likesComment/{likeId}').onCreate(like => {
+    const newLike = like.data();
+    const commentId = newLike.commentId;
+
+    return admin
+      .firestore()
+      .collectionGroup('comments')
+      .where('id', '==', commentId)
+      .get()
+      .then((querySnapshot) =>
+        querySnapshot.docs[0].ref.update({ likeCount: FieldValue.increment(1) })
+      )
+  });
+
+exports.decrementCommentLikeCount =
+  functions.firestore.document('likesComment/{likeId}').onDelete(like => {
+    const newLike = like.data();
+    const commentId = newLike.commentId;
+
+    return admin
+      .firestore()
+      .collectionGroup('comments')
+      .where('id', '==', commentId)
+      .get()
+      .then((querySnapshot) =>
+        querySnapshot.docs[0].ref.update({ likeCount: FieldValue.increment(-1) })
+      )
+  });

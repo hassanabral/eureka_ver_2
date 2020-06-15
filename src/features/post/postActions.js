@@ -67,6 +67,46 @@ export const likeOrUnlike = ({ firebase, firestore }, postId) => {
   };
 };
 
+export const likeOrUnlikeComment = ({ firebase, firestore }, commentId) => {
+  return async (dispatch, getState) => {
+    const {uid} = getState().firebase.auth;
+    const likeId = `${uid}_${commentId}`;
+    try {
+      const likeRef = await firestore.collection('likesComment').doc(likeId);
+      likeRef.get()
+        .then((docSnapshot) => {
+          if (docSnapshot.exists) {
+            likeRef.delete();
+          } else {
+            likeRef.set({
+              userId: uid,
+              commentId
+            });
+          }
+        });
+    } catch (error) {
+      console.log('error', error);
+      toastr.error('Oops', 'Something went wrong');
+    }
+  };
+};
+
+export const toggleLikeComment = (firestore, commentId, setLike) => {
+  return async (dispatch, getState) => {
+    const {uid} = getState().firebase.auth;
+    const likeId = `${uid}_${commentId}`;
+    try {
+      firestore.collection('likesComment').doc(likeId).onSnapshot((likeSnapShot) => {
+        const alreadyLiked = likeSnapShot.exists;
+        setLike(alreadyLiked);
+      })
+    } catch (error) {
+      console.log('err', error);
+      toastr.error('Oops', 'Something went wrong');
+    }
+  };
+};
+
 export const toggleLike = (firestore, postId, setLike) => {
   return async (dispatch, getState) => {
     const {uid} = getState().firebase.auth;

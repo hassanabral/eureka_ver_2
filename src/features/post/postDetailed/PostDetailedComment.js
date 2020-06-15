@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -18,9 +18,15 @@ import PostDetailedReplyForm from './PostDetailedReplyForm';
 import PostDetailedReplies from './PostDetailedReplies';
 import moment from 'moment';
 import ReactHtmlParser from 'react-html-parser';
-import { deleteComment, deletePost } from '../postActions';
-import { isEmpty, isLoaded, useFirestore } from 'react-redux-firebase';
-import { useSelector } from 'react-redux';
+import {
+  deleteComment,
+  deletePost,
+  likeOrUnlike, likeOrUnlikeComment,
+  toggleLike,
+  toggleLikeComment
+} from '../postActions';
+import { isEmpty, isLoaded, useFirebase, useFirestore } from 'react-redux-firebase';
+import { useDispatch, useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -37,7 +43,8 @@ const useStyles = makeStyles(theme => ({
     marginRight: '4px'
   },
   button: {
-    paddingBottom: 0
+    paddingBottom: 0,
+    cursor: 'pointer'
   }
 }));
 
@@ -48,13 +55,34 @@ const PostDetailedComment = ({ theme, comment, commentOrReply = 'comment', showR
   const [replies, setReplies] = useState([]);
   const firestore = useFirestore();
 
+  // new - start
+  const [like, setLike] = useState();
+  const [likeCountState, setLikeCountState] = useState(comment.likeCount);
+
+  const dispatch = useDispatch();
+  const firebase = useFirebase();
+
+  useEffect(() => {
+    dispatch(toggleLikeComment(firestore, comment.id, setLike));
+  }, [comment.id]);
+
+  const handleOnLike = () => {
+    dispatch(likeOrUnlikeComment({ firebase, firestore }, comment.id));
+    if(like) {
+      setLikeCountState(likeCountState - 1);
+    } else {
+      setLikeCountState(likeCountState + 1);
+    }
+  }
+  // new - end
+
   const auth = useSelector(state => state.firebase.auth);
   const isAuthenticated = isLoaded(auth) && !isEmpty(auth);
   const isAuthenticatedUser = comment?.authorId === auth?.uid;
 
   const isReply = commentOrReply === 'reply';
 
-  const buttonColor = 'gray';
+  const likeButtonColor = like ? 'red' : 'grey';
 
   const classes = useStyles(theme);
 
@@ -97,11 +125,11 @@ const PostDetailedComment = ({ theme, comment, commentOrReply = 'comment', showR
     <Box mb={1}>
       <Box mb={0} mr={2} component='span'>
         <Typography mb={0} variant="body2" display="inline" gutterBottom={true}>
-          <Link mb={0} className={classes.button}
-                style={{ color: `${buttonColor}` }}>
-            <FavoriteIcon style={{ color: `${buttonColor}` }}
+          <Link onClick={handleOnLike} mb={0} className={classes.button}
+                style={{ color: `${likeButtonColor}` }}>
+            <FavoriteIcon style={{ color: `${likeButtonColor}` }}
                           className={classes.icon} fontSize='small'/>
-            {comment.likeCount}
+            {likeCountState}
           </Link>
         </Typography>
       </Box>
