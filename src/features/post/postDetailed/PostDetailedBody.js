@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -12,10 +12,14 @@ import moment from 'moment';
 import ReactHtmlParser from 'react-html-parser';
 import EditIcon from '@material-ui/icons/Edit';
 import FeedCardButtons from '../feed/FeedCardButtons';
-import { deletePost } from '../postActions';
+import {
+  deletePost,
+  savePost,
+  toggleBookmark,
+} from '../postActions';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import { useFirestore } from 'react-redux-firebase';
+import { useFirebase, useFirestore } from 'react-redux-firebase';
 import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
@@ -42,6 +46,19 @@ const PostDetailedBody = ({ theme, post, isAuthenticated, isAuthenticatedUser })
   const dispatch = useDispatch();
 
   const {id} = useParams();
+
+  const [saved, setSaved] = useState();
+
+  const firebase = useFirebase();
+
+  useEffect(() => {
+    dispatch(toggleBookmark(firestore, id, setSaved));
+  }, [id]);
+
+  const handleOnSave = () => {
+    dispatch(savePost({ firebase, firestore }, id));
+  }
+
   return (
     <Fragment>
       <Box mb={3}>
@@ -80,12 +97,13 @@ const PostDetailedBody = ({ theme, post, isAuthenticated, isAuthenticatedUser })
               </ButtonGroup>
             ) : (
               <Button
+                onClick={handleOnSave}
                 variant="outlined"
                 color="primary"
                 size='small'
                 startIcon={<BookmarkIcon/>}
               >
-                Save
+                {!saved ? 'Save' : 'Unsave'}
               </Button>
             )
             }

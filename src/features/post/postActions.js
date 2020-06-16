@@ -1,5 +1,7 @@
 import { toastr } from 'react-redux-toastr';
 import { reset } from 'redux-form';
+import { readIds } from '../../app/common/util/helpers';
+import { GET_BOOKMARKS, ADD_BOOKMARK, REMOVE_BOOKMARK } from './postSlice';
 
 export const createPost = ({ firebase, firestore }, newPost) => {
   return async (dispatch, getState) => {
@@ -62,6 +64,70 @@ export const likeOrUnlike = ({ firebase, firestore }, postId) => {
         });
     } catch (error) {
       console.log('error', error);
+      toastr.error('Oops', 'Something went wrong');
+    }
+  };
+};
+
+export const savePost = ({ firebase, firestore }, postId) => {
+  return async (dispatch, getState) => {
+    const { uid } = getState().firebase.auth;
+    const bookmarkId = `${uid}_${postId}`;
+    try {
+      const bookmarkRef = firestore.collection('bookmarks').doc(bookmarkId);
+      const bookmarkSnapshot = await bookmarkRef.get();
+      const bookmarkExists = bookmarkSnapshot.exists;
+
+      if (bookmarkExists) {
+        bookmarkRef.delete();
+        dispatch(REMOVE_BOOKMARK(postId));
+        toastr.success('Success!', 'Post is removed from your bookmarks.');
+      } else {
+        bookmarkRef.set({
+          userId: uid,
+          postId
+        });
+        const postRef = await firestore.collection('posts').doc(postId).get();
+        dispatch(ADD_BOOKMARK(postRef.data()));
+        toastr.success('Success!', 'Post is saved to your bookmarks.');
+      }
+
+    } catch (error) {
+      console.log('error', error);
+      toastr.error('Oops', 'Something went wrong');
+    }
+  };
+};
+
+export const toggleBookmark = (firestore, postId, setSaved) => {
+  return async (dispatch, getState) => {
+    const { uid } = getState().firebase.auth;
+    const bookmarkId = `${uid}_${postId}`;
+    try {
+      firestore.collection('bookmarks').doc(bookmarkId).onSnapshot((bookmarkSnapShot) => {
+        const alreadySaved = bookmarkSnapShot.exists;
+        setSaved(alreadySaved);
+      });
+    } catch (error) {
+      console.log('err', error);
+      toastr.error('Oops', 'Something went wrong');
+    }
+  };
+};
+
+export const getBookmarks = (firestore) => {
+  return async (dispatch, getState) => {
+    const { uid } = getState().firebase.auth;
+
+    try {
+      const bookmarksRef = await firestore.collection('bookmarks')
+        .where('userId', '==', uid).get();
+      const postIds = bookmarksRef.docs.map(doc => doc.data().postId);
+      const bookmarks = await readIds(firestore.collection('posts'), postIds);
+      dispatch(GET_BOOKMARKS(bookmarks));
+      console.log({ bookmarks });
+    } catch (error) {
+      console.log('err', error);
       toastr.error('Oops', 'Something went wrong');
     }
   };

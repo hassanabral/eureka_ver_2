@@ -1,6 +1,6 @@
 export const truncate = (str, len) => {
   if( str.length > 0 && str.length > len) {
-    let new_str = str + " ";
+    let new_str;
     new_str = str.substr(0, len);
     new_str = str.substr(0, new_str.lastIndexOf(" "));
     new_str = (new_str.length > 0) ? new_str : str.substr(0, len);
@@ -26,3 +26,16 @@ export const getHashtags = input => {
     return temp.replace('#', '');
   })
 }
+
+// Helper: Reads an array of IDs from a collection concurrently
+export const readIds = async (collection, ids) => {
+  const reads = ids.map(id => collection.doc(id).get() );
+  const result = await Promise.all(reads);
+  return result.map(v => {
+    return {
+      id: v.id,
+      ...v.data()
+    }
+  });
+}
+

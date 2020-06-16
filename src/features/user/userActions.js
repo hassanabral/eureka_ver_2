@@ -1,6 +1,5 @@
 import { toastr } from 'react-redux-toastr';
-import firebase from '../../app/firebase';
-import { useSelector } from 'react-redux';
+import {GET_USERS} from './userSlice';
 
 export const updateProfile = ({ firebase }, formData, history, uid) => {
   return async (dispatch) => {
@@ -9,6 +8,19 @@ export const updateProfile = ({ firebase }, formData, history, uid) => {
       await firebase.updateProfile(updatedUser);
       dispatch(() => toastr.success('Success', 'Your profile has been updated'));
       history.push(`/users/${uid}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+export const getUsers = (firestore) => {
+  return async (dispatch) => {
+    const usersCollection = firestore.collection('users').orderBy('createdAt', 'desc');
+    try {
+      const usersRef = await usersCollection.get();
+      const users = usersRef.docs.map(doc => ({id: doc.id, ...doc.data()}));
+      dispatch(GET_USERS(users));
     } catch (error) {
       console.log(error);
     }

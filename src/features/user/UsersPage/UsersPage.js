@@ -5,8 +5,9 @@ import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import { Card, Box, Grid } from '@material-ui/core';
 import UserCard from './UserCard';
-import { useFirestoreConnect } from 'react-redux-firebase';
-import { useSelector } from 'react-redux';
+import { useFirestore } from 'react-redux-firebase';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUsers } from '../userActions';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,16 +27,19 @@ const useStyles = makeStyles(theme => ({
 
 const UsersPage = ({ theme }) => {
   const classes = useStyles(theme);
+  const firestore = useFirestore();
+  const dispatch = useDispatch();
 
-  const usersQuery = {
-    collection: 'users',
-    orderBy: ['createdAt', 'desc'],
-    storeAs: 'users'
-  };
+  const users = useSelector(state => state.user.users);
 
-  useFirestoreConnect(usersQuery);
-
-  const users = useSelector((state) => state.firestore.ordered.users);
+  useEffect( () => {
+    const handleGetUsers= async () => {
+      await dispatch(getUsers(firestore));
+    }
+    if(!users) {
+      handleGetUsers();
+    }
+  }, [firestore, dispatch, users]);
 
   return (
     <Fragment>
