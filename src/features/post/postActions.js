@@ -88,7 +88,7 @@ export const savePost = ({ firebase, firestore }, postId) => {
           postId
         });
         const postRef = await firestore.collection('posts').doc(postId).get();
-        dispatch(ADD_BOOKMARK(postRef.data()));
+        dispatch(ADD_BOOKMARK({id: postRef.id, ...postRef.data()}));
         toastr.success('Success!', 'Post is saved to your bookmarks.');
       }
 
