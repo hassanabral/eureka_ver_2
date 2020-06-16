@@ -9,6 +9,8 @@ import Button from '@material-ui/core/Button';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
 import Spinner from '../../../app/common/util/Spinner';
+import { Link as RouterLink } from 'react-router-dom';
+import Link from '@material-ui/core/Link';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -42,13 +44,14 @@ const PostDetailedSidebarRight = ({ theme, authorId }) => {
     <Fragment>
       <Grid container className={classes.root} spacing={2}>
         <Grid item>
-          <Avatar className={classes.profile} alt={user.displayName}
+          <Avatar component={RouterLink}
+                  to={`/users/${authorId}`}
+                  className={classes.profile} alt={user.displayName}
                   src={user.avatarUrl}/>
         </Grid>
         <Grid item md={12}>
-          <Typography variant="h4">
-            {user.displayName}
-          </Typography>
+          <Link variant='h4' color="secondary" component={RouterLink}
+                to={`/users/${authorId}`}>{user.displayName}</Link>
           <Typography variant="h6" gutterBottom={true}>
             {user.profession} at {user.company}
           </Typography>
