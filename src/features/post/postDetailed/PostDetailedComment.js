@@ -11,7 +11,6 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import PostDetailedReplyForm from './PostDetailedReplyForm';
@@ -20,9 +19,7 @@ import moment from 'moment';
 import ReactHtmlParser from 'react-html-parser';
 import {
   deleteComment,
-  deletePost,
-  likeOrUnlike, likeOrUnlikeComment,
-  toggleLike,
+  likeOrUnlikeComment,
   toggleLikeComment
 } from '../postActions';
 import { isEmpty, isLoaded, useFirebase, useFirestore } from 'react-redux-firebase';
@@ -68,12 +65,12 @@ const PostDetailedComment = ({ theme, comment, commentOrReply = 'comment', showR
 
   const handleOnLike = () => {
     dispatch(likeOrUnlikeComment({ firebase, firestore }, comment.id));
-    if(like) {
+    if (like) {
       setLikeCountState(likeCountState - 1);
     } else {
       setLikeCountState(likeCountState + 1);
     }
-  }
+  };
   // new - end
 
   const auth = useSelector(state => state.firebase.auth);
@@ -147,16 +144,16 @@ const PostDetailedComment = ({ theme, comment, commentOrReply = 'comment', showR
                            commentId={comment.id} setToggleReplies={setToggleReplies}/>}
     <Box mb={0}>
       {comment.commentCount > 0 &&
-        <Button className={classes.button}
-                onClick={() => setToggleReplies(!toggleReplies)}
-                variant='text'
-                color='primary'
-                disableRipple={true}
-                disableElevation={true}
-                disableFocusRipple={true}
-                startIcon={toggleReplies ? <ArrowDropUpIcon/> : <ArrowDropDownIcon/>}>
-          {toggleReplies ? 'Hide' : 'View'} {comment.commentCount} replies
-        </Button>
+      <Button className={classes.button}
+              onClick={() => setToggleReplies(!toggleReplies)}
+              variant='text'
+              color='primary'
+              disableRipple={true}
+              disableElevation={true}
+              disableFocusRipple={true}
+              startIcon={toggleReplies ? <ArrowDropUpIcon/> : <ArrowDropDownIcon/>}>
+        {toggleReplies ? 'Hide' : 'View'} {comment.commentCount} replies
+      </Button>
       }
 
     </Box>

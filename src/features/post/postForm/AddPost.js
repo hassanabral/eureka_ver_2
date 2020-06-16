@@ -59,10 +59,10 @@ const AddPost = ({ theme, handleSubmit, invalid, submitting }) => {
   };
 
   return (
-    <Grid container className={classes.root} spacing={5}>
+    <Grid container className={classes.root} >
       <Grid item lg={8} sm={12}>
         <Card className={classes.card}>
-          <Typography variant='h3'>Create Post</Typography>
+          <Typography variant='h4'>Create Post</Typography>
           <Typography variant='subtitle1'>What is on your mind?</Typography>
           <form onSubmit={handleSubmit(handleCreatePost)}>
             <Box mb={1}>
@@ -113,10 +113,7 @@ const AddPost = ({ theme, handleSubmit, invalid, submitting }) => {
               <Button disabled={invalid || submitting}  type='submit' variant='outlined' color='primary' fullWidth={true}>Submit {submitting && <Box ml={1.5} mb={-0.7}><CircularProgress size={20}/></Box>}</Button>
             </Box>
           </form>
-
         </Card>
-      </Grid>
-      <Grid item lg={4} sm={12}>
       </Grid>
     </Grid>
   )

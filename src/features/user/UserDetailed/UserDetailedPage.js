@@ -2,7 +2,6 @@ import React, { Fragment, useMemo } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import UserDetailedHeader from './UserDetailedHeader';
-import UserDetailedSidebar from './UserDetailedSidebar';
 import UserDetailedPageBody from './UserDetailedPageBody';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
@@ -40,7 +39,7 @@ const UserDetailedPage = ({ theme, match: { params } }) => {
 
   return (
     <Fragment>
-      <Grid container className={classes.root} spacing={5}>
+      <Grid container className={classes.root}>
         <Grid item lg={8} sm={12}>
           <Grid container className={classes.root}>
             <Grid item sm={12}>
@@ -50,9 +49,6 @@ const UserDetailedPage = ({ theme, match: { params } }) => {
               {userFirstName && userPosts && <UserDetailedPageBody posts={userPosts} sectionTitle={`${userFirstName}'s Posts`}/>}
             </Grid>
           </Grid>
-        </Grid>
-        <Grid item lg={4} sm={12}>
-          <UserDetailedSidebar/>
         </Grid>
       </Grid>
     </Fragment>);

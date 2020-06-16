@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect } from 'react';
+import React, { Fragment, useCallback } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -66,7 +66,7 @@ const EditProfile = ({ theme, handleSubmit, pristine, invalid, submitting }) => 
   const handleUpdateProfile = useCallback(
     (formData) => {
       return dispatch(updateProfile({firebase}, formData, history, uid))
-    }, [firebase, dispatch]
+    }, [firebase, dispatch, history, uid]
   );
 
   const classes = useStyles(theme);
@@ -75,10 +75,10 @@ const EditProfile = ({ theme, handleSubmit, pristine, invalid, submitting }) => 
 
   return loading ? (<Spinner/>) : (
     <Fragment>
-      <Grid container className={classes.root} spacing={5}>
+      <Grid container className={classes.root}>
         <Grid item lg={8} sm={12}>
           <Card className={classes.card}>
-            <Typography variant='h3'>Edit Profile</Typography>
+            <Typography variant='h4'>Edit Profile</Typography>
             <Typography variant='subtitle1'>
               <PersonIcon className={classes.icon}/>
               Let's get some information to make your profile stand out</Typography>

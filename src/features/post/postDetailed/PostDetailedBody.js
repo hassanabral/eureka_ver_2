@@ -62,7 +62,7 @@ const PostDetailedBody = ({ theme, post, isAuthenticated, isAuthenticatedUser })
   return (
     <Fragment>
       <Box mb={3}>
-        <Typography variant='h3'>{post.title}</Typography>
+        <Typography variant='h4'>{post.title}</Typography>
       </Box>
       <Box mb={2}>
         <Grid container spacing={2}>

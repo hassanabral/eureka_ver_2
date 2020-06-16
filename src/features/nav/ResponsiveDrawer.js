@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Divider from '@material-ui/core/Divider';
@@ -11,21 +11,19 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
-import { fade, makeStyles, useTheme } from '@material-ui/core/styles';
-import DashboardIcon from '@material-ui/icons/Dashboard';
+import { fade, makeStyles} from '@material-ui/core/styles';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
-import NoteIcon from '@material-ui/icons/Note';
 import DashboardOutlinedIcon from '@material-ui/icons/DashboardOutlined';
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Button from '@material-ui/core/Button';
-import Link from '@material-ui/core/Link'
+import Link from '@material-ui/core/Link';
 import { Link as RouterLink, useHistory, withRouter } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import AddIcon from '@material-ui/icons/Add';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
-import { connect, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Avatar from '@material-ui/core/Avatar';
 import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
@@ -33,6 +31,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import { useFirebase } from 'react-redux-firebase';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import BottomNavigationBar from './BottomNavigationBar';
 
 const useStyles = makeStyles(theme => {
   const drawerWidth = 400;
@@ -48,7 +48,6 @@ const useStyles = makeStyles(theme => {
       [theme.breakpoints.up('md')]: {
         marginLeft: `calc(${drawerWidth}px - 50%)`
       },
-
 
     },
     drawer: {
@@ -71,6 +70,21 @@ const useStyles = makeStyles(theme => {
         width: `calc(100% - ${drawerWidth}px)`,
         marginLeft: drawerWidth,
       }
+    },
+    appBarBottom: {
+      top: 'auto',
+      bottom: 0,
+    },
+    grow: {
+      flexGrow: 1,
+    },
+    fabButton: {
+      position: 'absolute',
+      zIndex: 1,
+      top: -30,
+      left: 0,
+      right: 0,
+      margin: '0 auto',
     },
     menuButton: {
       marginRight: theme.spacing(2),
@@ -153,9 +167,18 @@ const useStyles = makeStyles(theme => {
       textTransform: 'capitalize',
       fontSize: '1rem'
     },
-}});
+  };
+});
 
-function ResponsiveDrawer({ ...props}) {
+function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
+
+function ResponsiveDrawer ({ ...props }) {
 
   const history = useHistory();
   const firebase = useFirebase();
@@ -164,8 +187,9 @@ function ResponsiveDrawer({ ...props}) {
     firebase.auth().signOut().then(() => {
       history.push('/');
     });
-
   };
+
+  const isMobileScreen = useMediaQuery('(max-width:600px)');
 
   const auth = useSelector(state => state.firebase.auth, []);
   const isAuthenticated = auth.isLoaded && !auth.isEmpty;
@@ -173,6 +197,7 @@ function ResponsiveDrawer({ ...props}) {
   const { container } = props;
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [botNavValue, setBotNavValue] = React.useState(0);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -185,8 +210,13 @@ function ResponsiveDrawer({ ...props}) {
     setAnchorEl(null);
   };
 
+  const prevBotNavValue = usePrevious(botNavValue);
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+    if(mobileOpen) {
+      setBotNavValue(prevBotNavValue);
+    }
   };
 
   const footer = (
@@ -194,27 +224,29 @@ function ResponsiveDrawer({ ...props}) {
       position: 'absolute',
       bottom: '25px',
     }}>
-      <Typography >Created with ❤️ by <Link href="https://github.com/hassanyakef" target='_blank'>Hassan Yakefujiang</Link></Typography>
+      <Typography>Created with ❤️ by <Link href="https://github.com/hassanyakef"
+                                           target='_blank'>Hassan
+        Yakefujiang</Link></Typography>
     </Box>
   );
 
   const authenticatedMenu = (
     <div className={classes.outerDiv}>
-      <div className={classes.toolbar} />
+      <div className={classes.toolbar}/>
       <List>
-        <ListItem button key={'Home'} component={RouterLink} to="/feed">
+        <ListItem onClick={() => setBotNavValue(0)} button key={'Home'} component={RouterLink} to="/feed">
           <ListItemIcon>
             <HomeOutlinedIcon/>
           </ListItemIcon>
           <ListItemText primary={'Home'}/>
         </ListItem>
-        <ListItem button key={'Dashboard'} component={RouterLink} to="/dashboard">
+        <ListItem onClick={() => setBotNavValue(2)} button key={'Dashboard'} component={RouterLink} to="/dashboard">
           <ListItemIcon>
             <DashboardOutlinedIcon/>
           </ListItemIcon>
           <ListItemText primary={'Dashboard'}/>
         </ListItem>
-        <ListItem button key={'Tags'}  component={RouterLink} to="/tags">
+        <ListItem button key={'Tags'} component={RouterLink} to="/tags">
           <ListItemIcon>
             <LabelOutlinedIcon/>
           </ListItemIcon>
@@ -226,7 +258,7 @@ function ResponsiveDrawer({ ...props}) {
           </ListItemIcon>
           <ListItemText primary={'Users'}/>
         </ListItem>
-        <ListItem button key={'Bookmarks'}  component={RouterLink} to="/bookmarks">
+        <ListItem button key={'Bookmarks'} component={RouterLink} to="/bookmarks">
           <ListItemIcon>
             <BookmarkBorderIcon/>
           </ListItemIcon>
@@ -246,13 +278,14 @@ function ResponsiveDrawer({ ...props}) {
         </ListItem>
         <Box ml={1} mt={1} mb={2}>
           <Button
+            onClick={() => setBotNavValue(1)}
             component={RouterLink}
             to="/posts/add"
             variant="contained"
             color="primary"
             size='large'
             className={classes.addIdeaButton}
-            startIcon={<AddIcon />}
+            startIcon={<AddIcon/>}
           >
             Add Post
           </Button>
@@ -261,7 +294,7 @@ function ResponsiveDrawer({ ...props}) {
       <Divider/>
       <List>
         <ListItem button key={'Logout'} onClick={handleLogout}>
-          <ListItemIcon >
+          <ListItemIcon>
             <ExitToAppIcon/>
           </ListItemIcon>
           <ListItemText primary={'Logout'}/>
@@ -273,9 +306,9 @@ function ResponsiveDrawer({ ...props}) {
 
   const unAuthenticatedMenu = (
     <div className={classes.outerDiv}>
-      <div className={classes.toolbar} />
+      <div className={classes.toolbar}/>
       <List>
-        <ListItem button key={'Tags'}  component={RouterLink} to="/tags">
+        <ListItem button key={'Tags'} component={RouterLink} to="/tags">
           <ListItemIcon>
             <LabelOutlinedIcon/>
           </ListItemIcon>
@@ -290,16 +323,17 @@ function ResponsiveDrawer({ ...props}) {
     <Fragment>
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
-          <IconButton
+          {!isMobileScreen && <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
             className={classes.menuButton}
           >
-            <MenuIcon />
-          </IconButton>
-          <Link color='inherit' variant='h6' underline='none' component={RouterLink} to='/feed'>Eureka</Link>
+            <MenuIcon/>
+          </IconButton>}
+          <Link color='inherit' variant='h6' underline='none' component={RouterLink}
+                to='/feed'>Eureka</Link>
           <Box className={classes.search}>
           </Box>
 
@@ -311,7 +345,8 @@ function ResponsiveDrawer({ ...props}) {
               aria-haspopup="true"
               onClick={handleMenu}
             >
-              <Avatar className={classes.small} alt={auth?.displayName} src={auth?.photoURL} />
+              <Avatar className={classes.small} alt={auth?.displayName}
+                      src={auth?.photoURL}/>
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -328,9 +363,11 @@ function ResponsiveDrawer({ ...props}) {
               open={open}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose} component={RouterLink} to="/dashboard">Dashboard</MenuItem>
-              <MenuItem onClick={handleClose} component={RouterLink} to={`/users/${auth?.uid}`}>Profile</MenuItem>
-              <MenuItem onClick={handleClose} component={RouterLink} to={`/posts/add`}>Add Post</MenuItem>
+              <MenuItem onClick={handleClose} component={RouterLink}
+                        to={`/users/${auth?.uid}`}>Profile</MenuItem>
+              <MenuItem onClick={handleClose} component={RouterLink}
+                        to="/bookmarks">Bookmarks</MenuItem>
+              <MenuItem onClick={handleClose} component={RouterLink} to={`/edit-profile`}>Setting</MenuItem>
             </Menu>
           </div>}
 
@@ -343,7 +380,7 @@ function ResponsiveDrawer({ ...props}) {
           <Drawer
             container={container}
             variant="temporary"
-            anchor={ 'left'}
+            anchor={'left'}
             open={mobileOpen}
             onClick={handleDrawerToggle}
             onClose={handleDrawerToggle}
@@ -370,6 +407,7 @@ function ResponsiveDrawer({ ...props}) {
           </Drawer>
         </Hidden>
       </nav>
+      {isMobileScreen && <BottomNavigationBar botNavValue={botNavValue} setBotNavValue={setBotNavValue} authUid={auth?.uid} setMobileOpen={setMobileOpen}/>}
     </Fragment>
   );
 }
@@ -382,4 +420,4 @@ ResponsiveDrawer.propTypes = {
   container: PropTypes.instanceOf(typeof Element === 'undefined' ? Object : Element),
 };
 
-export default withRouter(ResponsiveDrawer)
+export default withRouter(ResponsiveDrawer);

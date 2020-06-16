@@ -48,7 +48,6 @@ const FeedCard = ({ theme, elevateCard = true, marginY = 2, dividerBottom = fals
   const isAuthenticated = isLoaded(auth) && !isEmpty(auth);
   const isAuthenticatedUser = post?.authorId === auth?.uid;
   const firestore = useFirestore();
-  const dispatch = useDispatch();
 
   return (
     <Fragment>
@@ -84,10 +83,8 @@ const FeedCard = ({ theme, elevateCard = true, marginY = 2, dividerBottom = fals
                           src={post.authorPhotoURL}/>
                 </Link>
               </Box>
-
-
             </Grid>
-            <Grid item sm={6}>
+            <Grid item xs={6}>
               <Box mt={0.5}>
                 <Link variant='body2' color="secondary" component={RouterLink}
                       to={`/users/${post.authorId}`}>{post.authorName}</Link>
@@ -98,7 +95,7 @@ const FeedCard = ({ theme, elevateCard = true, marginY = 2, dividerBottom = fals
                 </Typography>
               </Box>
             </Grid>
-            <Grid item md={12}>
+            <Grid item xs={12}>
               <Typography variant="body1" paragraph={true}>
                 {renderBody}
                 {isLongText && <Link variant='body1' component={RouterLink}

@@ -14,6 +14,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import Link from '@material-ui/core/Link';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -46,6 +47,7 @@ const Dashboard = ({ theme }) => {
   const classes = useStyles(theme);
 
   const { displayName, uid } = useSelector((state) => state.firebase.auth);
+  const isMobileScreen = useMediaQuery('(max-width:600px)');
 
   const dashboardPostsQuery = {
     collection: 'posts',
@@ -73,7 +75,7 @@ const Dashboard = ({ theme }) => {
           </Typography>
         </Box>
         <Box mt={1.5}>
-          <ButtonGroup aria-label="button group">
+          <ButtonGroup size={isMobileScreen ? "small" : "medium"}  aria-label="button group">
             <Button color='primary' component={RouterLink} to='/edit-profile'
                     startIcon={<AccountCircleIcon/>}>
               Edit Profile

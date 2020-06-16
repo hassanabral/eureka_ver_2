@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -12,10 +12,8 @@ import { combineValidators, isRequired } from 'revalidate';
 import TextInput from '../../../app/common/form/TextInput';
 import SelectInput from '../../../app/common/form/SelectInput';
 import RichEditor from '../../../app/common/form/RichEditor';
-import Spinner from '../../../app/common/util/Spinner';
 import { useDispatch } from 'react-redux';
-import { useFirebase, useFirestore } from 'react-redux-firebase';
-import { updateProfile } from '../../user/userActions';
+import { useFirestore } from 'react-redux-firebase';
 import { updatePost } from '../postActions';
 
 const useStyles = makeStyles(theme => ({
@@ -55,14 +53,14 @@ const EditPost = ({ theme, handleSubmit, pristine, invalid, submitting, postId }
   const handleUpdatePost = useCallback(
     (formData) => {
       return dispatch(updatePost({ firestore }, formData, history, postId));
-    }, [firestore, dispatch]
+    }, [firestore, dispatch, history, postId]
   );
 
   return (
-    <Grid container className={classes.root} spacing={5}>
+    <Grid container className={classes.root}>
       <Grid item lg={8} sm={12}>
         <Card className={classes.card}>
-          <Typography variant='h3'>Edit Post</Typography>
+          <Typography variant='h4'>Edit Post</Typography>
           <Typography variant='subtitle1'>Update and save your post <span
             style={{ visibility: 'hidden' }}>sssssssss</span></Typography>
           <form onSubmit={handleSubmit(handleUpdatePost)}>
