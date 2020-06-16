@@ -311,7 +311,7 @@ function ResponsiveDrawer({ ...props}) {
               aria-haspopup="true"
               onClick={handleMenu}
             >
-              {/*<Avatar className={classes.small} alt={user?.name} src={user?.avatar} />*/}
+              <Avatar className={classes.small} alt={auth?.displayName} src={auth?.photoURL} />
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -329,7 +329,7 @@ function ResponsiveDrawer({ ...props}) {
               onClose={handleClose}
             >
               <MenuItem onClick={handleClose} component={RouterLink} to="/dashboard">Dashboard</MenuItem>
-              <MenuItem onClick={handleClose} component={RouterLink} to={`/users/1`}>Profile</MenuItem>
+              <MenuItem onClick={handleClose} component={RouterLink} to={`/users/${auth?.uid}`}>Profile</MenuItem>
               <MenuItem onClick={handleClose} component={RouterLink} to={`/posts/add`}>Add Post</MenuItem>
             </Menu>
           </div>}

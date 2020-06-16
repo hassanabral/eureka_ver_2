@@ -46,8 +46,10 @@ const UserDetailedPageBody = ({ theme, sectionTitle, posts }) => {
                 dividerBottom={true}
               />) : (
               <Box mt={1}>
-                {!isBookmarkPage && <Typography>
+                {!isBookmarkPage ? <Typography>
                   User hasn't written any posts.
+                </Typography>: <Typography>
+                  You haven't saved any post as bookmark.
                 </Typography>}
               </Box>
             )
