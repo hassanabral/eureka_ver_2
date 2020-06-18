@@ -1,7 +1,10 @@
 import { toastr } from 'react-redux-toastr';
 import { reset } from 'redux-form';
 import { readIds } from '../../app/common/util/helpers';
-import { GET_BOOKMARKS, ADD_BOOKMARK, REMOVE_BOOKMARK } from './postSlice';
+import {
+  GET_BOOKMARKS, ADD_BOOKMARK, REMOVE_BOOKMARK,
+  GET_TAGS, ADD_TAG, GET_POSTS_BY_TAG, SELECT_TAG
+} from './postSlice';
 
 export const createPost = ({ firebase, firestore }, newPost) => {
   return async (dispatch, getState) => {
@@ -9,6 +12,22 @@ export const createPost = ({ firebase, firestore }, newPost) => {
     try {
       const newPostTemp = createNewPost(newPost, user, firestore);
       const newPostFinal = await firestore.collection('posts').add(newPostTemp);
+
+      // add a tag
+      const tagsState = getState().post.tags;
+      if(tagsState && newPostFinal.hashtags) {
+        const currentTags = tagsState.map(tag => tag.name);
+
+        newPostFinal.hashtags.forEach(tag => {
+          if(!currentTags.includes(tag)) {
+            dispatch(ADD_TAG({
+              name: tag,
+              count: 0
+            }))
+          }
+          // TODO: increment the tag count otherwise
+        })
+      }
       toastr.success('Success!', 'Post has been created');
       return newPostFinal;
     } catch (error) {
@@ -88,7 +107,7 @@ export const savePost = ({ firebase, firestore }, postId) => {
           postId
         });
         const postRef = await firestore.collection('posts').doc(postId).get();
-        dispatch(ADD_BOOKMARK({id: postRef.id, ...postRef.data()}));
+        dispatch(ADD_BOOKMARK({ id: postRef.id, ...postRef.data() }));
         toastr.success('Success!', 'Post is saved to your bookmarks.');
       }
 
@@ -307,5 +326,41 @@ const createNewComment = (newCommentData, user, firestore) => {
     authorPhotoURL: photoURL,
     likeCount: 0,
     commentCount: 0
+  };
+};
+
+export const getTags = (firestore) => {
+  return async (dispatch, getState) => {
+
+    try {
+      const tagsRef = await firestore.collection('tags').orderBy('count').get();
+      const tags = tagsRef.docs.map(doc => doc.data());
+      dispatch(GET_TAGS(tags));
+      console.log({ tags });
+    } catch (error) {
+      console.log('err', error);
+      toastr.error('Oops', 'Something went wrong');
+    }
+  };
+};
+
+export const getPostsByTag = (firestore, tagId) => {
+  return async (dispatch, getState) => {
+    try {
+      const postsRef = await firestore.collection('posts')
+        .where('hashtags', 'array-contains', tagId)
+        .where('deleted', '==', false)
+        .orderBy('date', 'desc')
+        .get();
+
+      const posts = postsRef.docs.map(doc => ({id: doc.id, ...doc.data()}));
+      dispatch(SELECT_TAG(tagId));
+      dispatch(GET_POSTS_BY_TAG(posts));
+
+      console.log({ posts });
+    } catch (error) {
+      console.log('err', error);
+      toastr.error('Oops', 'Something went wrong');
+    }
   };
 };

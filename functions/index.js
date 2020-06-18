@@ -96,7 +96,7 @@ exports.incrementCommentLikeCount =
       .get()
       .then((querySnapshot) =>
         querySnapshot.docs[0].ref.update({ likeCount: FieldValue.increment(1) })
-      )
+      );
   });
 
 exports.decrementCommentLikeCount =
@@ -111,5 +111,38 @@ exports.decrementCommentLikeCount =
       .get()
       .then((querySnapshot) =>
         querySnapshot.docs[0].ref.update({ likeCount: FieldValue.increment(-1) })
-      )
+      );
+  });
+
+exports.addTag = functions.firestore.document('posts/{postId}')
+  .onCreate(async (post) => {
+    const postData = post.data();
+    const tags = postData.hashtags;
+
+    if (tags) {
+      const tagsCollectionRef = admin.firestore().collection('tags');
+      const reads = tags.map(async tag => {
+        const tagRef = tagsCollectionRef.doc(tag);
+        const tagData = await tagRef.get();
+        const tagAlreadyExists = tagData.exists;
+
+        if (tagAlreadyExists) {
+          return tagRef.update({
+            count: FieldValue.increment(1)
+          });
+        } else {
+          return tagRef.set({
+            name: tag,
+            count: 0
+          });
+        }
+      });
+
+      return Promise.all(reads).then(results => {
+          return results;
+        }
+      );
+    } else {
+      return null;
+    }
   });
