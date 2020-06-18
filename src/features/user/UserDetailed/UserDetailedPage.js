@@ -24,7 +24,8 @@ const UserDetailedPage = ({ theme, match: { params } }) => {
 
   const userPostQuery = useMemo(() => ({
     collection: 'posts',
-    where: [['authorId', '==', params.id], ['status', '==', 'published']],
+    where: [['authorId', '==', params.id], ['status', '==', 'published'],
+      ['deleted', '==', false]],
     orderBy: ['date', 'desc'],
     storeAs: 'userPosts'
   }), [params.id]);
