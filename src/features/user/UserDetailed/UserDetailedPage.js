@@ -5,10 +5,14 @@ import UserDetailedHeader from './UserDetailedHeader';
 import UserDetailedPageBody from './UserDetailedPageBody';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
+import Loading from '../../../app/common/util/Loading';
 
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
+  },
+  gridItem: {
+    width: '100%'
   }
 }));
 
@@ -41,13 +45,14 @@ const UserDetailedPage = ({ theme, match: { params } }) => {
   return (
     <Fragment>
       <Grid container className={classes.root}>
-        <Grid item lg={8} sm={12}>
+        <Grid item lg={8} sm={12} className={classes.gridItem}>
           <Grid container className={classes.root}>
-            <Grid item sm={12}>
+            <Grid item sm={12} className={classes.gridItem}>
               {user && <UserDetailedHeader user={user} userId={params.id}/>}
+              <Loading loading={!user}/>
             </Grid>
-            <Grid item sm={12}>
-              {userFirstName && userPosts && <UserDetailedPageBody posts={userPosts} sectionTitle={`${userFirstName}'s Posts`}/>}
+            <Grid item sm={12} className={classes.gridItem}>
+              {userFirstName && <UserDetailedPageBody loading={!userPosts} posts={userPosts} sectionTitle={`${userFirstName}'s Posts`}/>}
             </Grid>
           </Grid>
         </Grid>

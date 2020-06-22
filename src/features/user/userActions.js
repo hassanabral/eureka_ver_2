@@ -1,5 +1,5 @@
 import { toastr } from 'react-redux-toastr';
-import {GET_USERS} from './userSlice';
+import {GET_USERS, ASYNC_ACTION_STARTED, ASYNC_ACTION_ERROR, ASYNC_ACTION_FINISHED} from './userSlice';
 
 export const updateProfile = ({ firebase }, formData, history, uid) => {
   return async (dispatch) => {
@@ -18,11 +18,14 @@ export const getUsers = (firestore) => {
   return async (dispatch) => {
     const usersCollection = firestore.collection('users').orderBy('createdAt', 'desc');
     try {
+      dispatch(ASYNC_ACTION_STARTED());
       const usersRef = await usersCollection.get();
       const users = usersRef.docs.map(doc => ({id: doc.id, ...doc.data()}));
       dispatch(GET_USERS(users));
+      dispatch(ASYNC_ACTION_FINISHED());
     } catch (error) {
       console.log(error);
+      dispatch(ASYNC_ACTION_ERROR());
     }
   };
 }

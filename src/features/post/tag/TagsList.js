@@ -4,6 +4,7 @@ import { Box, Button } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFirestore } from 'react-redux-firebase';
 import { getTags } from '../postActions';
+import Loading from '../../../app/common/util/Loading';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -32,6 +33,7 @@ const useStyles = makeStyles(theme => ({
 const TagsList = ({ theme, setSelectedTag }) => {
   const classes = useStyles(theme);
   const tags = useSelector(state => state.post.tags);
+  const loading = useSelector(state => state.post.loading);
   const firestore = useFirestore();
   const dispatch = useDispatch();
 
@@ -57,6 +59,7 @@ const TagsList = ({ theme, setSelectedTag }) => {
           </Button>
         )
       }
+      <Loading loading={loading}/>
     </Box>
   );
 };

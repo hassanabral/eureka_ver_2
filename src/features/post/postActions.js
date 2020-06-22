@@ -1,10 +1,51 @@
 import { toastr } from 'react-redux-toastr';
 import { reset } from 'redux-form';
 import { readIds } from '../../app/common/util/helpers';
+
 import {
   GET_BOOKMARKS, ADD_BOOKMARK, REMOVE_BOOKMARK,
-  GET_TAGS, ADD_TAG, GET_POSTS_BY_TAG, SELECT_TAG
+  GET_TAGS, ADD_TAG, GET_POSTS_BY_TAG, SELECT_TAG,
+  ASYNC_ACTION_STARTED, ASYNC_ACTION_FINISHED, ASYNC_ACTION_ERROR,
+  NO_MORE_FEEDS, FETCH_FEEDS
 } from './postSlice';
+
+export const getPagedFeeds = ({ firestore }) =>
+  async (dispatch, getState) => {
+    try {
+      dispatch(ASYNC_ACTION_STARTED());
+      const LIMIT = 3;
+      let nextPostSnapshot = null;
+      const feeds = getState().post.feeds;
+      // after the first time we get feeds from backend
+      if (feeds && feeds.length >= LIMIT) {
+        nextPostSnapshot =
+          await firestore.collection('posts').doc(feeds[feeds.length - 1].id)
+            .get();
+      }
+
+      const feedsCollectionRef = firestore.collection('posts').orderBy('date', 'desc')
+        .where('status', '==', 'published')
+        .where('deleted', '==', false);
+      let feedsSnap;
+
+      if (nextPostSnapshot) {
+        feedsSnap = await feedsCollectionRef.startAfter(nextPostSnapshot).limit(LIMIT).get();
+      } else {
+        feedsSnap = await feedsCollectionRef.limit(LIMIT).get();
+      }
+      const newFeeds = feedsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      dispatch(FETCH_FEEDS(newFeeds));
+
+      if (feedsSnap.docs.length < LIMIT) {
+        dispatch(NO_MORE_FEEDS());
+      }
+      dispatch(ASYNC_ACTION_FINISHED());
+    } catch (e) {
+      console.log('error', e);
+      dispatch(ASYNC_ACTION_ERROR());
+    }
+
+  };
 
 export const createPost = ({ firebase, firestore }, newPost) => {
   return async (dispatch, getState) => {
@@ -15,18 +56,18 @@ export const createPost = ({ firebase, firestore }, newPost) => {
 
       // add a tag
       const tagsState = getState().post.tags;
-      if(tagsState && newPostFinal.hashtags) {
+      if (tagsState && newPostFinal.hashtags) {
         const currentTags = tagsState.map(tag => tag.name);
 
         newPostFinal.hashtags.forEach(tag => {
-          if(!currentTags.includes(tag)) {
+          if (!currentTags.includes(tag)) {
             dispatch(ADD_TAG({
               name: tag,
               count: 0
-            }))
+            }));
           }
           // TODO: increment the tag count otherwise
-        })
+        });
       }
       toastr.success('Success!', 'Post has been created');
       return newPostFinal;
@@ -139,15 +180,18 @@ export const getBookmarks = (firestore) => {
     const { uid } = getState().firebase.auth;
 
     try {
+      dispatch(ASYNC_ACTION_STARTED());
       const bookmarksRef = await firestore.collection('bookmarks')
         .where('userId', '==', uid).get();
       const postIds = bookmarksRef.docs.map(doc => doc.data().postId);
       const bookmarks = await readIds(firestore.collection('posts'), postIds);
       dispatch(GET_BOOKMARKS(bookmarks));
+      dispatch(ASYNC_ACTION_FINISHED());
       console.log({ bookmarks });
     } catch (error) {
       console.log('err', error);
       toastr.error('Oops', 'Something went wrong');
+      dispatch(ASYNC_ACTION_ERROR());
     }
   };
 };
@@ -287,20 +331,6 @@ export const getReplies = async (firestore, commentId, setReplies) => {
   }
 };
 
-export const getFeed = ({ firebase, firestore }) => {
-  return async (dispatch, getState) => {
-    try {
-      const feedRef = await firestore.collection('posts')
-        .where('status', '==', 'published')
-        .orderBy('date', 'desc')
-        .get();
-      return feedRef.docs.map(doc => doc.data());
-    } catch (error) {
-      toastr.error('Oops', 'Something went wrong');
-    }
-  };
-};
-
 const createNewPost = (newPostData, user, firestore) => {
   const { uid, displayName, photoURL } = user;
   return {
@@ -331,15 +361,16 @@ const createNewComment = (newCommentData, user, firestore) => {
 
 export const getTags = (firestore) => {
   return async (dispatch, getState) => {
-
     try {
+      dispatch(ASYNC_ACTION_STARTED());
       const tagsRef = await firestore.collection('tags').orderBy('count').get();
       const tags = tagsRef.docs.map(doc => doc.data());
       dispatch(GET_TAGS(tags));
-      console.log({ tags });
+      dispatch(ASYNC_ACTION_FINISHED());
     } catch (error) {
       console.log('err', error);
       toastr.error('Oops', 'Something went wrong');
+      dispatch(ASYNC_ACTION_ERROR());
     }
   };
 };
@@ -347,20 +378,22 @@ export const getTags = (firestore) => {
 export const getPostsByTag = (firestore, tagId) => {
   return async (dispatch, getState) => {
     try {
+      dispatch(ASYNC_ACTION_STARTED());
       const postsRef = await firestore.collection('posts')
         .where('hashtags', 'array-contains', tagId)
         .where('deleted', '==', false)
         .orderBy('date', 'desc')
         .get();
 
-      const posts = postsRef.docs.map(doc => ({id: doc.id, ...doc.data()}));
+      const posts = postsRef.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       dispatch(SELECT_TAG(tagId));
       dispatch(GET_POSTS_BY_TAG(posts));
-
+      dispatch(ASYNC_ACTION_FINISHED());
       console.log({ posts });
     } catch (error) {
       console.log('err', error);
       toastr.error('Oops', 'Something went wrong');
+      dispatch(ASYNC_ACTION_ERROR());
     }
   };
 };

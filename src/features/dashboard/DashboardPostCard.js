@@ -12,11 +12,9 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import moment from 'moment';
-import ReactHtmlParser from 'react-html-parser';
 import { stripTags, truncate } from '../../app/common/util/helpers';
 import { deletePost } from '../post/postActions';
 import { useFirestore } from 'react-redux-firebase';
-import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -53,7 +51,7 @@ const DashboardPostCard = ({ theme, post}) => {
 
   return (
     <Fragment>
-      <Grid item lg={4} md={6} sm={12} xl={3}>
+      <Grid item lg={4} md={6} sm={12} xl={3} style={{width: '100%'}}>
         <Card className={classes.card} elevation={0}>
           <Grid container className={classes.root} spacing={2}>
             <Grid item md={12}>

@@ -8,6 +8,7 @@ import UserCard from './UserCard';
 import { useFirestore } from 'react-redux-firebase';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUsers } from '../userActions';
+import Loading from '../../../app/common/util/Loading';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -31,6 +32,7 @@ const UsersPage = ({ theme }) => {
   const dispatch = useDispatch();
 
   const users = useSelector(state => state.user.users);
+  const loading = useSelector(state => state.user.loading);
 
   useEffect( () => {
     const handleGetUsers= async () => {
@@ -50,13 +52,14 @@ const UsersPage = ({ theme }) => {
         <Box mt={2}>
           <Divider/>
         </Box>
-        <List className={classes.root}>
+        <Loading loading={loading}/>
+        {!loading && <List className={classes.root}>
           <Grid container>
             {
               users?.length > 0 && users.map(user => <UserCard key={user.id} user={user}/>)
             }
           </Grid>
-        </List>
+        </List>}
       </Card>
     </Fragment>
   );

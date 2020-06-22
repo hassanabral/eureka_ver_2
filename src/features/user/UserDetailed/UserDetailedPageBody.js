@@ -5,6 +5,7 @@ import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import { Card, Box } from '@material-ui/core';
 import FeedCard from '../../post/feed/FeedCard';
+import Loading from '../../../app/common/util/Loading';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,7 +23,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const UserDetailedPageBody = ({ theme, sectionTitle, posts }) => {
+const UserDetailedPageBody = ({ theme, sectionTitle, posts, loading }) => {
   const classes = useStyles(theme);
   const isBookmarkPage = sectionTitle === 'Bookmarks';
 
@@ -35,9 +36,10 @@ const UserDetailedPageBody = ({ theme, sectionTitle, posts }) => {
         <Box mt={2}>
           <Divider/>
         </Box>
-        <List className={classes.root}>
+        <Loading loading={loading}/>
+        {!loading && <List className={classes.root}>
           {
-            posts.length > 0 ? posts.map(post =>
+            posts && posts.length > 0 ? posts.map(post =>
               <FeedCard
                 key={post.id}
                 post={post}
@@ -48,14 +50,14 @@ const UserDetailedPageBody = ({ theme, sectionTitle, posts }) => {
               <Box mt={1}>
                 {!isBookmarkPage ? <Typography>
                   User hasn't written any posts.
-                </Typography>: <Typography>
+                </Typography> : <Typography>
                   You haven't saved any post as bookmark.
                 </Typography>}
               </Box>
             )
           }
 
-        </List>
+        </List>}
       </Card>
     </Fragment>
   );

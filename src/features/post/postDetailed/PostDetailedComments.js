@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
+import Loading from '../../../app/common/util/Loading';
 
 const PostDetailedComments = ({postId}) => {
 
@@ -37,6 +38,7 @@ const PostDetailedComments = ({postId}) => {
       {
         postComments?.length > 0 && postComments.map(comment => <PostDetailedComment key={comment.id} comment={comment} showReplies={true}/>)
       }
+      <Loading loading={!postComments}/>
     </Fragment>);
 };
 

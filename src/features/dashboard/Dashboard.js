@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import Link from '@material-ui/core/Link';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Loading from '../../app/common/util/Loading';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -75,7 +76,8 @@ const Dashboard = ({ theme }) => {
           </Typography>
         </Box>
         <Box mt={1.5}>
-          <ButtonGroup size={isMobileScreen ? "small" : "medium"}  aria-label="button group">
+          <ButtonGroup size={isMobileScreen ? 'small' : 'medium'}
+                       aria-label="button group">
             <Button color='primary' component={RouterLink} to='/edit-profile'
                     startIcon={<AccountCircleIcon/>}>
               Edit Profile
@@ -97,21 +99,25 @@ const Dashboard = ({ theme }) => {
       <Box mt={2} mb={0.5}>
         <Divider/>
       </Box>
+      <Loading loading={!dashboardPosts}/>
       {
-        dashboardPosts?.length > 0 ? (<List className={classes.root}>
+        dashboardPosts?.length > 0 && <List className={classes.root}>
           <Grid container>
             {
               dashboardPosts.map(post => <DashboardPostCard key={post.id} post={post}/>)
             }
           </Grid>
 
-        </List>) : <Box mt={2}>
-          <Typography>
-            You have't written any posts. Click <Link component={RouterLink}
-                                                      to='/posts/add'>here</Link> to create
-            a post.
-          </Typography>
-        </Box>
+        </List>
+      }
+      {dashboardPosts?.length === 0 &&
+      <Box mt={2}>
+        <Typography>
+          You have't written any posts. Click <Link component={RouterLink}
+                                                    to='/posts/add'>here</Link> to create
+          a post.
+        </Typography>
+      </Box>
       }
 
     </Card>

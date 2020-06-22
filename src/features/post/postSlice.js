@@ -3,6 +3,10 @@ import { createSlice } from '@reduxjs/toolkit';
 const postSlice = createSlice({
   name: 'post',
   initialState: {
+    feeds: [],
+    moreFeeds: true,
+    loading: false,
+    elementName: null,
     bookmarks: null,
     tags: null,
     selectedTag: null,
@@ -35,6 +39,24 @@ const postSlice = createSlice({
     },
     SELECT_TAG(state, action) {
       state.selectedTag = action.payload;
+    },
+    ASYNC_ACTION_STARTED(state, action) {
+      state.loading = true;
+      state.elementName = action.payload;
+    },
+    ASYNC_ACTION_FINISHED(state) {
+      state.loading = false;
+      state.elementName = null;
+    },
+    ASYNC_ACTION_ERROR(state) {
+      state.loading = false;
+      state.elementName = null;
+    },
+    NO_MORE_FEEDS(state) {
+      state.moreFeeds = false
+    },
+    FETCH_FEEDS(state, action) {
+      state.feeds = [...state.feeds, ...action.payload]
     }
   }
 });
@@ -47,7 +69,12 @@ export const {
   GET_TAGS,
   ADD_TAG,
   GET_POSTS_BY_TAG,
-  SELECT_TAG
+  SELECT_TAG,
+  ASYNC_ACTION_STARTED,
+  ASYNC_ACTION_FINISHED,
+  ASYNC_ACTION_ERROR,
+  NO_MORE_FEEDS,
+  FETCH_FEEDS
 } = postSlice.actions;
 
 export default postSlice.reducer;
