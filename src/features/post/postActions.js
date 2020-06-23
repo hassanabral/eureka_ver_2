@@ -320,7 +320,12 @@ export const getReplies = async (firestore, commentId, setReplies) => {
       doc.ref.collection('comments').orderBy('date', 'desc')
         .onSnapshot((repliesSnap) => {
             const replies = repliesSnap.docs.map(doc => doc.data());
-            setReplies(replies);
+            console.log({replies});
+            if(!replies) {
+              setReplies([])
+            } else {
+              setReplies(replies);
+            }
           }
         );
     });

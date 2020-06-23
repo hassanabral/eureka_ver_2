@@ -14,7 +14,8 @@ const PostDetailedReplies = ({commentId, replies, setReplies}) => {
 
   return (
     <Fragment>
-      <Loading loading={!replies}/>
+      {/*TODO: when a new comment is added, the loading spinner continues to spin. Fix this bug!*/}
+      {/*<Loading loading={!replies}/>*/}
       <Box mt={2} ml={4}>
         {
           replies?.length > 0 && replies.map(reply => <PostDetailedComment key={reply.id} comment={reply} commentOrReply='reply'/>)
