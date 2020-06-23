@@ -49,7 +49,7 @@ const PostDetailedComment = ({ theme, comment, commentOrReply = 'comment', showR
 
   const [toggleReplies, setToggleReplies] = useState(showReplies);
   const [toggleReplyForm, setToggleReplyForm] = useState(false);
-  const [replies, setReplies] = useState([]);
+  const [replies, setReplies] = useState(null);
   const firestore = useFirestore();
 
   // new - start
