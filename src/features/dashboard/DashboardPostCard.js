@@ -68,7 +68,7 @@ const DashboardPostCard = ({ theme, post}) => {
                                      to={`/posts/${post.id}`}>(more)</Link>}
               </Typography>
               <Box mb={2}>
-                <FeedCardButtons likeCount={post.likeCount} commentCount={post.commentCount}
+                <FeedCardButtons postId={post.id} likeCount={post.likeCount} commentCount={post.commentCount}
                                  savedCount={post.savedCount}/>
               </Box>
               <Box mt={2}>

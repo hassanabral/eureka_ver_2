@@ -7,15 +7,15 @@ import Loading from '../../../app/common/util/Loading';
 
 const PostDetailedReplies = ({commentId, replies, setReplies}) => {
   const firestore = useFirestore();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getReplies(firestore, commentId, setReplies);
-  }, [commentId])
+    getReplies(firestore, commentId, setReplies, setLoading);
+  }, [firestore, commentId, setReplies, setLoading])
 
   return (
     <Fragment>
-      {/*TODO: when a new comment is added, the loading spinner continues to spin. Fix this bug!*/}
-      {/*<Loading loading={!replies}/>*/}
+      <Loading loading={!replies && loading}/>
       <Box mt={2} ml={4}>
         {
           replies?.length > 0 && replies.map(reply => <PostDetailedComment key={reply.id} comment={reply} commentOrReply='reply'/>)

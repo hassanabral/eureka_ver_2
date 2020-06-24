@@ -309,8 +309,9 @@ export const updatePost = ({ firestore }, formData, history, postId) => {
   };
 };
 
-export const getReplies = async (firestore, commentId, setReplies) => {
+export const getReplies = async (firestore, commentId, setReplies, setLoading) => {
   try {
+    setLoading(true);
     const commentRef = await firestore.collectionGroup('comments')
       .where('id', '==', commentId);
     const querySnapshot = await commentRef.get();
@@ -318,15 +319,13 @@ export const getReplies = async (firestore, commentId, setReplies) => {
       doc.ref.collection('comments').orderBy('date', 'desc')
         .onSnapshot((repliesSnap) => {
             const replies = repliesSnap.docs.map(doc => doc.data());
-            console.log({replies});
-            if(!replies) {
-              setReplies([])
-            } else {
+            if(replies) {
               setReplies(replies);
             }
           }
         );
     });
+    setLoading(false);
 
   } catch (error) {
     console.log('Error getting documents: ', error);
