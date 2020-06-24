@@ -11,7 +11,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
-import { fade, makeStyles} from '@material-ui/core/styles';
+import { fade, makeStyles } from '@material-ui/core/styles';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 import DashboardOutlinedIcon from '@material-ui/icons/DashboardOutlined';
@@ -33,6 +33,8 @@ import Typography from '@material-ui/core/Typography';
 import { useFirebase } from 'react-redux-firebase';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import BottomNavigationBar from './BottomNavigationBar';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import { useLastLocation } from 'react-router-last-location';
 
 const useStyles = makeStyles(theme => {
   const drawerWidth = 400;
@@ -167,10 +169,15 @@ const useStyles = makeStyles(theme => {
       textTransform: 'capitalize',
       fontSize: '1rem'
     },
+    mainButton: {
+      textTransform: 'none',
+      fontWeight: 'normal',
+      fontSize: '1.35em',
+    },
   };
 });
 
-function usePrevious(value) {
+function usePrevious (value) {
   const ref = useRef();
   useEffect(() => {
     ref.current = value;
@@ -212,9 +219,35 @@ function ResponsiveDrawer ({ ...props }) {
 
   const prevBotNavValue = usePrevious(botNavValue);
 
+  const getLastLocationName = (lastLocationPath) => {
+    switch (lastLocationPath) {
+      case '/feed':
+        return 'Home';
+      case '/bookmarks':
+        return 'Bookmarks';
+      case '/tags':
+        return 'Tags';
+      case '/dashboard':
+        return 'Dashboard';
+      case '/users':
+        return 'Users';
+      case '/posts/add':
+        return 'Post';
+      case '/edit-profile':
+        return 'Setting';
+      case undefined:
+        return null;
+      default:
+        return 'Back';
+    }
+  };
+
+  const lastLocation = useLastLocation();
+  const lastLocationName = getLastLocationName(lastLocation?.pathname);
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
-    if(mobileOpen) {
+    if (mobileOpen) {
       setBotNavValue(prevBotNavValue);
     }
   };
@@ -234,13 +267,15 @@ function ResponsiveDrawer ({ ...props }) {
     <div className={classes.outerDiv}>
       <div className={classes.toolbar}/>
       <List>
-        <ListItem onClick={() => setBotNavValue(0)} button key={'Home'} component={RouterLink} to="/feed">
+        <ListItem onClick={() => setBotNavValue(0)} button key={'Home'}
+                  component={RouterLink} to="/feed">
           <ListItemIcon>
             <HomeOutlinedIcon/>
           </ListItemIcon>
           <ListItemText primary={'Home'}/>
         </ListItem>
-        <ListItem onClick={() => setBotNavValue(2)} button key={'Dashboard'} component={RouterLink} to="/dashboard">
+        <ListItem onClick={() => setBotNavValue(2)} button key={'Dashboard'}
+                  component={RouterLink} to="/dashboard">
           <ListItemIcon>
             <DashboardOutlinedIcon/>
           </ListItemIcon>
@@ -322,57 +357,78 @@ function ResponsiveDrawer ({ ...props }) {
   return (
     <Fragment>
       <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
-          {!isMobileScreen && <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            className={classes.menuButton}
-          >
-            <MenuIcon/>
-          </IconButton>}
-          <Link color='inherit' variant='h6' underline='none' component={RouterLink}
-                to='/feed'>Eureka</Link>
-          <Box className={classes.search}>
-          </Box>
-
-          {isAuthenticated && <div>
-            <IconButton
-              className={classes.menuItem}
-              aria-label="Profile" color="inherit"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
+        <Box style={{ maxWidth: '850px' }}>
+          <Toolbar className={classes.toolbarTop}
+                   style={{ justifyContent: 'space-between' }}>
+            {!isMobileScreen && <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              className={classes.menuButton}
             >
-              <Avatar className={classes.small} alt={auth?.displayName}
-                      src={auth?.photoURL}/>
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={open}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={handleClose} component={RouterLink}
-                        to={`/users/${auth?.uid}`}>Profile</MenuItem>
-              <MenuItem onClick={handleClose} component={RouterLink}
-                        to="/bookmarks">Bookmarks</MenuItem>
-              <MenuItem onClick={handleClose} component={RouterLink} to={`/edit-profile`}>Setting</MenuItem>
-            </Menu>
-          </div>}
+              <MenuIcon/>
+            </IconButton>}
+            {
+              lastLocationName && lastLocation && <Button
+                startIcon={<ArrowBackIosIcon className={classes.backArrowIcon}/>}
+                className={classes.mainButton}
+                size='medium'
+                color='inherit'
+                variant='text'
+                component={RouterLink}
+                to={lastLocation || '/feed'}
+              >
+                {lastLocationName}</Button>
+            }
+            {
+              !lastLocationName && <Button
+                className={classes.mainButton}
+                size='medium'
+                color='inherit'
+                variant='text'
+                component={RouterLink}
+                to={lastLocation || '/feed'}
+              >
+                Eureka</Button>
+            }
 
-
-        </Toolbar>
+            {isAuthenticated && <div>
+              <IconButton
+                className={classes.menuItem}
+                aria-label="Profile" color="inherit"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+              >
+                <Avatar className={classes.small} alt={auth?.displayName}
+                        src={auth?.photoURL}/>
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={open}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={handleClose} component={RouterLink}
+                          to={`/users/${auth?.uid}`}>Profile</MenuItem>
+                <MenuItem onClick={handleClose} component={RouterLink}
+                          to="/bookmarks">Bookmarks</MenuItem>
+                <MenuItem onClick={handleClose} component={RouterLink}
+                          to={`/edit-profile`}>Setting</MenuItem>
+              </Menu>
+            </div>}
+          </Toolbar>
+        </Box>
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
@@ -407,7 +463,9 @@ function ResponsiveDrawer ({ ...props }) {
           </Drawer>
         </Hidden>
       </nav>
-      {isMobileScreen && <BottomNavigationBar botNavValue={botNavValue} setBotNavValue={setBotNavValue} authUid={auth?.uid} setMobileOpen={setMobileOpen}/>}
+      {isMobileScreen &&
+      <BottomNavigationBar botNavValue={botNavValue} setBotNavValue={setBotNavValue}
+                           authUid={auth?.uid} setMobileOpen={setMobileOpen}/>}
     </Fragment>
   );
 }
