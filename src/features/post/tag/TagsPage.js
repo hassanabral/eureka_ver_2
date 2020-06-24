@@ -41,6 +41,7 @@ const TagsPage = ({ theme }) => {
   const selectedTagRedux = useSelector(state => state.post.selectedTag);
   const firestore = useFirestore();
   const dispatch = useDispatch();
+  const loading = useSelector(state => state.post.loading);
 
 
   useEffect(() => {
@@ -57,7 +58,7 @@ const TagsPage = ({ theme }) => {
     <Fragment>
       <Card className={classes.card}>
         {selectedTagRedux ? <Typography variant='h5'>
-          #{selectedTagRedux || selectedTag}
+          #{selectedTag || selectedTagRedux}
         </Typography> : <Typography variant='h5'>
           Tags
         </Typography>}
@@ -65,26 +66,33 @@ const TagsPage = ({ theme }) => {
           <Divider/>
         </Box>
         <Box>
-          <TagsList setSelectedTag={setSelectedTag}/>
+          <TagsList loading={loading} setSelectedTag={setSelectedTag} selectedTag={selectedTag || selectedTagRedux}/>
         </Box>
         <Box mt={2}>
           <Divider/>
         </Box>
         <List className={classes.root}>
           {
-            postsByTag?.length > 0 ? postsByTag.map(post =>
+            !postsByTag && <Box mt={1}>
+              <Typography>
+                Click on a <span className={classes.tagText}>#tag</span> to see related posts.
+              </Typography>
+            </Box>
+          }
+          {
+            !loading && postsByTag?.length === 0 &&  <Typography>
+              There are no posts associated with <span className={classes.tagText}>#{selectedTag || selectedTagRedux}</span>.
+            </Typography>
+          }
+          {
+            !loading && postsByTag?.length > 0 && postsByTag.map(post =>
               <FeedCard
                 key={post.id}
                 post={post}
                 elevateCard={false}
                 marginY={0}
                 dividerBottom={true}
-              />) : (
-              <Box mt={1}>
-               <Typography>
-                  Click on a <span className={classes.tagText}>#tag</span> to see related posts.
-                </Typography>
-              </Box>)
+              />)
           }
 
         </List>

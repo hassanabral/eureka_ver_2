@@ -30,10 +30,9 @@ const useStyles = makeStyles(theme => ({
 // retrieves the list of tags from the tags collection with useEffect
 // when a user clicks on a tag, we use "setSelectedTag" then fetch the posts
 // related to that tag
-const TagsList = ({ theme, setSelectedTag }) => {
+const TagsList = ({ theme, setSelectedTag, selectedTag, loading }) => {
   const classes = useStyles(theme);
   const tags = useSelector(state => state.post.tags);
-  const loading = useSelector(state => state.post.loading);
   const firestore = useFirestore();
   const dispatch = useDispatch();
 
@@ -53,8 +52,12 @@ const TagsList = ({ theme, setSelectedTag }) => {
         tags && tags.map(tag =>
           <Button
             key={tag.name}
+            variant={tag.name === selectedTag ? 'contained' : 'outlined'}
             onClick={() => setSelectedTag(tag.name)}
-            disableElevation variant='contained' size='small' color='primary' className={classes.tag}>
+            disableElevation
+            size='small'
+            color='primary'
+            className={classes.tag}>
             #{tag.name}
           </Button>
         )

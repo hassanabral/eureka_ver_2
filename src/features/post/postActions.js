@@ -187,9 +187,7 @@ export const getBookmarks = (firestore) => {
       const bookmarks = await readIds(firestore.collection('posts'), postIds);
       dispatch(GET_BOOKMARKS(bookmarks));
       dispatch(ASYNC_ACTION_FINISHED());
-      console.log({ bookmarks });
     } catch (error) {
-      console.log('err', error);
       toastr.error('Oops', 'Something went wrong');
       dispatch(ASYNC_ACTION_ERROR());
     }
@@ -394,7 +392,6 @@ export const getPostsByTag = (firestore, tagId) => {
       dispatch(SELECT_TAG(tagId));
       dispatch(GET_POSTS_BY_TAG(posts));
       dispatch(ASYNC_ACTION_FINISHED());
-      console.log({ posts });
     } catch (error) {
       console.log('err', error);
       toastr.error('Oops', 'Something went wrong');
