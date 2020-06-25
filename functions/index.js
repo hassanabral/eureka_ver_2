@@ -133,7 +133,7 @@ exports.addTag = functions.firestore.document('posts/{postId}')
         } else {
           return tagRef.set({
             name: tag,
-            count: 0
+            count: 1
           });
         }
       });

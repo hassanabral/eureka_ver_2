@@ -34,6 +34,19 @@ const postSlice = createSlice({
         state.tags.unshift(action.payload);
       }
     },
+    INCREMENT_TAG(state, action) {
+      if (state.tags !== null) {
+        state.tags = state.tags.map(tag => {
+          if(tag.name === action.payload) {
+            return {
+              ...tag,
+              count: tag.count + 1
+            }
+          }
+          return tag;
+        })
+      }
+    },
     GET_POSTS_BY_TAG(state, action) {
       state.postsByTag = action.payload;
     },
@@ -74,7 +87,8 @@ export const {
   ASYNC_ACTION_FINISHED,
   ASYNC_ACTION_ERROR,
   NO_MORE_FEEDS,
-  FETCH_FEEDS
+  FETCH_FEEDS,
+  INCREMENT_TAG
 } = postSlice.actions;
 
 export default postSlice.reducer;

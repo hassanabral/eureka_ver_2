@@ -6,7 +6,7 @@ import {
   GET_BOOKMARKS, ADD_BOOKMARK, REMOVE_BOOKMARK,
   GET_TAGS, ADD_TAG, GET_POSTS_BY_TAG, SELECT_TAG,
   ASYNC_ACTION_STARTED, ASYNC_ACTION_FINISHED, ASYNC_ACTION_ERROR,
-  NO_MORE_FEEDS, FETCH_FEEDS
+  NO_MORE_FEEDS, FETCH_FEEDS, INCREMENT_TAG
 } from './postSlice';
 
 export const getPagedFeeds = ({ firestore }) =>
@@ -56,20 +56,22 @@ export const createPost = ({ firebase, firestore }, newPost) => {
 
       // add a tag
       const tagsState = getState().post.tags;
-      if (tagsState && newPostFinal.hashtags) {
+      if (tagsState && newPostTemp.hashtags) {
         const currentTags = tagsState.map(tag => tag.name);
 
-        newPostFinal.hashtags.forEach(tag => {
+        newPostTemp.hashtags.forEach(tag => {
           if (!currentTags.includes(tag)) {
             dispatch(ADD_TAG({
               name: tag,
-              count: 0
+              count: 1
             }));
+          } else {
+            dispatch(INCREMENT_TAG(tag));
           }
-          // TODO: increment the tag count otherwise
         });
       }
       toastr.success('Success!', 'Post has been created');
+      console.log({newPostFinal});
       return newPostFinal;
     } catch (error) {
       toastr.error('Oops', 'Something went wrong');
