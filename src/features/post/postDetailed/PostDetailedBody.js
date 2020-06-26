@@ -52,8 +52,10 @@ const PostDetailedBody = ({ theme, post, isAuthenticated, isAuthenticatedUser })
   const firebase = useFirebase();
 
   useEffect(() => {
-    dispatch(toggleBookmark(firestore, id, setSaved));
-  }, [id]);
+    if(isAuthenticated) {
+      dispatch(toggleBookmark(firestore, id, setSaved));
+    }
+  }, [id, isAuthenticated]);
 
   const handleOnSave = () => {
     dispatch(savePost({ firebase, firestore }, id));

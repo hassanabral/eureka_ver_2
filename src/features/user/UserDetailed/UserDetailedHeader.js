@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
@@ -32,6 +32,7 @@ const useStyles = makeStyles(theme => ({
 
 const UserDetailedHeader = ({ theme, user }) => {
   const classes = useStyles(theme);
+  const [follow, setFollow] = useState(false);
 
   const { displayName, avatarUrl, profession, company, location, bio, website, createdAt } = user;
 
@@ -51,8 +52,8 @@ const UserDetailedHeader = ({ theme, user }) => {
               {profession} at {company}
             </Typography>}
             <Box my={1.5}>
-              <Button size='medium' fullWidth={false} variant='contained'
-                      color='secondary'>+ Follow</Button>
+              <Button onClick={() => setFollow(!follow)} size='medium' fullWidth={false} variant='contained'
+                      color='secondary'>{!follow ? '+ Follow' : '- Unfollow'}</Button>
             </Box>
             <Typography variant="body1" gutterBottom={true}>
               {bio}

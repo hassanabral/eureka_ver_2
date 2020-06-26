@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, { Fragment, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
@@ -29,6 +29,7 @@ const useStyles = makeStyles(theme => ({
 
 const UserCard = ({ theme, user }) => {
   const classes = useStyles(theme);
+  const [follow, setFollow] = useState(false);
 
   return (
     <Fragment>
@@ -50,7 +51,7 @@ const UserCard = ({ theme, user }) => {
                 {user.bio}
               </Typography>
               <Box my={2}>
-                <Button size='medium' fullWidth={true} variant='contained' color='secondary'>+ Follow</Button>
+                <Button onClick={() => setFollow(!follow)} size='medium' fullWidth={true} variant='contained' color='secondary'>{!follow ? '+ Follow' : '- Unfollow'}</Button>
               </Box>
             </Grid>
           </Grid>

@@ -1,3 +1,5 @@
+import { toastr } from 'react-redux-toastr';
+
 export const truncate = (str, len) => {
   if( str.length > 0 && str.length > len) {
     let new_str;
@@ -39,9 +41,20 @@ export const readIds = async (collection, ids) => {
   });
 }
 
-export const objectToArray = (object) => {
-  if (object) {
-    return Object.entries(object).map(e => Object.assign({}, e[1], {id: e[0]}))
+export const signInWithGoogle = async (firebase, firestore) => {
+  try {
+    const user = await firebase.login({ provider: "google", type: "popup"});
+    if (user.additionalUserInfo.isNewUser) {
+      await firebase.updateProfile({
+        createdAt: firestore.FieldValue.serverTimestamp(),
+      })
+    }
+    toastr.success('Success!', 'You are logged in.');
+    return user;
+  } catch(err) {
+    toastr.error('Oops', 'Something went wrong');
+    console.log(err);
   }
-}
+
+};
 

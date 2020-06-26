@@ -62,7 +62,7 @@ const FeedsPage = ({ theme }) => {
         <Grid item lg={8} sm={12}>
           <Grid container className={classes.root}>
             <Grid item sm={12}>
-              <FeedsPageHeader user={{ displayName, uid, photoURL }}/>
+              {uid && <FeedsPageHeader user={{ displayName, uid, photoURL }}/>}
             </Grid>
             <Grid item sm={12}>
               <FeedsPageBody feeds={feeds} loading={loading} moreFeeds={moreFeeds}

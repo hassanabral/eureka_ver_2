@@ -8,12 +8,12 @@ import { useFirestoreConnect } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
 import Loading from '../../../app/common/util/Loading';
 
-const PostDetailedComments = ({postId}) => {
+const PostDetailedComments = ({ postId, isAuthenticated }) => {
 
   const postCommentsQuery = {
     collection: 'posts',
     doc: postId,
-    subcollections: [{ collection: "comments" }],
+    subcollections: [{ collection: 'comments' }],
     orderBy: ['date', 'desc'],
     storeAs: 'postComments'
   };
@@ -26,8 +26,8 @@ const PostDetailedComments = ({postId}) => {
   const postComments = useSelector((state) => state.firestore.ordered.postComments);
 
   useEffect(() => {
-    if(postComments) {
-      setComments(postComments)
+    if (postComments) {
+      setComments(postComments);
     }
   }, [postComments, setComments]);
 
@@ -48,24 +48,39 @@ const PostDetailedComments = ({postId}) => {
       return comparison;
     });
     setComments(tempArr);
-  }
-
+  };
 
   return (
-    <Fragment>
-      <Box my={2} mx={1}>
+    <Fragment> {
+      comments?.length > 0 && <Box my={2} mx={1}>
+        {!isAuthenticated && <Box mb={1}>
+          <Typography variant='h5'>
+            Comments
+          </Typography>
+        </Box>}
         <Box mr={1} component='span'>
           <Typography variant='body2' component='span'>
             Sort by:
           </Typography>
         </Box>
         <ButtonGroup variant="text" color='primary'>
-          <Button color={sortByToggle === 'date' ? 'primary' : 'secondary'} onClick={() => {sortBy('date'); setSortByToggle('date')}} style={{textTransform: 'capitalize'}}>Date</Button>
-          <Button color={sortByToggle === 'likeCount' ? 'primary' : 'secondary'}  onClick={() => {sortBy('likeCount'); setSortByToggle('likeCount')}} style={{textTransform: 'capitalize'}}>Likes</Button>
+          <Button color={sortByToggle === 'date' ? 'primary' : 'secondary'}
+                  onClick={() => {
+                    sortBy('date');
+                    setSortByToggle('date');
+                  }} style={{ textTransform: 'capitalize' }}>Date</Button>
+          <Button color={sortByToggle === 'likeCount' ? 'primary' : 'secondary'}
+                  onClick={() => {
+                    sortBy('likeCount');
+                    setSortByToggle('likeCount');
+                  }} style={{ textTransform: 'capitalize' }}>Likes</Button>
         </ButtonGroup>
       </Box>
+    }
       {
-        comments?.length > 0 && comments.map(comment => <PostDetailedComment key={comment.id} comment={comment} showReplies={true}/>)
+        comments?.length > 0 && comments.map(
+          comment => <PostDetailedComment key={comment.id} comment={comment}
+                                          showReplies={true}/>)
       }
       <Loading loading={!postComments}/>
     </Fragment>);

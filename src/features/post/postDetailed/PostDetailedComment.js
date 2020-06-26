@@ -24,6 +24,7 @@ import {
 } from '../postActions';
 import { isEmpty, isLoaded, useFirebase, useFirestore } from 'react-redux-firebase';
 import { useDispatch, useSelector } from 'react-redux';
+import { toastr } from 'react-redux-toastr';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -52,29 +53,35 @@ const PostDetailedComment = ({ theme, comment, commentOrReply = 'comment', showR
   const [replies, setReplies] = useState(null);
   const firestore = useFirestore();
 
-  // new - start
   const [like, setLike] = useState();
   const [likeCountState, setLikeCountState] = useState(comment.likeCount);
 
   const dispatch = useDispatch();
   const firebase = useFirebase();
-
-  useEffect(() => {
-    dispatch(toggleLikeComment(firestore, comment.id, setLike));
-  }, [comment.id]);
-
-  const handleOnLike = () => {
-    dispatch(likeOrUnlikeComment({ firebase, firestore }, comment.id));
-    if (like) {
-      setLikeCountState(likeCountState - 1);
-    } else {
-      setLikeCountState(likeCountState + 1);
-    }
-  };
-  // new - end
-
   const auth = useSelector(state => state.firebase.auth);
   const isAuthenticated = isLoaded(auth) && !isEmpty(auth);
+
+  useEffect(() => {
+    if(isAuthenticated) {
+      dispatch(toggleLikeComment(firestore, comment.id, setLike));
+    }
+  }, [comment.id, isAuthenticated]);
+
+  const handleOnLike = () => {
+    if(isAuthenticated) {
+      dispatch(likeOrUnlikeComment({ firebase, firestore }, comment.id));
+      if (like) {
+        setLikeCountState(likeCountState - 1);
+      } else {
+        setLikeCountState(likeCountState + 1);
+      }
+    } else {
+      toastr.error('Oops', 'You need to login to like a comment');
+    }
+
+  };
+
+
   const isAuthenticatedUser = comment?.authorId === auth?.uid;
 
   const isReply = commentOrReply === 'reply';
@@ -130,16 +137,16 @@ const PostDetailedComment = ({ theme, comment, commentOrReply = 'comment', showR
           </Link>
         </Typography>
       </Box>
-      <Box component='span'>
+      {isAuthenticated && <Box component='span'>
         <Button
           onClick={() => setToggleReplyForm(!toggleReplyForm)}
           disableRipple={true}
           className={classes.button}
           color='secondary'
           size="medium">Reply</Button>
-      </Box>
+      </Box>}
     </Box>
-    {toggleReplyForm &&
+    {toggleReplyForm && isAuthenticated &&
     <PostDetailedReplyForm setToggleReplyForm={setToggleReplyForm}
                            commentId={comment.id} setToggleReplies={setToggleReplies}/>}
     <Box mb={0}>

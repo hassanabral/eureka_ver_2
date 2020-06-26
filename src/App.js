@@ -102,12 +102,9 @@ function App () {
                       <Switch>
                         <Route exact path='/users/:id' component={UserDetailedPage}/>
                         <Route exact path='/users' component={UsersPage}/>
+                        <Route exact path='/feed' component={FeedsPage}/>
                         <PrivateRoute exact path = "/edit-profile">
                           <SettingsPage/>
-                        </PrivateRoute>
-                        {/*<Route exact path='/feed' component={FeedsPage}/>*/}
-                        <PrivateRoute exact path="/feed">
-                          <FeedsPage/>
                         </PrivateRoute>
                         <PrivateRoute exact path='/posts/add' >
                           <AddPost/>

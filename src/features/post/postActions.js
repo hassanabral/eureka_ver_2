@@ -71,7 +71,6 @@ export const createPost = ({ firebase, firestore }, newPost) => {
         });
       }
       toastr.success('Success!', 'Post has been created');
-      console.log({newPostFinal});
       return newPostFinal;
     } catch (error) {
       toastr.error('Oops', 'Something went wrong');
@@ -190,6 +189,7 @@ export const getBookmarks = (firestore) => {
       dispatch(GET_BOOKMARKS(bookmarks));
       dispatch(ASYNC_ACTION_FINISHED());
     } catch (error) {
+      console.log('err', error);
       toastr.error('Oops', 'Something went wrong');
       dispatch(ASYNC_ACTION_ERROR());
     }

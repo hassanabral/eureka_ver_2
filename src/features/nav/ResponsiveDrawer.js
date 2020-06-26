@@ -35,6 +35,8 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import BottomNavigationBar from './BottomNavigationBar';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { useLastLocation } from 'react-router-last-location';
+import GoogleLoginButton from '../../app/common/util/GoogleLoginButton';
+import { toastr } from 'react-redux-toastr';
 
 const useStyles = makeStyles(theme => {
   const drawerWidth = 400;
@@ -194,6 +196,7 @@ function ResponsiveDrawer ({ ...props }) {
     firebase.auth().signOut().then(() => {
       history.push('/');
     });
+    toastr.success('Success!', 'You are logged out.');
   };
 
   const isMobileScreen = useMediaQuery('(max-width:600px)');
@@ -343,12 +346,29 @@ function ResponsiveDrawer ({ ...props }) {
     <div className={classes.outerDiv}>
       <div className={classes.toolbar}/>
       <List>
+        <ListItem onClick={() => setBotNavValue(0)} button key={'Home'}
+                  component={RouterLink} to="/feed">
+          <ListItemIcon>
+            <HomeOutlinedIcon/>
+          </ListItemIcon>
+          <ListItemText primary={'Home'}/>
+        </ListItem>
         <ListItem button key={'Tags'} component={RouterLink} to="/tags">
           <ListItemIcon>
             <LabelOutlinedIcon/>
           </ListItemIcon>
           <ListItemText primary={'Tags'}/>
         </ListItem>
+        <ListItem button key={'Users'} component={RouterLink} to="/users">
+          <ListItemIcon>
+            <PeopleOutlineIcon/>
+          </ListItemIcon>
+          <ListItemText primary={'Users'}/>
+        </ListItem>
+      </List>
+      <Divider/>
+      <List>
+        <GoogleLoginButton/>
       </List>
       {footer}
     </div>
@@ -464,7 +484,7 @@ function ResponsiveDrawer ({ ...props }) {
         </Hidden>
       </nav>
       {isMobileScreen &&
-      <BottomNavigationBar botNavValue={botNavValue} setBotNavValue={setBotNavValue}
+      <BottomNavigationBar isAuthenticated={isAuthenticated} botNavValue={botNavValue} setBotNavValue={setBotNavValue}
                            authUid={auth?.uid} setMobileOpen={setMobileOpen}/>}
     </Fragment>
   );

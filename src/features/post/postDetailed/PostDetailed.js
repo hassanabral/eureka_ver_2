@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-const PostDetailed = ({ theme, match: {params} }) => {
+const PostDetailed = ({ theme, match: { params } }) => {
   const classes = useStyles(theme);
 
   const postQuery = useMemo(() => ({
@@ -43,29 +43,29 @@ const PostDetailed = ({ theme, match: {params} }) => {
   const isAuthenticated = isLoaded(auth) && !isEmpty(auth);
   const isAuthenticatedUser = post?.authorId === auth?.uid;
 
-  const mainDiv =<Fragment>
-      <Grid container className={classes.root} spacing={3}>
-        <Grid item lg={8} sm={12} className={classes.gridItem}>
-          <Card className={classes.card}>
-            {post && <PostDetailedBody
-              post={post}
-              isAuthenticatedUser={isAuthenticatedUser}
-              isAuthenticated={isAuthenticated}/>}
-              <Loading loading={!post}/>
-          </Card>
-            <Card className={classes.card}>
-              <PostDetailedAddComment postId={params.id}/>
-            </Card>
-            <PostDetailedComments postId={params.id}/>
-        </Grid>
-        <Grid item lg={4} sm={12} className={classes.gridItem}>
-          <Card className={classes.card}>
-            {post && <PostDetailedSidebarRight authorId={post.authorId}/>}
-            {/*<Loading loading={!post}/>*/}
-          </Card>
-        </Grid>
+  const mainDiv = <Fragment>
+    <Grid container className={classes.root} spacing={3}>
+      <Grid item lg={8} sm={12} className={classes.gridItem}>
+        <Card className={classes.card}>
+          {post && <PostDetailedBody
+            post={post}
+            isAuthenticatedUser={isAuthenticatedUser}
+            isAuthenticated={isAuthenticated}/>}
+          <Loading loading={!post}/>
+        </Card>
+        {isAuthenticated && <Card className={classes.card}>
+          <PostDetailedAddComment postId={params.id}/>
+        </Card>}
+        <PostDetailedComments isAuthenticated={isAuthenticated} postId={params.id}/>
       </Grid>
-    </Fragment>;
+      <Grid item lg={4} sm={12} className={classes.gridItem}>
+        <Card className={classes.card}>
+          {post && <PostDetailedSidebarRight authorId={post.authorId}/>}
+          {/*<Loading loading={!post}/>*/}
+        </Card>
+      </Grid>
+    </Grid>
+  </Fragment>;
 
   return mainDiv;
 };

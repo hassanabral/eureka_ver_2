@@ -7,8 +7,9 @@ import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import { Box } from '@material-ui/core';
 import { likeOrUnlike, toggleLike } from '../postActions';
-import { useDispatch } from 'react-redux';
-import { useFirebase, useFirestore } from 'react-redux-firebase';
+import { useDispatch, useSelector } from 'react-redux';
+import { isEmpty, isLoaded, useFirebase, useFirestore } from 'react-redux-firebase';
+import { toastr } from 'react-redux-toastr';
 
 
 const useStyles = makeStyles(theme => ({
@@ -33,17 +34,27 @@ const FeedCardButtons = ({ theme, likeCount, commentCount, savedCount, postId })
   const firebase = useFirebase();
   const firestore = useFirestore();
 
+  const auth = useSelector(state => state.firebase.auth);
+  const isAuthenticated = isLoaded(auth) && !isEmpty(auth);
+
   useEffect(() => {
-    dispatch(toggleLike(firestore, postId, setLike));
-  }, [postId]);
+    if(isAuthenticated) {
+      dispatch(toggleLike(firestore, postId, setLike));
+    }
+  }, [postId, isAuthenticated]);
 
   const handleOnLike = () => {
-    dispatch(likeOrUnlike({ firebase, firestore }, postId));
-    if(like) {
-      setLikeCountState(likeCountState - 1);
+    if(isAuthenticated) {
+      dispatch(likeOrUnlike({ firebase, firestore }, postId));
+      if(like) {
+        setLikeCountState(likeCountState - 1);
+      } else {
+        setLikeCountState(likeCountState + 1);
+      }
     } else {
-      setLikeCountState(likeCountState + 1);
+      toastr.error('Oops', 'You need to login to like a post');
     }
+
   }
 
   return (
