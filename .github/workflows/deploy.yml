@@ -26,4 +26,4 @@ jobs:
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
           MESSAGING_SENDER_ID: ${{ secrets.MESSAGING_SENDER_ID }}
           APP_ID: ${{ secrets.APP_ID }}
-          CI: false
+          CI: ""
