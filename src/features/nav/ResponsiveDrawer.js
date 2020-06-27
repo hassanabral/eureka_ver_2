@@ -40,16 +40,18 @@ import GoogleLoginButton from '../../app/common/util/GoogleLoginButton';
 import { toastr } from 'react-redux-toastr';
 
 const useStyles = makeStyles(theme => {
-  const drawerWidthLg = 400;
-  const drawerWidthSm = 240;
+  const drawerWidthLg = 380;
+  const drawerWidthSm = 220;
 
   return {
     root: {
       display: 'flex',
     },
     outerDiv: {
+      marginRight: '15px',
+      marginLeft: '15px',
       display: 'flex',
-      justifyContent: 'flex-end'
+      justifyContent: 'flex-end',
     },
     drawer: {
       [theme.breakpoints.up('sm')]: {
@@ -70,6 +72,15 @@ const useStyles = makeStyles(theme => {
       [theme.breakpoints.up('lg')]: {
         width: `calc(100% - ${drawerWidthLg}px)`,
         marginLeft: drawerWidthLg,
+      }
+    },
+    toolbarTop: {
+      justifyContent: 'space-between',
+      [theme.breakpoints.up('lg')]: {
+        maxWidth: 725,
+      },
+      [theme.breakpoints.up('xl')]: {
+        maxWidth: 1000,
       }
     },
     appBarBottom: {
@@ -267,77 +278,79 @@ function ResponsiveDrawer ({ ...props }) {
 
   const authenticatedMenu = (
     <div className={classes.outerDiv}>
-      <div className={classes.toolbar}/>
-      <List>
-        <ListItem onClick={() => setBotNavValue(0)} button key={'Home'}
-                  component={RouterLink} to="/feed">
-          <ListItemIcon>
-            <HomeOutlinedIcon/>
-          </ListItemIcon>
-          <ListItemText primary={'Home'}/>
-        </ListItem>
-        <ListItem onClick={() => setBotNavValue(2)} button key={'Dashboard'}
-                  component={RouterLink} to="/dashboard">
-          <ListItemIcon>
-            <DashboardOutlinedIcon/>
-          </ListItemIcon>
-          <ListItemText primary={'Dashboard'}/>
-        </ListItem>
-        <ListItem button key={'Tags'} component={RouterLink} to="/tags">
-          <ListItemIcon>
-            <LabelOutlinedIcon/>
-          </ListItemIcon>
-          <ListItemText primary={'Tags'}/>
-        </ListItem>
-        <ListItem button key={'Users'} component={RouterLink} to="/users">
-          <ListItemIcon>
-            <PeopleOutlineIcon/>
-          </ListItemIcon>
-          <ListItemText primary={'Users'}/>
-        </ListItem>
-        <ListItem button key={'Bookmarks'} component={RouterLink} to="/bookmarks">
-          <ListItemIcon>
-            <BookmarkBorderIcon/>
-          </ListItemIcon>
-          <ListItemText primary={'Bookmarks'}/>
-        </ListItem>
-        <ListItem button key={'Profile'} component={RouterLink} to={`/users/${auth.uid}`}>
-          <ListItemIcon>
-            <PersonOutlineIcon/>
-          </ListItemIcon>
-          <ListItemText primary={'Profile'}/>
-        </ListItem>
-        <ListItem button key={'Setting'} component={RouterLink} to="/edit-profile">
-          <ListItemIcon>
-            <SettingsOutlinedIcon/>
-          </ListItemIcon>
-          <ListItemText primary={'Setting'}/>
-        </ListItem>
-        <Box ml={1} mt={1} mb={2}>
-          <Button
-            onClick={() => setBotNavValue(1)}
-            component={RouterLink}
-            to="/posts/add"
-            variant="contained"
-            color="primary"
-            size='large'
-            className={classes.addIdeaButton}
-            startIcon={<AddIcon/>}
-          >
-            Add Post
-          </Button>
-        </Box>
-      </List>
-      <Divider/>
-      <List>
-        <ListItem button key={'Logout'} onClick={handleLogout}>
-          <ListItemIcon>
-            <ExitToAppIcon/>
-          </ListItemIcon>
-          <ListItemText primary={'Logout'}/>
-        </ListItem>
-      </List>
-      {footer}
+      <div>
+        <div className={classes.toolbar}/>
+        <List>
+          <ListItem onClick={() => setBotNavValue(0)} button key={'Home'}
+                    component={RouterLink} to="/feed">
+            <ListItemIcon>
+              <HomeOutlinedIcon/>
+            </ListItemIcon>
+            <ListItemText primary={'Home'}/>
+          </ListItem>
+          <ListItem onClick={() => setBotNavValue(2)} button key={'Dashboard'}
+                    component={RouterLink} to="/dashboard">
+            <ListItemIcon>
+              <DashboardOutlinedIcon/>
+            </ListItemIcon>
+            <ListItemText primary={'Dashboard'}/>
+          </ListItem>
+          <ListItem button key={'Tags'} component={RouterLink} to="/tags">
+            <ListItemIcon>
+              <LabelOutlinedIcon/>
+            </ListItemIcon>
+            <ListItemText primary={'Tags'}/>
+          </ListItem>
+          <ListItem button key={'Users'} component={RouterLink} to="/users">
+            <ListItemIcon>
+              <PeopleOutlineIcon/>
+            </ListItemIcon>
+            <ListItemText primary={'Users'}/>
+          </ListItem>
+          <ListItem button key={'Bookmarks'} component={RouterLink} to="/bookmarks">
+            <ListItemIcon>
+              <BookmarkBorderIcon/>
+            </ListItemIcon>
+            <ListItemText primary={'Bookmarks'}/>
+          </ListItem>
+          <ListItem button key={'Profile'} component={RouterLink} to={`/users/${auth.uid}`}>
+            <ListItemIcon>
+              <PersonOutlineIcon/>
+            </ListItemIcon>
+            <ListItemText primary={'Profile'}/>
+          </ListItem>
+          <ListItem button key={'Setting'} component={RouterLink} to="/edit-profile">
+            <ListItemIcon>
+              <SettingsOutlinedIcon/>
+            </ListItemIcon>
+            <ListItemText primary={'Setting'}/>
+          </ListItem>
+          <Box ml={1} mt={1} mb={2}>
+            <Button
+              onClick={() => setBotNavValue(1)}
+              component={RouterLink}
+              to="/posts/add"
+              variant="contained"
+              color="primary"
+              size='large'
+              className={classes.addIdeaButton}
+              startIcon={<AddIcon/>}
+            >
+              Add Post
+            </Button>
+          </Box>
+        </List>
+        <Divider/>
+        <List>
+          <ListItem button key={'Logout'} onClick={handleLogout}>
+            <ListItemIcon>
+              <ExitToAppIcon/>
+            </ListItemIcon>
+            <ListItemText primary={'Logout'}/>
+          </ListItem>
+        </List>
+        {footer}
+      </div>
     </div>
   );
 
@@ -378,9 +391,8 @@ function ResponsiveDrawer ({ ...props }) {
   return (
     <Fragment>
       <AppBar position="fixed" className={classes.appBar}>
-        <Box style={{  }}>
-          <Toolbar className={classes.toolbarTop}
-                   style={{ justifyContent: 'space-between' }}>
+        <Box style={{ }}>
+          <Toolbar className={classes.toolbarTop}>
             {!isMobileScreen && <IconButton
               color="inherit"
               aria-label="open drawer"
