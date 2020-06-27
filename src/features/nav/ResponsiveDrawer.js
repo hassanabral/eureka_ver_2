@@ -35,6 +35,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import BottomNavigationBar from './BottomNavigationBar';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { useLastLocation } from 'react-router-last-location';
+import GitHubIcon from '@material-ui/icons/GitHub';
 import GoogleLoginButton from '../../app/common/util/GoogleLoginButton';
 import { toastr } from 'react-redux-toastr';
 
@@ -413,6 +414,19 @@ function ResponsiveDrawer ({ ...props }) {
                 Eureka</Button>
             }
 
+            {!isAuthenticated && <div>
+              <Button
+                variant="text"
+                style={{color: '#fff'}}
+                size='large'
+                component={Link}
+                target="_blank"
+                href='https://github.com/hassanyakef/eureka_ver_2'
+                startIcon={<GitHubIcon />}
+              >
+                Github
+              </Button>
+            </div>}
             {isAuthenticated && <div>
               <IconButton
                 className={classes.menuItem}
@@ -484,7 +498,8 @@ function ResponsiveDrawer ({ ...props }) {
         </Hidden>
       </nav>
       {isMobileScreen &&
-      <BottomNavigationBar isAuthenticated={isAuthenticated} botNavValue={botNavValue} setBotNavValue={setBotNavValue}
+      <BottomNavigationBar isAuthenticated={isAuthenticated} botNavValue={botNavValue}
+                           setBotNavValue={setBotNavValue}
                            authUid={auth?.uid} setMobileOpen={setMobileOpen}/>}
     </Fragment>
   );
