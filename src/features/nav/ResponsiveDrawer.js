@@ -40,40 +40,36 @@ import GoogleLoginButton from '../../app/common/util/GoogleLoginButton';
 import { toastr } from 'react-redux-toastr';
 
 const useStyles = makeStyles(theme => {
-  const drawerWidth = 400;
+  const drawerWidthLg = 400;
+  const drawerWidthSm = 240;
 
   return {
     root: {
       display: 'flex',
     },
     outerDiv: {
-      [theme.breakpoints.up('sm')]: {
-        marginLeft: `10%`
-      },
-      [theme.breakpoints.up('md')]: {
-        marginLeft: `calc(${drawerWidth}px - 50%)`
-      },
-
+      display: 'flex',
+      justifyContent: 'flex-end'
     },
     drawer: {
       [theme.breakpoints.up('sm')]: {
-        width: 240,
+        width: drawerWidthSm,
         flexShrink: 0,
       },
-      [theme.breakpoints.up('md')]: {
-        width: drawerWidth,
+      [theme.breakpoints.up('lg')]: {
+        width: drawerWidthLg,
         flexShrink: 0,
       },
 
     },
     appBar: {
       [theme.breakpoints.up('sm')]: {
-        width: `calc(100% - 240px)`,
-        marginLeft: 240,
+        width: `calc(100% - ${drawerWidthSm}px)`,
+        marginLeft: drawerWidthSm,
       },
-      [theme.breakpoints.up('md')]: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
+      [theme.breakpoints.up('lg')]: {
+        width: `calc(100% - ${drawerWidthLg}px)`,
+        marginLeft: drawerWidthLg,
       }
     },
     appBarBottom: {
@@ -99,9 +95,11 @@ const useStyles = makeStyles(theme => {
     },
     toolbar: theme.mixins.toolbar,
     drawerPaper: {
-      width: 240,
-      [theme.breakpoints.up('md')]: {
-        width: drawerWidth,
+      [theme.breakpoints.up('sm')]: {
+        width: drawerWidthSm,
+      },
+      [theme.breakpoints.up('lg')]: {
+        width: drawerWidthLg
       },
 
     },
@@ -345,40 +343,42 @@ function ResponsiveDrawer ({ ...props }) {
 
   const unAuthenticatedMenu = (
     <div className={classes.outerDiv}>
-      <div className={classes.toolbar}/>
-      <List>
-        <ListItem onClick={() => setBotNavValue(0)} button key={'Home'}
-                  component={RouterLink} to="/feed">
-          <ListItemIcon>
-            <HomeOutlinedIcon/>
-          </ListItemIcon>
-          <ListItemText primary={'Home'}/>
-        </ListItem>
-        <ListItem button key={'Tags'} component={RouterLink} to="/tags">
-          <ListItemIcon>
-            <LabelOutlinedIcon/>
-          </ListItemIcon>
-          <ListItemText primary={'Tags'}/>
-        </ListItem>
-        <ListItem button key={'Users'} component={RouterLink} to="/users">
-          <ListItemIcon>
-            <PeopleOutlineIcon/>
-          </ListItemIcon>
-          <ListItemText primary={'Users'}/>
-        </ListItem>
-      </List>
-      <Divider/>
-      <List>
-        <GoogleLoginButton/>
-      </List>
-      {footer}
+      <div>
+        <div className={classes.toolbar}/>
+        <List style={{width: '180px'}}>
+          <ListItem onClick={() => setBotNavValue(0)} button key={'Home'}
+                    component={RouterLink} to="/feed">
+            <ListItemIcon>
+              <HomeOutlinedIcon/>
+            </ListItemIcon>
+            <ListItemText primary={'Home'}/>
+          </ListItem>
+          <ListItem button key={'Tags'} component={RouterLink} to="/tags">
+            <ListItemIcon>
+              <LabelOutlinedIcon/>
+            </ListItemIcon>
+            <ListItemText primary={'Tags'}/>
+          </ListItem>
+          <ListItem button key={'Users'} component={RouterLink} to="/users">
+            <ListItemIcon>
+              <PeopleOutlineIcon/>
+            </ListItemIcon>
+            <ListItemText primary={'Users'}/>
+          </ListItem>
+        </List>
+        <Divider/>
+        <List>
+          <GoogleLoginButton/>
+        </List>
+        {footer}
+      </div>
     </div>
   );
 
   return (
     <Fragment>
       <AppBar position="fixed" className={classes.appBar}>
-        <Box style={{ maxWidth: '850px' }}>
+        <Box style={{  }}>
           <Toolbar className={classes.toolbarTop}
                    style={{ justifyContent: 'space-between' }}>
             {!isMobileScreen && <IconButton
