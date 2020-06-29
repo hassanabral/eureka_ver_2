@@ -60,7 +60,7 @@ const TagsPage = ({ theme }) => {
         {selectedTagRedux ? <Typography variant='h5'>
           #{selectedTag || selectedTagRedux}
         </Typography> : <Typography variant='h5'>
-          Tags
+          Search Post by Tag
         </Typography>}
         <Box mt={2}>
           <Divider/>

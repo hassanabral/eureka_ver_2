@@ -65,11 +65,6 @@ const Dashboard = ({ theme }) => {
     <Box mb={2}>
       <Card className={classes.card}>
         <Box my={1}>
-          <Typography variant='h3'>
-            Dashboard
-          </Typography>
-        </Box>
-        <Box my={1}>
           <Typography variant='h5'>
             <PersonIcon className={classes.icon}/>
             Welcome {displayName}

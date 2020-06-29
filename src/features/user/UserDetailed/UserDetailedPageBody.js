@@ -31,7 +31,7 @@ const UserDetailedPageBody = ({ theme, sectionTitle, posts, loading }) => {
     <Fragment>
       <Card className={classes.card}>
         <Typography variant='h5'>
-          {sectionTitle}
+          {isBookmarkPage ? 'Your saved posts' : sectionTitle}
         </Typography>
         <Box mt={2}>
           <Divider/>

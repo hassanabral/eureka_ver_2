@@ -11,7 +11,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 import DashboardOutlinedIcon from '@material-ui/icons/DashboardOutlined';
@@ -19,7 +19,12 @@ import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
-import { Link as RouterLink, useHistory, withRouter } from 'react-router-dom';
+import {
+  Link as RouterLink,
+  useHistory,
+  withRouter,
+  useLocation
+} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import AddIcon from '@material-ui/icons/Add';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
@@ -27,8 +32,6 @@ import { useSelector } from 'react-redux';
 import Avatar from '@material-ui/core/Avatar';
 import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import { useFirebase } from 'react-redux-firebase';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -40,39 +43,50 @@ import GoogleLoginButton from '../../app/common/util/GoogleLoginButton';
 import { toastr } from 'react-redux-toastr';
 
 const useStyles = makeStyles(theme => {
-  const drawerWidthLg = 380;
-  const drawerWidthSm = 220;
+  const drawerMarginLeftLg = 100;
+  const drawerMarginLeftMd = 50;
+  const drawerMarginLeftSm = 25;
+
+  const menuBarWidthLg = 250;
+  const menuBarWidthSm = 200;
+  const menuBarWidthXs = 230;
 
   return {
     root: {
       display: 'flex',
     },
     outerDiv: {
-      marginRight: '15px',
-      marginLeft: '15px',
       display: 'flex',
       justifyContent: 'flex-end',
     },
     drawer: {
       [theme.breakpoints.up('sm')]: {
-        width: drawerWidthSm,
+        marginLeft: drawerMarginLeftSm + menuBarWidthSm,
+        flexShrink: 0,
+      },
+      [theme.breakpoints.up('md')]: {
+        marginLeft: drawerMarginLeftMd + menuBarWidthSm,
         flexShrink: 0,
       },
       [theme.breakpoints.up('lg')]: {
-        width: drawerWidthLg,
+        marginLeft: drawerMarginLeftLg + menuBarWidthLg,
         flexShrink: 0,
       },
-
     },
     appBar: {
       [theme.breakpoints.up('sm')]: {
-        width: `calc(100% - ${drawerWidthSm}px)`,
-        marginLeft: drawerWidthSm,
+        width: `calc(100% - ${drawerMarginLeftSm + menuBarWidthSm}px)`,
+        marginLeft: drawerMarginLeftSm + menuBarWidthSm,
+      },
+      [theme.breakpoints.up('md')]: {
+        width: `calc(100% - ${drawerMarginLeftMd + menuBarWidthSm}px)`,
+        marginLeft: drawerMarginLeftMd + menuBarWidthSm,
       },
       [theme.breakpoints.up('lg')]: {
-        width: `calc(100% - ${drawerWidthLg}px)`,
-        marginLeft: drawerWidthLg,
-      }
+        width: `calc(100% - ${drawerMarginLeftLg + menuBarWidthLg}px)`,
+        marginLeft: drawerMarginLeftLg + menuBarWidthLg,
+      },
+
     },
     toolbarTop: {
       justifyContent: 'space-between',
@@ -107,10 +121,22 @@ const useStyles = makeStyles(theme => {
     toolbar: theme.mixins.toolbar,
     drawerPaper: {
       [theme.breakpoints.up('sm')]: {
-        width: drawerWidthSm,
+        paddingLeft: drawerMarginLeftSm,
+      },
+      [theme.breakpoints.up('md')]: {
+        paddingLeft: drawerMarginLeftMd,
       },
       [theme.breakpoints.up('lg')]: {
-        width: drawerWidthLg
+        paddingLeft: drawerMarginLeftLg,
+      },
+    },
+    menuBar: {
+      width: menuBarWidthXs,
+      [theme.breakpoints.up('sm')]: {
+        width: menuBarWidthSm,
+      },
+      [theme.breakpoints.up('lg')]: {
+        width: menuBarWidthLg
       },
 
     },
@@ -123,40 +149,6 @@ const useStyles = makeStyles(theme => {
       paddingRight: theme.spacing(5),
       paddingLeft: theme.spacing(4),
       textTransform: 'capitalize'
-    },
-    search: {
-      position: 'relative',
-      borderRadius: theme.shape.borderRadius,
-      backgroundColor: fade(theme.palette.common.white, 0.15),
-      '&:hover': {
-        backgroundColor: fade(theme.palette.common.white, 0.25),
-      },
-      marginLeft: 0,
-      marginRight: theme.spacing(30),
-      paddingLeft: 0,
-      width: '100%',
-      [theme.breakpoints.down('sm')]: {
-        marginRight: theme.spacing(5),
-      },
-      [theme.breakpoints.up('sm')]: {
-        width: 'auto',
-        marginRight: theme.spacing(45),
-      },
-      [theme.breakpoints.up('md')]: {
-        marginRight: theme.spacing(55),
-      },
-      [theme.breakpoints.up('lg')]: {
-        marginRight: theme.spacing(72),
-      },
-    },
-    searchIcon: {
-      width: theme.spacing(7),
-      height: '100%',
-      position: 'absolute',
-      pointerEvents: 'none',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     inputRoot: {
       color: 'inherit',
@@ -200,6 +192,7 @@ function usePrevious (value) {
 function ResponsiveDrawer ({ ...props }) {
 
   const history = useHistory();
+  const { pathname: currentLocation } = useLocation();
   const firebase = useFirebase();
 
   const handleLogout = () => {
@@ -232,8 +225,13 @@ function ResponsiveDrawer ({ ...props }) {
 
   const prevBotNavValue = usePrevious(botNavValue);
 
-  const getLastLocationName = (lastLocationPath) => {
-    switch (lastLocationPath) {
+  const getCurrentLocationName = (currentLocationPath) => {
+    if (currentLocationPath) {
+      if (new RegExp('^/users/').test(currentLocation)) {
+        return 'User Detail';
+      }
+    }
+    switch (currentLocationPath) {
       case '/feed':
         return 'Home';
       case '/bookmarks':
@@ -245,18 +243,21 @@ function ResponsiveDrawer ({ ...props }) {
       case '/users':
         return 'Users';
       case '/posts/add':
-        return 'Post';
+        return 'Add Post';
       case '/edit-profile':
         return 'Setting';
-      case undefined:
-        return null;
       default:
-        return 'Back';
+        return null;
     }
   };
 
+  const [currentLocationName, setCurrentLocationName] = useState();
+
+  useEffect(() => {
+    setCurrentLocationName(getCurrentLocationName(currentLocation));
+  }, [currentLocation, setCurrentLocationName, getCurrentLocationName]);
+
   const lastLocation = useLastLocation();
-  const lastLocationName = getLastLocationName(lastLocation?.pathname);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -270,7 +271,7 @@ function ResponsiveDrawer ({ ...props }) {
       position: 'absolute',
       bottom: '25px',
     }}>
-      <Typography>Created with ❤️ by <Link href="https://github.com/hassanyakef"
+      <Typography>Created with <span role='img' aria-label='love emoji'>❤️</span> by <Link href="https://github.com/hassanyakef"
                                            target='_blank'>Hassan
         Yakefujiang</Link></Typography>
     </Box>
@@ -280,46 +281,53 @@ function ResponsiveDrawer ({ ...props }) {
     <div className={classes.outerDiv}>
       <div>
         <div className={classes.toolbar}/>
-        <List>
-          <ListItem onClick={() => setBotNavValue(0)} button key={'Home'}
+        <List className={classes.menuBar}>
+          <ListItem selected={currentLocation === '/feed'}
+                    onClick={() => setBotNavValue(0)} button key={'Home'}
                     component={RouterLink} to="/feed">
             <ListItemIcon>
               <HomeOutlinedIcon/>
             </ListItemIcon>
             <ListItemText primary={'Home'}/>
           </ListItem>
-          <ListItem onClick={() => setBotNavValue(2)} button key={'Dashboard'}
+          <ListItem selected={currentLocation === '/dashboard'}
+                    onClick={() => setBotNavValue(2)} button key={'Dashboard'}
                     component={RouterLink} to="/dashboard">
             <ListItemIcon>
               <DashboardOutlinedIcon/>
             </ListItemIcon>
             <ListItemText primary={'Dashboard'}/>
           </ListItem>
-          <ListItem button key={'Tags'} component={RouterLink} to="/tags">
+          <ListItem selected={currentLocation === '/tags'} button key={'Tags'}
+                    component={RouterLink} to="/tags">
             <ListItemIcon>
               <LabelOutlinedIcon/>
             </ListItemIcon>
             <ListItemText primary={'Tags'}/>
           </ListItem>
-          <ListItem button key={'Users'} component={RouterLink} to="/users">
+          <ListItem selected={currentLocation === '/users'} button key={'Users'}
+                    component={RouterLink} to="/users">
             <ListItemIcon>
               <PeopleOutlineIcon/>
             </ListItemIcon>
             <ListItemText primary={'Users'}/>
           </ListItem>
-          <ListItem button key={'Bookmarks'} component={RouterLink} to="/bookmarks">
+          <ListItem selected={currentLocation === '/bookmarks'} button key={'Bookmarks'}
+                    component={RouterLink} to="/bookmarks">
             <ListItemIcon>
               <BookmarkBorderIcon/>
             </ListItemIcon>
             <ListItemText primary={'Bookmarks'}/>
           </ListItem>
-          <ListItem button key={'Profile'} component={RouterLink} to={`/users/${auth.uid}`}>
+          <ListItem selected={new RegExp('^/users/').test(currentLocation)} button
+                    key={'Profile'} component={RouterLink} to={`/users/${auth.uid}`}>
             <ListItemIcon>
               <PersonOutlineIcon/>
             </ListItemIcon>
             <ListItemText primary={'Profile'}/>
           </ListItem>
-          <ListItem button key={'Setting'} component={RouterLink} to="/edit-profile">
+          <ListItem selected={currentLocation === '/edit-profile'} button key={'Setting'}
+                    component={RouterLink} to="/edit-profile">
             <ListItemIcon>
               <SettingsOutlinedIcon/>
             </ListItemIcon>
@@ -358,21 +366,24 @@ function ResponsiveDrawer ({ ...props }) {
     <div className={classes.outerDiv}>
       <div>
         <div className={classes.toolbar}/>
-        <List style={{width: '180px'}}>
-          <ListItem onClick={() => setBotNavValue(0)} button key={'Home'}
+        <List className={classes.menuBar}>
+          <ListItem selected={currentLocation === '/feed'}
+                    onClick={() => setBotNavValue(0)} button key={'Home'}
                     component={RouterLink} to="/feed">
             <ListItemIcon>
               <HomeOutlinedIcon/>
             </ListItemIcon>
             <ListItemText primary={'Home'}/>
           </ListItem>
-          <ListItem button key={'Tags'} component={RouterLink} to="/tags">
+          <ListItem selected={currentLocation === '/tags'} button key={'Tags'}
+                    component={RouterLink} to="/tags">
             <ListItemIcon>
               <LabelOutlinedIcon/>
             </ListItemIcon>
             <ListItemText primary={'Tags'}/>
           </ListItem>
-          <ListItem button key={'Users'} component={RouterLink} to="/users">
+          <ListItem selected={currentLocation === '/users'} button key={'Users'}
+                    component={RouterLink} to="/users">
             <ListItemIcon>
               <PeopleOutlineIcon/>
             </ListItemIcon>
@@ -391,7 +402,7 @@ function ResponsiveDrawer ({ ...props }) {
   return (
     <Fragment>
       <AppBar position="fixed" className={classes.appBar}>
-        <Box style={{ }}>
+        <Box style={{}}>
           <Toolbar className={classes.toolbarTop}>
             {!isMobileScreen && <IconButton
               color="inherit"
@@ -403,38 +414,43 @@ function ResponsiveDrawer ({ ...props }) {
               <MenuIcon/>
             </IconButton>}
             {
-              lastLocationName && lastLocation && <Button
-                startIcon={<ArrowBackIosIcon className={classes.backArrowIcon}/>}
-                className={classes.mainButton}
-                size='medium'
-                color='inherit'
-                variant='text'
-                component={RouterLink}
-                to={lastLocation || '/feed'}
-              >
-                {lastLocationName}</Button>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <IconButton
+                  size="medium"
+                  style={{ color: '#fff', }}
+                  component={RouterLink}
+                  to={lastLocation || '/feed'}
+                >
+                  <ArrowBackIosIcon style={{ marginLeft: '7px' }}
+                  />
+                </IconButton>
+                {!isMobileScreen && <Box ml={1}>
+                  <Typography component='span'
+                              variant='h5'
+                  >
+                    {currentLocationName}
+                  </Typography>
+                </Box>}
+              </div>
+
             }
-            {
-              !lastLocationName && <Button
-                className={classes.mainButton}
-                size='medium'
-                color='inherit'
-                variant='text'
-                component={RouterLink}
-                to={lastLocation || '/feed'}
-              >
-                Eureka</Button>
+            {isMobileScreen &&
+            <Typography
+              variant='h5'
+            >
+              {currentLocationName}
+            </Typography>
             }
 
             {!isAuthenticated && <div>
               <Button
                 variant="text"
-                style={{color: '#fff'}}
+                style={{ color: '#fff' }}
                 size='large'
                 component={Link}
                 target="_blank"
                 href='https://github.com/hassanyakef/eureka_ver_2'
-                startIcon={<GitHubIcon />}
+                startIcon={<GitHubIcon/>}
               >
                 Github
               </Button>
@@ -445,33 +461,12 @@ function ResponsiveDrawer ({ ...props }) {
                 aria-label="Profile" color="inherit"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
-                onClick={handleMenu}
+                component={RouterLink}
+                to={`/users/${auth?.uid}`}
               >
                 <Avatar className={classes.small} alt={auth?.displayName}
                         src={auth?.photoURL}/>
               </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={open}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose} component={RouterLink}
-                          to={`/users/${auth?.uid}`}>Profile</MenuItem>
-                <MenuItem onClick={handleClose} component={RouterLink}
-                          to="/bookmarks">Bookmarks</MenuItem>
-                <MenuItem onClick={handleClose} component={RouterLink}
-                          to={`/edit-profile`}>Setting</MenuItem>
-              </Menu>
             </div>}
           </Toolbar>
         </Box>
