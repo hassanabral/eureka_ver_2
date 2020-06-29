@@ -228,7 +228,7 @@ function ResponsiveDrawer ({ ...props }) {
   const getCurrentLocationName = (currentLocationPath) => {
     if (currentLocationPath) {
       if (new RegExp('^/users/').test(currentLocation)) {
-        return 'User Detail';
+        return null;
       }
     }
     switch (currentLocationPath) {

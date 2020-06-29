@@ -4,6 +4,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import './RichEditor.css';
 
 const RichEditor = ({ input,placeholder, config }) => {
+
   return (
     <CKEditor
       data={input.value}
@@ -14,7 +15,7 @@ const RichEditor = ({ input,placeholder, config }) => {
         height: 'auto',
         ...config
       }}
-      style={{width: '80vw!important', border: 'solid 5px red'}}
+      style={{ border: 'solid 5px red' }}
       placeholder={placeholder}
       onChange={(event, editor) => {
         return input.onChange(editor.getData())

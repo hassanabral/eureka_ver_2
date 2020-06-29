@@ -61,8 +61,7 @@ const EditPost = ({ theme, handleSubmit, pristine, invalid, submitting, postId }
       <Grid item lg={8} sm={12}>
         <Card className={classes.card}>
           <Typography variant='h4'>Edit Post</Typography>
-          <Typography variant='subtitle1'>Update and save your post <span
-            style={{ visibility: 'hidden' }}>sssssssss</span></Typography>
+          <Typography variant='subtitle1'>Update and save your post</Typography>
           <form onSubmit={handleSubmit(handleUpdatePost)}>
             <Box mb={1}>
               <Field
