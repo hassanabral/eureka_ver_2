@@ -37,7 +37,6 @@ import { useFirebase } from 'react-redux-firebase';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import BottomNavigationBar from './BottomNavigationBar';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import { useLastLocation } from 'react-router-last-location';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import GoogleLoginButton from '../../app/common/util/GoogleLoginButton';
 import { toastr } from 'react-redux-toastr';
@@ -257,8 +256,6 @@ function ResponsiveDrawer ({ ...props }) {
     setCurrentLocationName(getCurrentLocationName(currentLocation));
   }, [currentLocation, setCurrentLocationName, getCurrentLocationName]);
 
-  const lastLocation = useLastLocation();
-
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
     if (mobileOpen) {
@@ -418,8 +415,7 @@ function ResponsiveDrawer ({ ...props }) {
                 <IconButton
                   size="medium"
                   style={{ color: '#fff', }}
-                  component={RouterLink}
-                  to={lastLocation || '/feed'}
+                  onClick={() => history.goBack()}
                 >
                   <ArrowBackIosIcon style={{ marginLeft: '7px' }}
                   />

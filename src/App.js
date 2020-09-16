@@ -24,7 +24,6 @@ import PrivateRoute from './app/common/util/PrivateRoute';
 import { useSelector } from 'react-redux';
 import Spinner from './app/common/util/Spinner';
 import EditPostWrapper from './features/post/postForm/EditPostWrapper';
-import { LastLocationProvider } from 'react-router-last-location';
 
 const theme = createMuiTheme({
   palette: {
@@ -92,7 +91,6 @@ function App () {
           <Route
             path='/(.+)'
             render={() => (
-              <LastLocationProvider>
                 <Fragment>
                   <CssBaseline/>
                   <ResponsiveDrawer/>
@@ -124,7 +122,6 @@ function App () {
                     </Container>
                   </main>
                 </Fragment>
-                </LastLocationProvider>
               )}
           />
           </div>
