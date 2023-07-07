@@ -10,7 +10,7 @@ Here is the **tech stack** I used for this project:
 - [Redux](https://redux.js.org/)
 - [Firebase](https://firebase.google.com/)
 - [Redux form](https://redux-form.com/8.3.0/)
-- Other tools (moment, react-html-parser, react-infinite-scroller, react-redux-toaster, ck-editor).
+- **NPM packages**: moment, react-html-parser, react-infinite-scroller, react-redux-toaster, ck-editor).
 
 ### How to run it locally?
 - ``` npm install ```
