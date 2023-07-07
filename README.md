@@ -1,6 +1,6 @@
 ## Eureka v2
 Eureka is a web-based, social networking platform (similar to Reddit and Facebook) where users can create and share text-based posts. It allows users to search posts by hashtags, bookmark a post, see threaded comments, like and comment on other users' posts.
-[🚀 Live on web](https://eureka-v2.web.app) and [Github repos](https://github.com/hassanyakef/eureka_ver_2).
+[🚀 Live on web](https://eureka-v2.web.app) and [Blog post about my journey in developing this app](https://hassanabral.com/personal-project).
 
 Here is the **tech stack** I used for this project:
 
