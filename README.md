@@ -4,6 +4,7 @@ Eureka is a web-based, social networking platform (similar to Reddit and Faceboo
 
 Here is the **tech stack** I used for this project:
 
+- JavaScript
 - [Material-UI](https://material-ui.com/) 
 - [React.js](https://reactjs.org/)
 - [Redux](https://redux.js.org/)
