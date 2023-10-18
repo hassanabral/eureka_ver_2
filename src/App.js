@@ -78,6 +78,7 @@ const useStyles = makeStyles(theme => ({
 
 function App () {
   const classes = useStyles();
+  const test = 'test'
   const auth = useSelector(state => state.firebase.auth, []);
   if (!auth.isLoaded && auth.isEmpty) return <Spinner />;
 
