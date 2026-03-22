@@ -43,9 +43,9 @@
 - [x] Verify: Build succeeds, zero tsc errors
 
 ### Phase 5: Firebase SDK 7 to 10 (Compat Layer)
-- [ ] Update firebase imports to compat paths
-- [ ] Install firebase@10
-- [ ] Verify: Auth, Firestore, Storage all work
+- [x] Update firebase imports to compat paths
+- [x] Install firebase@10
+- [x] Verify: Build succeeds, zero tsc errors
 
 ### Phase 6: Remove react-redux-firebase & redux-firestore
 - [ ] Create modular Firebase init
