@@ -1,11 +1,8 @@
-const functions = require('firebase-functions');
+const functions = require('firebase-functions/v1');
 const admin = require('firebase-admin');
-admin.initializeApp(functions.config().firebase);
+admin.initializeApp();
 const FieldValue = admin.firestore.FieldValue;
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
 exports.incrementPostLikeCount =
   functions.firestore.document('likes/{likeId}').onCreate(like => {
     const newLike = like.data();

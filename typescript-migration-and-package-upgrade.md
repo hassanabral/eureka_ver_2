@@ -104,10 +104,10 @@
 - [x] Verify: Build succeeds, zero tsc errors
 
 ### Phase 12: Cloud Functions Upgrade
-- [ ] Upgrade Node runtime to 20
-- [ ] Upgrade firebase-admin and firebase-functions
-- [ ] Update functions/index.js imports
-- [ ] Verify: Functions deploy/work
+- [x] Upgrade Node runtime from 8 to 20
+- [x] Upgrade firebase-admin to ^12.0.0, firebase-functions to ^4.9.0
+- [x] Update imports: firebase-functions/v1, admin.initializeApp() (no args)
+- [x] Upgrade eslint to ^8.0.0, firebase-functions-test to ^3.0.0
 
 ### Phase 13: Final Cleanup
 - [ ] Remove allowJs from tsconfig
