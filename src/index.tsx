@@ -8,8 +8,8 @@ import { store } from './app/store';
 import { auth } from './app/firebase';
 import { SET_AUTH, CLEAR_AUTH } from './features/auth/authSlice';
 import ScrollToTop from './app/common/util/ScrollToTop';
-import ReduxToastr from 'react-redux-toastr';
-import 'react-redux-toastr/lib/css/react-redux-toastr.min.css';
+import { SnackbarProvider, useSnackbar } from 'notistack';
+import { setSnackbarRef } from './app/snackbar';
 
 // Listen for auth state changes and dispatch to Redux
 auth.onAuthStateChanged((user) => {
@@ -25,20 +25,27 @@ auth.onAuthStateChanged((user) => {
   }
 });
 
+// Bridge component to capture notistack ref for use outside React
+function SnackbarRefBridge() {
+  const snackbar = useSnackbar();
+  React.useEffect(() => {
+    setSnackbarRef(snackbar);
+  }, [snackbar]);
+  return null;
+}
+
 const root = createRoot(document.getElementById('root')!);
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
-        <ScrollToTop>
-          <ReduxToastr
-            position='bottom-right'
-            transitionIn='fadeIn'
-            transitionOut='fadeOut'
-          />
-          <App />
-        </ScrollToTop>
-      </BrowserRouter>
+      <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+        <SnackbarRefBridge />
+        <BrowserRouter>
+          <ScrollToTop>
+            <App />
+          </ScrollToTop>
+        </BrowserRouter>
+      </SnackbarProvider>
     </Provider>
   </React.StrictMode>
 );

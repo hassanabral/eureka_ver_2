@@ -23,7 +23,7 @@ import {
   toggleLikeComment
 } from '../postActions';
 import { useDispatch, useSelector } from 'react-redux';
-import { toastr } from 'react-redux-toastr';
+import { showError } from '../../../app/snackbar';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -73,7 +73,7 @@ const PostDetailedComment = ({ comment, commentOrReply = 'comment', showReplies 
         setLikeCountState(likeCountState + 1);
       }
     } else {
-      toastr.error('Oops', 'You need to login to like a comment');
+      showError('You need to login to like a comment');
     }
 
   };

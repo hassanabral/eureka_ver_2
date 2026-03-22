@@ -1,4 +1,4 @@
-import { toastr } from 'react-redux-toastr';
+import { showSuccess, showError } from '../../snackbar';
 import { auth, googleProvider, db, fieldValue } from '../../firebase';
 
 export const truncate = (str, len) => {
@@ -54,10 +54,10 @@ export const signInWithGoogle = async () => {
         createdAt: fieldValue.serverTimestamp(),
       });
     }
-    toastr.success('Success!', 'You are logged in.');
+    showSuccess('You are logged in.');
     return user;
   } catch(err) {
-    toastr.error('Oops', 'Something went wrong');
+    showError('Something went wrong');
     console.log(err);
   }
 

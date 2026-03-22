@@ -1,4 +1,4 @@
-import { toastr } from 'react-redux-toastr';
+import { showSuccess } from '../../app/snackbar';
 import { db } from '../../app/firebase';
 import {GET_USERS, ASYNC_ACTION_STARTED, ASYNC_ACTION_ERROR, ASYNC_ACTION_FINISHED} from './userSlice';
 
@@ -7,7 +7,7 @@ export const updateProfile = (formData: any, uid: string) => {
     const { isLoaded, isEmpty, ...updatedUser } = formData;
     try {
       await db.collection('users').doc(uid).update(updatedUser);
-      dispatch(() => toastr.success('Success', 'Your profile has been updated'));
+      dispatch(() => showSuccess('Your profile has been updated'));
     } catch (error) {
       console.log(error);
     }

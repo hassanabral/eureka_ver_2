@@ -37,7 +37,7 @@ import BottomNavigationBar from './BottomNavigationBar';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import GoogleLoginButton from '../../app/common/util/GoogleLoginButton';
-import { toastr } from 'react-redux-toastr';
+import { showSuccess } from '../../app/snackbar';
 
 const useStyles = makeStyles(theme => {
   const drawerMarginLeftLg = 100;
@@ -195,7 +195,7 @@ function ResponsiveDrawer ({ ...props }) {
     firebaseAuth.signOut().then(() => {
       navigate('/');
     });
-    toastr.success('Success!', 'You are logged out.');
+    showSuccess('You are logged out.');
   };
 
   const isMobileScreen = useMediaQuery('(max-width:600px)');

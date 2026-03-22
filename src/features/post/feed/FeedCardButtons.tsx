@@ -8,7 +8,7 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import { Box } from '@mui/material';
 import { likeOrUnlike, toggleLike } from '../postActions';
 import { useDispatch, useSelector } from 'react-redux';
-import { toastr } from 'react-redux-toastr';
+import { showError } from '../../../app/snackbar';
 
 
 const useStyles = makeStyles(theme => ({
@@ -49,7 +49,7 @@ const FeedCardButtons = ({ likeCount, commentCount, savedCount, postId }) => {
         setLikeCountState(likeCountState + 1);
       }
     } else {
-      toastr.error('Oops', 'You need to login to like a post');
+      showError('You need to login to like a post');
     }
 
   }

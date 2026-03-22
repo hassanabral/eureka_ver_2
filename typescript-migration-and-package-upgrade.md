@@ -86,10 +86,12 @@
 - [x] Verify: Build succeeds, zero tsc errors
 
 ### Phase 10: Replace react-redux-toastr with notistack
-- [ ] Install notistack, wrap app with SnackbarProvider
-- [ ] Replace toastr calls with enqueueSnackbar
-- [ ] Remove react-redux-toastr, ToastrReducer
-- [ ] Verify: Notifications work
+- [x] Install notistack, wrap app with SnackbarProvider
+- [x] Create ref-based global snackbar utility (showSuccess, showError) for action creators
+- [x] Replace all toastr.success/error calls across 7 files
+- [x] Remove ToastrReducer from rootReducer
+- [x] Remove react-redux-toastr package and unused validator.ts
+- [x] Verify: Build succeeds, zero tsc errors
 
 ### Phase 11: Upgrade Remaining Packages
 - [ ] Upgrade @reduxjs/toolkit to 2.x

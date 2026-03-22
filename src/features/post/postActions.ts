@@ -1,4 +1,4 @@
-import { toastr } from 'react-redux-toastr';
+import { showSuccess, showError } from '../../app/snackbar';
 import { readIds } from '../../app/common/util/helpers';
 import { db, fieldValue } from '../../app/firebase';
 
@@ -70,10 +70,10 @@ export const createPost = (newPost: any) => {
           }
         });
       }
-      toastr.success('Success!', 'Post has been created');
+      showSuccess('Post has been created');
       return newPostFinal;
     } catch (error) {
-      toastr.error('Oops', 'Something went wrong');
+      showError('Something went wrong');
     }
   };
 };
@@ -84,10 +84,10 @@ export const deletePost = async (postId: string) => {
       deleted: true,
       body: '<p>[Deleted]</p>'
     });
-    toastr.success('Success!', 'Post has been deleted');
+    showSuccess('Post has been deleted');
   } catch (error) {
     console.log('err', error);
-    toastr.error('Oops', 'Something went wrong');
+    showError('Something went wrong');
   }
 };
 
@@ -99,10 +99,10 @@ export const deleteComment = async (commentId: string) => {
     await querySnapshot.docs[0].ref.update({
       commentBody: '<p>[Deleted]</p>'
     });
-    toastr.success('Success!', 'Comment has been deleted');
+    showSuccess('Comment has been deleted');
   } catch (error) {
     console.log('err', error);
-    toastr.error('Oops', 'Something went wrong');
+    showError('Something went wrong');
   }
 };
 
@@ -125,7 +125,7 @@ export const likeOrUnlike = (postId: string) => {
         });
     } catch (error) {
       console.log('error', error);
-      toastr.error('Oops', 'Something went wrong');
+      showError('Something went wrong');
     }
   };
 };
@@ -142,7 +142,7 @@ export const savePost = (postId: string) => {
       if (bookmarkExists) {
         bookmarkRef.delete();
         dispatch(REMOVE_BOOKMARK(postId));
-        toastr.success('Success!', 'Post is removed from your bookmarks.');
+        showSuccess('Post is removed from your bookmarks.');
       } else {
         bookmarkRef.set({
           userId: uid,
@@ -150,12 +150,12 @@ export const savePost = (postId: string) => {
         });
         const postRef = await db.collection('posts').doc(postId).get();
         dispatch(ADD_BOOKMARK({ id: postRef.id, ...postRef.data() }));
-        toastr.success('Success!', 'Post is saved to your bookmarks.');
+        showSuccess('Post is saved to your bookmarks.');
       }
 
     } catch (error) {
       console.log('error', error);
-      toastr.error('Oops', 'Something went wrong');
+      showError('Something went wrong');
     }
   };
 };
@@ -171,7 +171,7 @@ export const toggleBookmark = (postId: string, setSaved: Function) => {
       });
     } catch (error) {
       console.log('err', error);
-      toastr.error('Oops', 'Something went wrong');
+      showError('Something went wrong');
     }
   };
 };
@@ -190,7 +190,7 @@ export const getBookmarks = () => {
       dispatch(ASYNC_ACTION_FINISHED());
     } catch (error) {
       console.log('err', error);
-      toastr.error('Oops', 'Something went wrong');
+      showError('Something went wrong');
       dispatch(ASYNC_ACTION_ERROR());
     }
   };
@@ -215,7 +215,7 @@ export const likeOrUnlikeComment = (commentId: string) => {
         });
     } catch (error) {
       console.log('error', error);
-      toastr.error('Oops', 'Something went wrong');
+      showError('Something went wrong');
     }
   };
 };
@@ -231,7 +231,7 @@ export const toggleLikeComment = (commentId: string, setLike: Function) => {
       });
     } catch (error) {
       console.log('err', error);
-      toastr.error('Oops', 'Something went wrong');
+      showError('Something went wrong');
     }
   };
 };
@@ -247,7 +247,7 @@ export const toggleLike = (postId: string, setLike: Function) => {
       });
     } catch (error) {
       console.log('err', error);
-      toastr.error('Oops', 'Something went wrong');
+      showError('Something went wrong');
     }
   };
 };
@@ -260,9 +260,9 @@ export const addComment = (formData: any, postId: string) => {
       const commentRef = await db.collection('posts').doc(postId)
         .collection('comments').add(newCommentTemp);
       await commentRef.update({ id: commentRef.id });
-      toastr.success('Success!', 'Commented added');
+      showSuccess('Commented added');
     } catch (error) {
-      toastr.error('Oops', 'Something went wrong');
+      showError('Something went wrong');
     }
   };
 };
@@ -289,10 +289,10 @@ export const addReply = (formData: any, commentId: string, setToggleReplies: Fun
         console.log('Error getting documents: ', error);
       });
 
-      toastr.success('Success!', 'Reply added');
+      showSuccess('Reply added');
     } catch (error) {
       console.log({ error });
-      toastr.error('Oops', 'Something went wrong');
+      showError('Something went wrong');
     }
   };
 };
@@ -301,9 +301,9 @@ export const updatePost = (formData: any, postId: string) => {
   return async (dispatch, getState) => {
     try {
       await db.collection('posts').doc(postId).update(formData);
-      toastr.success('Success!', 'Post has been updated');
+      showSuccess('Post has been updated');
     } catch (error) {
-      toastr.error('Oops', 'Something went wrong');
+      showError('Something went wrong');
     }
   };
 };
@@ -328,7 +328,7 @@ export const getReplies = async (commentId: string, setReplies: Function, setLoa
 
   } catch (error) {
     console.log('Error getting documents: ', error);
-    toastr.error('Oops', 'Something went wrong');
+    showError('Something went wrong');
   }
 };
 
@@ -370,7 +370,7 @@ export const getTags = () => {
       dispatch(ASYNC_ACTION_FINISHED());
     } catch (error) {
       console.log('err', error);
-      toastr.error('Oops', 'Something went wrong');
+      showError('Something went wrong');
       dispatch(ASYNC_ACTION_ERROR());
     }
   };
@@ -392,7 +392,7 @@ export const getPostsByTag = (tagId: string) => {
       dispatch(ASYNC_ACTION_FINISHED());
     } catch (error) {
       console.log('err', error);
-      toastr.error('Oops', 'Something went wrong');
+      showError('Something went wrong');
       dispatch(ASYNC_ACTION_ERROR());
     }
   };
