@@ -110,12 +110,12 @@
 - [x] Upgrade eslint to ^8.0.0, firebase-functions-test to ^3.0.0
 
 ### Phase 13: Final Cleanup
-- [ ] Remove allowJs from tsconfig
-- [ ] Enable stricter TS settings
-- [ ] Eliminate remaining any types
-- [ ] Update firebase.json hosting public to dist
-- [ ] Update CI/CD workflow
-- [ ] Verify: Final build and bundle check
+- [x] Remove allowJs from tsconfig
+- [x] Update firebase.json hosting public from "build" to "dist"
+- [x] Update CI/CD workflow: Node 20, Vite env vars (VITE_*), actions/checkout@v4
+- [x] Verify: Final build succeeds, zero tsc errors
+- [ ] Enable stricter TS settings (deferred — requires incremental type hardening)
+- [ ] Eliminate remaining any types (deferred — requires per-file review)
 
 ---
 
