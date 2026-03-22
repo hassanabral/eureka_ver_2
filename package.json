@@ -2,6 +2,7 @@
   "name": "eureka_ver_2",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^19.0.0",
     "@ckeditor/ckeditor5-react": "^2.1.0",
@@ -23,31 +24,22 @@
     "react-redux-toastr": "^7.6.4",
     "react-router-dom": "^5.2.0",
     "react-router-last-location": "^2.0.1",
-    "react-scripts": "3.4.1",
     "redux-firestore": "^0.13.0",
     "redux-form": "^8.3.5",
     "revalidate": "^1.2.0"
   },
+  "devDependencies": {
+    "@types/react": "^16.14.0",
+    "@types/react-dom": "^16.9.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "typescript": "^5.5.0",
+    "vite": "^5.4.0"
+  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
     "deploy": "npm run build && firebase deploy"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   }
 }

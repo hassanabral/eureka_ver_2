@@ -10,6 +10,7 @@
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
@@ -31,3 +32,9 @@ yarn-error.log*
 
 # Config
 /src/app/config/keys_dev.js
+/src/app/config/keys_dev.jsx
+
+# Environment
+.env
+.env.local
+.env.*.local
