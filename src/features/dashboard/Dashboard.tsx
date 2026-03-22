@@ -12,10 +12,10 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import CreateIcon from '@material-ui/icons/Create';
 import { Link as RouterLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useFirestoreConnect } from 'react-redux-firebase';
 import Link from '@material-ui/core/Link';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Loading from '../../app/common/util/Loading';
+import { useFirestoreQuery } from '../../app/hooks/useFirestoreQuery';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -47,19 +47,16 @@ const useStyles = makeStyles(theme => ({
 const Dashboard = () => {
   const classes = useStyles();
 
-  const { displayName, uid } = useSelector((state) => state.firebase.auth);
+  const auth = useSelector((state: any) => state.auth);
+  const displayName = auth.currentUser?.displayName;
+  const uid = auth.currentUser?.uid;
   const isMobileScreen = useMediaQuery('(max-width:600px)');
 
-  const dashboardPostsQuery = {
+  const { data: dashboardPosts, loading } = useFirestoreQuery({
     collection: 'posts',
     where: [['authorId', '==', uid], ['deleted', '==', false]],
-    orderBy: ['date', 'desc'],
-    storeAs: 'dashboardPosts'
-  };
-
-  useFirestoreConnect(dashboardPostsQuery);
-
-  const dashboardPosts = useSelector((state) => state.firestore.ordered.dashboardPosts);
+    orderBy: ['date', 'desc']
+  });
 
   return <Fragment>
     <Box mb={2}>
@@ -94,7 +91,7 @@ const Dashboard = () => {
       <Box mt={2} mb={0.5}>
         <Divider/>
       </Box>
-      <Loading loading={!dashboardPosts}/>
+      <Loading loading={!dashboardPosts && loading}/>
       {
         dashboardPosts?.length > 0 && <List className={classes.root}>
           <Grid container>

@@ -14,7 +14,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import moment from 'moment';
 import { stripTags, truncate } from '../../app/common/util/helpers';
 import { deletePost } from '../post/postActions';
-import { useFirestore } from 'react-redux-firebase';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -47,7 +46,6 @@ const DashboardPostCard = ({ post }) => {
   const renderBody = stripTags(truncate(post.body, 200));
   const isLongText = renderBody.substr(renderBody.length - 4, renderBody.length) ===
     '... ';
-  const firestore = useFirestore();
 
   return (
     <Fragment>
@@ -80,7 +78,7 @@ const DashboardPostCard = ({ post }) => {
                     Edit
                   </Button>
                   <Button
-                    onClick={() => deletePost(firestore, post.id)}
+                    onClick={() => deletePost(post.id)}
                     className={classes.deleteButton} startIcon={<DeleteIcon/>}>Delete</Button>
                 </ButtonGroup>
               </Box>

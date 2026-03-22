@@ -2,7 +2,6 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
-import { isEmpty, isLoaded } from 'react-redux-firebase';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Container } from '@material-ui/core';
 import bgImage from './darkblueBg.jpg';
@@ -39,8 +38,8 @@ const useStyles = makeStyles(theme => ({
 
 const Landing = () => {
   const navigate = useNavigate();
-  const auth = useSelector(state => state.firebase.auth);
-  if (isLoaded(auth) && !isEmpty(auth)) {
+  const auth = useSelector((state: any) => state.auth);
+  if (auth.isLoaded && auth.authenticated) {
     navigate('/feed');
   }
 

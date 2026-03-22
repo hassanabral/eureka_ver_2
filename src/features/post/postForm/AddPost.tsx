@@ -15,7 +15,6 @@ import { useNavigate } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {getHashtags} from '../../../app/common/util/helpers';
 import { useDispatch } from 'react-redux';
-import { useFirebase, useFirestore } from 'react-redux-firebase';
 import { createPost} from '../postActions';
 
 const useStyles = makeStyles(theme => ({
@@ -49,12 +48,10 @@ const AddPost = ({ handleSubmit, invalid, submitting }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const firebase = useFirebase();
-  const firestore = useFirestore();
 
   const handleCreatePost = async formData => {
     const newPost = {...formData, hashtags: getHashtags(formData.body)}
-    const post: any = await dispatch(createPost({firebase, firestore}, newPost));
+    const post: any = await dispatch(createPost(newPost));
     navigate(`/posts/${post.id}`);
   };
 

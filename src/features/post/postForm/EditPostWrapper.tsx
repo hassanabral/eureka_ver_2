@@ -1,21 +1,12 @@
-import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { useFirestoreConnect } from 'react-redux-firebase';
+import React from 'react';
 import EditPost from './EditPost';
 import { useParams } from "react-router-dom";
+import { useFirestoreDoc } from '../../../app/hooks/useFirestoreDoc';
 
 const EditPostWrapper = () => {
   const {id} = useParams();
 
-  const editPostQuery = useMemo(() => ({
-    collection: 'posts',
-    doc: id,
-    storeAs: 'editPost'
-  }), [id]);
-
-  useFirestoreConnect(editPostQuery);
-
-  const editPost = useSelector((state) => (state.firestore.data.editPost));
+  const { data: editPost } = useFirestoreDoc('posts', id);
 
   return (
     <EditPost initialValues={editPost} postId={id}/>

@@ -1,17 +1,15 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import Box from '@material-ui/core/Box';
 import { getReplies } from '../postActions';
-import { useFirestore } from 'react-redux-firebase';
 import PostDetailedComment from './PostDetailedComment';
 import Loading from '../../../app/common/util/Loading';
 
 const PostDetailedReplies = ({commentId, replies, setReplies}) => {
-  const firestore = useFirestore();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getReplies(firestore, commentId, setReplies, setLoading);
-  }, [firestore, commentId, setReplies, setLoading])
+    getReplies(commentId, setReplies, setLoading);
+  }, [commentId, setReplies, setLoading])
 
   return (
     <Fragment>

@@ -19,7 +19,6 @@ import {
 } from '../postActions';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import { useFirebase, useFirestore } from 'react-redux-firebase';
 import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
@@ -42,23 +41,20 @@ const useStyles = makeStyles(theme => ({
 
 const PostDetailedBody = ({ post, isAuthenticated, isAuthenticatedUser }) => {
   const classes = useStyles();
-  const firestore = useFirestore();
   const dispatch = useDispatch();
 
   const {id} = useParams();
 
   const [saved, setSaved] = useState();
 
-  const firebase = useFirebase();
-
   useEffect(() => {
     if(isAuthenticated) {
-      dispatch(toggleBookmark(firestore, id, setSaved));
+      dispatch(toggleBookmark(id, setSaved));
     }
   }, [id, isAuthenticated]);
 
   const handleOnSave = () => {
-    dispatch(savePost({ firebase, firestore }, id));
+    dispatch(savePost(id));
   }
 
   return (
@@ -94,7 +90,7 @@ const PostDetailedBody = ({ post, isAuthenticated, isAuthenticatedUser }) => {
                   Edit
                 </Button>
                 <Button
-                  onClick={() => deletePost(firestore, id)}
+                  onClick={() => deletePost(id)}
                   className={classes.deleteButton} startIcon={<DeleteIcon/>}>Delete</Button>
               </ButtonGroup>
             ) : (

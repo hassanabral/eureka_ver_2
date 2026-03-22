@@ -22,7 +22,6 @@ import {
   likeOrUnlikeComment,
   toggleLikeComment
 } from '../postActions';
-import { isEmpty, isLoaded, useFirebase, useFirestore } from 'react-redux-firebase';
 import { useDispatch, useSelector } from 'react-redux';
 import { toastr } from 'react-redux-toastr';
 
@@ -51,25 +50,23 @@ const PostDetailedComment = ({ comment, commentOrReply = 'comment', showReplies 
   const [toggleReplies, setToggleReplies] = useState(showReplies);
   const [toggleReplyForm, setToggleReplyForm] = useState(false);
   const [replies, setReplies] = useState(null);
-  const firestore = useFirestore();
 
   const [like, setLike] = useState();
   const [likeCountState, setLikeCountState] = useState(comment.likeCount);
 
   const dispatch = useDispatch();
-  const firebase = useFirebase();
-  const auth = useSelector(state => state.firebase.auth);
-  const isAuthenticated = isLoaded(auth) && !isEmpty(auth);
+  const auth = useSelector((state: any) => state.auth);
+  const isAuthenticated = auth.isLoaded && auth.authenticated;
 
   useEffect(() => {
     if(isAuthenticated) {
-      dispatch(toggleLikeComment(firestore, comment.id, setLike));
+      dispatch(toggleLikeComment(comment.id, setLike));
     }
   }, [comment.id, isAuthenticated]);
 
   const handleOnLike = () => {
     if(isAuthenticated) {
-      dispatch(likeOrUnlikeComment({ firebase, firestore }, comment.id));
+      dispatch(likeOrUnlikeComment(comment.id));
       if (like) {
         setLikeCountState(likeCountState - 1);
       } else {
@@ -82,7 +79,7 @@ const PostDetailedComment = ({ comment, commentOrReply = 'comment', showReplies 
   };
 
 
-  const isAuthenticatedUser = comment?.authorId === auth?.uid;
+  const isAuthenticatedUser = comment?.authorId === auth.currentUser?.uid;
 
   const isReply = commentOrReply === 'reply';
 
@@ -112,7 +109,7 @@ const PostDetailedComment = ({ comment, commentOrReply = 'comment', showReplies 
       </Box>
       {isAuthenticated && isAuthenticatedUser &&
       <Box component='span' mb={0} pb={0}>
-        <IconButton onClick={() => deleteComment(firestore, comment.id)}
+        <IconButton onClick={() => deleteComment(comment.id)}
                     className={classes.button} aria-label="delete"
                     style={{ color: '#ba1818' }}>
           <DeleteIcon fontSize="default"/>

@@ -5,10 +5,12 @@ import 'firebase/compat/database';
 import 'firebase/compat/storage';
 import keys from './config/keys';
 
-// Initialize Firebase
-const firebaseConfig = keys;
+const app = firebase.initializeApp(keys);
 
-firebase.initializeApp(firebaseConfig);
-firebase.firestore();
+export const auth = firebase.auth();
+export const db = firebase.firestore();
+export const storage = firebase.storage();
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+export const fieldValue = firebase.firestore.FieldValue;
 
 export default firebase;

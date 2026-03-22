@@ -8,7 +8,6 @@ import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import { Box } from '@material-ui/core';
 import { likeOrUnlike, toggleLike } from '../postActions';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty, isLoaded, useFirebase, useFirestore } from 'react-redux-firebase';
 import { toastr } from 'react-redux-toastr';
 
 
@@ -31,21 +30,19 @@ const FeedCardButtons = ({ likeCount, commentCount, savedCount, postId }) => {
   const likeIconColor = like ? 'primary' : 'action';
 
   const dispatch = useDispatch();
-  const firebase = useFirebase();
-  const firestore = useFirestore();
 
-  const auth = useSelector(state => state.firebase.auth);
-  const isAuthenticated = isLoaded(auth) && !isEmpty(auth);
+  const auth = useSelector((state: any) => state.auth);
+  const isAuthenticated = auth.isLoaded && auth.authenticated;
 
   useEffect(() => {
     if(isAuthenticated) {
-      dispatch(toggleLike(firestore, postId, setLike));
+      dispatch(toggleLike(postId, setLike));
     }
   }, [postId, isAuthenticated]);
 
   const handleOnLike = () => {
     if(isAuthenticated) {
-      dispatch(likeOrUnlike({ firebase, firestore }, postId));
+      dispatch(likeOrUnlike(postId));
       if(like) {
         setLikeCountState(likeCountState - 1);
       } else {

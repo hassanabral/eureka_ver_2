@@ -1,12 +1,12 @@
-import React, { Fragment, useMemo } from 'react';
+import React, { Fragment } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import UserDetailedHeader from './UserDetailedHeader';
 import UserDetailedPageBody from './UserDetailedPageBody';
-import { useFirestoreConnect } from 'react-redux-firebase';
-import { useSelector } from 'react-redux';
 import Loading from '../../../app/common/util/Loading';
 import { useParams } from 'react-router-dom';
+import { useFirestoreDoc } from '../../../app/hooks/useFirestoreDoc';
+import { useFirestoreQuery } from '../../../app/hooks/useFirestoreQuery';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,25 +22,17 @@ const UserDetailedPage = () => {
   const { id } = useParams();
   const classes = useStyles();
 
-  const userProfileQuery = useMemo(() => ({
-    collection: 'users',
-    doc: id,
-    storeAs: 'userProfile'
-  }), [id]);
+  const { data: user, loading: userLoading } = useFirestoreDoc('users', id);
 
-  const userPostQuery = useMemo(() => ({
+  const { data: userPosts, loading: postsLoading } = useFirestoreQuery({
     collection: 'posts',
-    where: [['authorId', '==', id], ['status', '==', 'published'],
-      ['deleted', '==', false]],
-    orderBy: ['date', 'desc'],
-    storeAs: 'userPosts'
-  }), [id]);
-
-  useFirestoreConnect(userProfileQuery);
-  useFirestoreConnect(userPostQuery);
-
-  const user = useSelector((state) => (state.firestore.data.userProfile));
-  const userPosts = useSelector((state) => (state.firestore.ordered.userPosts));
+    where: [
+      ['authorId', '==', id],
+      ['status', '==', 'published'],
+      ['deleted', '==', false]
+    ],
+    orderBy: ['date', 'desc']
+  });
 
   const userFirstName = user?.displayName?.substr(0, user.displayName.indexOf(' '));
 
@@ -51,10 +43,10 @@ const UserDetailedPage = () => {
           <Grid container className={classes.root}>
             <Grid item sm={12} className={classes.gridItem}>
               {user && <UserDetailedHeader user={user} userId={id}/>}
-              <Loading loading={!user}/>
+              <Loading loading={!user && userLoading}/>
             </Grid>
             <Grid item sm={12} className={classes.gridItem}>
-              {userFirstName && <UserDetailedPageBody loading={!userPosts} posts={userPosts} sectionTitle={`${userFirstName}'s Posts`}/>}
+              {userFirstName && <UserDetailedPageBody loading={!userPosts && postsLoading} posts={userPosts} sectionTitle={`${userFirstName}'s Posts`}/>}
             </Grid>
           </Grid>
         </Grid>

@@ -1,18 +1,16 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { firebaseReducer } from 'react-redux-firebase';
-import { firestoreReducer } from 'redux-firestore';
-import { reducer as FormReducer} from "redux-form";
+import { reducer as FormReducer } from 'redux-form';
 import { reducer as ToastrReducer } from 'react-redux-toastr';
 import post from '../features/post/postSlice';
 import user from '../features/user/userSlice';
+import auth from '../features/auth/authSlice';
 
 const rootReducer = combineReducers({
-  firebase: firebaseReducer,
-  firestore: firestoreReducer,
+  auth,
   post,
   user,
   form: FormReducer,
-  toastr: ToastrReducer
+  toastr: ToastrReducer,
 });
 
 export default rootReducer;

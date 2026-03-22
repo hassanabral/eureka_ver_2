@@ -1,11 +1,12 @@
 import { toastr } from 'react-redux-toastr';
+import { db } from '../../app/firebase';
 import {GET_USERS, ASYNC_ACTION_STARTED, ASYNC_ACTION_ERROR, ASYNC_ACTION_FINISHED} from './userSlice';
 
-export const updateProfile = ({ firebase }: any, formData: any, uid: string) => {
+export const updateProfile = (formData: any, uid: string) => {
   return async (dispatch) => {
     const { isLoaded, isEmpty, ...updatedUser } = formData;
     try {
-      await firebase.updateProfile(updatedUser);
+      await db.collection('users').doc(uid).update(updatedUser);
       dispatch(() => toastr.success('Success', 'Your profile has been updated'));
     } catch (error) {
       console.log(error);
@@ -13,9 +14,9 @@ export const updateProfile = ({ firebase }: any, formData: any, uid: string) => 
   };
 }
 
-export const getUsers = (firestore) => {
+export const getUsers = () => {
   return async (dispatch) => {
-    const usersCollection = firestore.collection('users').orderBy('createdAt', 'desc');
+    const usersCollection = db.collection('users').orderBy('createdAt', 'desc');
     try {
       dispatch(ASYNC_ACTION_STARTED());
       const usersRef = await usersCollection.get();
@@ -53,8 +54,6 @@ export const getUsers = (firestore) => {
 // firebase.collectionGroup('posts') .where('authorId', '==', followingId)); })
 
 // how about you
-
-
 
 
 

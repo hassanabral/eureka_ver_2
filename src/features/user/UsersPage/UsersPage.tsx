@@ -5,7 +5,6 @@ import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import { Card, Box, Grid } from '@material-ui/core';
 import UserCard from './UserCard';
-import { useFirestore } from 'react-redux-firebase';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUsers } from '../userActions';
 import Loading from '../../../app/common/util/Loading';
@@ -28,20 +27,19 @@ const useStyles = makeStyles(theme => ({
 
 const UsersPage = () => {
   const classes = useStyles();
-  const firestore = useFirestore();
   const dispatch = useDispatch();
 
-  const users = useSelector(state => state.user.users);
-  const loading = useSelector(state => state.user.loading);
+  const users = useSelector((state: any) => state.user.users);
+  const loading = useSelector((state: any) => state.user.loading);
 
   useEffect( () => {
     const handleGetUsers= async () => {
-      await dispatch(getUsers(firestore));
+      await dispatch(getUsers());
     }
     if(!users) {
       handleGetUsers();
     }
-  }, [firestore, dispatch, users]);
+  }, [dispatch, users]);
 
   return (
     <Fragment>

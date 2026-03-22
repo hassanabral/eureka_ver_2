@@ -32,7 +32,7 @@ import Avatar from '@material-ui/core/Avatar';
 import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import Typography from '@material-ui/core/Typography';
-import { useFirebase } from 'react-redux-firebase';
+import { auth as firebaseAuth } from '../../app/firebase';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import BottomNavigationBar from './BottomNavigationBar';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
@@ -191,10 +191,9 @@ function ResponsiveDrawer ({ ...props }) {
 
   const navigate = useNavigate();
   const { pathname: currentLocation } = useLocation();
-  const firebase = useFirebase();
 
   const handleLogout = () => {
-    firebase.auth().signOut().then(() => {
+    firebaseAuth.signOut().then(() => {
       navigate('/');
     });
     toastr.success('Success!', 'You are logged out.');
@@ -202,8 +201,8 @@ function ResponsiveDrawer ({ ...props }) {
 
   const isMobileScreen = useMediaQuery('(max-width:600px)');
 
-  const auth = useSelector((state: any) => state.firebase.auth);
-  const isAuthenticated = auth.isLoaded && !auth.isEmpty;
+  const auth = useSelector((state: any) => state.auth);
+  const isAuthenticated = auth.isLoaded && auth.authenticated;
 
   const { container } = props;
   const classes = useStyles();
@@ -316,7 +315,7 @@ function ResponsiveDrawer ({ ...props }) {
             <ListItemText primary={'Bookmarks'}/>
           </ListItem>
           <ListItem selected={new RegExp('^/users/').test(currentLocation)} button
-                    key={'Profile'} component={RouterLink} to={`/users/${auth.uid}`}>
+                    key={'Profile'} component={RouterLink} to={`/users/${auth.currentUser?.uid}`}>
             <ListItemIcon>
               <PersonOutlineIcon/>
             </ListItemIcon>
@@ -455,10 +454,10 @@ function ResponsiveDrawer ({ ...props }) {
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 component={RouterLink}
-                to={`/users/${auth?.uid}`}
+                to={`/users/${auth.currentUser?.uid}`}
               >
-                <Avatar className={classes.small} alt={auth?.displayName}
-                        src={auth?.photoURL}/>
+                <Avatar className={classes.small} alt={auth.currentUser?.displayName}
+                        src={auth.currentUser?.photoURL}/>
               </IconButton>
             </div>}
           </Toolbar>
@@ -500,7 +499,7 @@ function ResponsiveDrawer ({ ...props }) {
       {isMobileScreen &&
       <BottomNavigationBar isAuthenticated={isAuthenticated} botNavValue={botNavValue}
                            setBotNavValue={setBotNavValue}
-                           authUid={auth?.uid} setMobileOpen={setMobileOpen}/>}
+                           authUid={auth.currentUser?.uid} setMobileOpen={setMobileOpen}/>}
     </Fragment>
   );
 }

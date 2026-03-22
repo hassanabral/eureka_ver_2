@@ -9,7 +9,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { useFirebase, useFirestore } from 'react-redux-firebase';
 import { signInWithGoogle} from '../../app/common/util/helpers';
 
 const useStyles = makeStyles({
@@ -27,11 +26,9 @@ const useStyles = makeStyles({
 const BottomNavigationBar = ({isAuthenticated, authUid, botNavValue = 0, setBotNavValue, setMobileOpen}) => {
   const classes = useStyles();
   let location = useLocation();
-  const firebase = useFirebase();
-  const firestore = useFirestore();
 
   const handleLogin = async () => {
-    await signInWithGoogle(firebase, firestore);
+    await signInWithGoogle();
   }
 
   useEffect(() => {

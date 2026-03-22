@@ -16,7 +16,6 @@ import TextArea from '../../../app/common/form/TextArea';
 import MenuItem from '@material-ui/core/MenuItem';
 import Spinner from '../../../app/common/util/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
-import { useFirebase } from 'react-redux-firebase';
 import { updateProfile } from '../userActions';
 import { useNavigate } from 'react-router-dom';
 
@@ -56,18 +55,17 @@ const userStatuses = [
 
 const EditProfile = ({ handleSubmit, pristine, invalid, submitting }) => {
 
-  const { uid } = useSelector((state) => state.firebase.auth);
+  const uid = useSelector((state: any) => state.auth.currentUser?.uid);
 
 
   const dispatch = useDispatch();
-  const firebase = useFirebase();
   const navigate = useNavigate();
 
   const handleUpdateProfile = useCallback(
     async (formData) => {
-      await dispatch(updateProfile({firebase}, formData, uid));
+      await dispatch(updateProfile(formData, uid));
       navigate(`/users/${uid}`);
-    }, [firebase, dispatch, navigate, uid]
+    }, [dispatch, navigate, uid]
   );
 
   const classes = useStyles();

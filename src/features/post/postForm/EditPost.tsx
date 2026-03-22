@@ -13,7 +13,6 @@ import TextInput from '../../../app/common/form/TextInput';
 import SelectInput from '../../../app/common/form/SelectInput';
 import RichEditor from '../../../app/common/form/RichEditor';
 import { useDispatch } from 'react-redux';
-import { useFirestore } from 'react-redux-firebase';
 import { updatePost } from '../postActions';
 
 const useStyles = makeStyles(theme => ({
@@ -47,14 +46,13 @@ const EditPost = ({ handleSubmit, pristine, invalid, submitting, postId }) => {
   const classes = useStyles();
 
   const dispatch = useDispatch();
-  const firestore = useFirestore();
   const navigate = useNavigate();
 
   const handleUpdatePost = useCallback(
     async (formData) => {
-      await dispatch(updatePost({ firestore }, formData, postId));
+      await dispatch(updatePost(formData, postId));
       navigate(`/posts/${postId}`);
-    }, [firestore, dispatch, navigate, postId]
+    }, [dispatch, navigate, postId]
   );
 
   return (

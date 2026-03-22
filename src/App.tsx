@@ -105,8 +105,8 @@ function AppLayout() {
 
 function App() {
   const classes = useStyles();
-  const auth = useSelector((state: any) => state.firebase.auth);
-  if (!auth.isLoaded && auth.isEmpty) return <Spinner />;
+  const auth = useSelector((state: any) => state.auth);
+  if (!auth.isLoaded) return <Spinner />;
 
   return (
     <div className="App">

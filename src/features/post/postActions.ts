@@ -1,6 +1,7 @@
 import { toastr } from 'react-redux-toastr';
 import { reset } from 'redux-form';
 import { readIds } from '../../app/common/util/helpers';
+import { db, fieldValue } from '../../app/firebase';
 
 import {
   GET_BOOKMARKS, ADD_BOOKMARK, REMOVE_BOOKMARK,
@@ -9,7 +10,7 @@ import {
   NO_MORE_FEEDS, FETCH_FEEDS, INCREMENT_TAG
 } from './postSlice';
 
-export const getPagedFeeds = ({ firestore }) =>
+export const getPagedFeeds = () =>
   async (dispatch, getState) => {
     try {
       dispatch(ASYNC_ACTION_STARTED());
@@ -19,11 +20,11 @@ export const getPagedFeeds = ({ firestore }) =>
       // after the first time we get feeds from backend
       if (feeds && feeds.length >= LIMIT) {
         nextPostSnapshot =
-          await firestore.collection('posts').doc(feeds[feeds.length - 1].id)
+          await db.collection('posts').doc(feeds[feeds.length - 1].id)
             .get();
       }
 
-      const feedsCollectionRef = firestore.collection('posts').orderBy('date', 'desc')
+      const feedsCollectionRef = db.collection('posts').orderBy('date', 'desc')
         .where('status', '==', 'published')
         .where('deleted', '==', false);
       let feedsSnap;
@@ -47,12 +48,12 @@ export const getPagedFeeds = ({ firestore }) =>
 
   };
 
-export const createPost = ({ firebase, firestore }, newPost) => {
+export const createPost = (newPost: any) => {
   return async (dispatch, getState) => {
-    const user = getState().firebase.auth;
+    const user = getState().auth.currentUser;
     try {
-      const newPostTemp = createNewPost(newPost, user, firestore);
-      const newPostFinal = await firestore.collection('posts').add(newPostTemp);
+      const newPostTemp = createNewPost(newPost, user);
+      const newPostFinal = await db.collection('posts').add(newPostTemp);
 
       // add a tag
       const tagsState = getState().post.tags;
@@ -78,9 +79,9 @@ export const createPost = ({ firebase, firestore }, newPost) => {
   };
 };
 
-export const deletePost = async (firestore, postId) => {
+export const deletePost = async (postId: string) => {
   try {
-    await firestore.collection('posts').doc(postId).update({
+    await db.collection('posts').doc(postId).update({
       deleted: true,
       body: '<p>[Deleted]</p>'
     });
@@ -91,9 +92,9 @@ export const deletePost = async (firestore, postId) => {
   }
 };
 
-export const deleteComment = async (firestore, commentId) => {
+export const deleteComment = async (commentId: string) => {
   try {
-    const commentRef = await firestore.collectionGroup('comments')
+    const commentRef = await db.collectionGroup('comments')
       .where('id', '==', commentId);
     const querySnapshot = await commentRef.get();
     await querySnapshot.docs[0].ref.update({
@@ -106,12 +107,12 @@ export const deleteComment = async (firestore, commentId) => {
   }
 };
 
-export const likeOrUnlike = ({ firebase, firestore }, postId) => {
+export const likeOrUnlike = (postId: string) => {
   return async (dispatch, getState) => {
-    const { uid } = getState().firebase.auth;
+    const uid = getState().auth.currentUser?.uid;
     const likeId = `${uid}_${postId}`;
     try {
-      const likeRef = await firestore.collection('likes').doc(likeId);
+      const likeRef = await db.collection('likes').doc(likeId);
       likeRef.get()
         .then((docSnapshot) => {
           if (docSnapshot.exists) {
@@ -130,12 +131,12 @@ export const likeOrUnlike = ({ firebase, firestore }, postId) => {
   };
 };
 
-export const savePost = ({ firebase, firestore }, postId) => {
+export const savePost = (postId: string) => {
   return async (dispatch, getState) => {
-    const { uid } = getState().firebase.auth;
+    const uid = getState().auth.currentUser?.uid;
     const bookmarkId = `${uid}_${postId}`;
     try {
-      const bookmarkRef = firestore.collection('bookmarks').doc(bookmarkId);
+      const bookmarkRef = db.collection('bookmarks').doc(bookmarkId);
       const bookmarkSnapshot = await bookmarkRef.get();
       const bookmarkExists = bookmarkSnapshot.exists;
 
@@ -148,7 +149,7 @@ export const savePost = ({ firebase, firestore }, postId) => {
           userId: uid,
           postId
         });
-        const postRef = await firestore.collection('posts').doc(postId).get();
+        const postRef = await db.collection('posts').doc(postId).get();
         dispatch(ADD_BOOKMARK({ id: postRef.id, ...postRef.data() }));
         toastr.success('Success!', 'Post is saved to your bookmarks.');
       }
@@ -160,12 +161,12 @@ export const savePost = ({ firebase, firestore }, postId) => {
   };
 };
 
-export const toggleBookmark = (firestore, postId, setSaved) => {
+export const toggleBookmark = (postId: string, setSaved: Function) => {
   return async (dispatch, getState) => {
-    const { uid } = getState().firebase.auth;
+    const uid = getState().auth.currentUser?.uid;
     const bookmarkId = `${uid}_${postId}`;
     try {
-      firestore.collection('bookmarks').doc(bookmarkId).onSnapshot((bookmarkSnapShot) => {
+      db.collection('bookmarks').doc(bookmarkId).onSnapshot((bookmarkSnapShot) => {
         const alreadySaved = bookmarkSnapShot.exists;
         setSaved(alreadySaved);
       });
@@ -176,16 +177,16 @@ export const toggleBookmark = (firestore, postId, setSaved) => {
   };
 };
 
-export const getBookmarks = (firestore) => {
+export const getBookmarks = () => {
   return async (dispatch, getState) => {
-    const { uid } = getState().firebase.auth;
+    const uid = getState().auth.currentUser?.uid;
 
     try {
       dispatch(ASYNC_ACTION_STARTED());
-      const bookmarksRef = await firestore.collection('bookmarks')
+      const bookmarksRef = await db.collection('bookmarks')
         .where('userId', '==', uid).get();
       const postIds = bookmarksRef.docs.map(doc => doc.data().postId);
-      const bookmarks = await readIds(firestore.collection('posts'), postIds);
+      const bookmarks = await readIds('posts', postIds);
       dispatch(GET_BOOKMARKS(bookmarks));
       dispatch(ASYNC_ACTION_FINISHED());
     } catch (error) {
@@ -196,12 +197,12 @@ export const getBookmarks = (firestore) => {
   };
 };
 
-export const likeOrUnlikeComment = ({ firebase, firestore }, commentId) => {
+export const likeOrUnlikeComment = (commentId: string) => {
   return async (dispatch, getState) => {
-    const { uid } = getState().firebase.auth;
+    const uid = getState().auth.currentUser?.uid;
     const likeId = `${uid}_${commentId}`;
     try {
-      const likeRef = await firestore.collection('likesComment').doc(likeId);
+      const likeRef = await db.collection('likesComment').doc(likeId);
       likeRef.get()
         .then((docSnapshot) => {
           if (docSnapshot.exists) {
@@ -220,12 +221,12 @@ export const likeOrUnlikeComment = ({ firebase, firestore }, commentId) => {
   };
 };
 
-export const toggleLikeComment = (firestore, commentId, setLike) => {
+export const toggleLikeComment = (commentId: string, setLike: Function) => {
   return async (dispatch, getState) => {
-    const { uid } = getState().firebase.auth;
+    const uid = getState().auth.currentUser?.uid;
     const likeId = `${uid}_${commentId}`;
     try {
-      firestore.collection('likesComment').doc(likeId).onSnapshot((likeSnapShot) => {
+      db.collection('likesComment').doc(likeId).onSnapshot((likeSnapShot) => {
         const alreadyLiked = likeSnapShot.exists;
         setLike(alreadyLiked);
       });
@@ -236,12 +237,12 @@ export const toggleLikeComment = (firestore, commentId, setLike) => {
   };
 };
 
-export const toggleLike = (firestore, postId, setLike) => {
+export const toggleLike = (postId: string, setLike: Function) => {
   return async (dispatch, getState) => {
-    const { uid } = getState().firebase.auth;
+    const uid = getState().auth.currentUser?.uid;
     const likeId = `${uid}_${postId}`;
     try {
-      firestore.collection('likes').doc(likeId).onSnapshot((likeSnapShot) => {
+      db.collection('likes').doc(likeId).onSnapshot((likeSnapShot) => {
         const alreadyLiked = likeSnapShot.exists;
         setLike(alreadyLiked);
       });
@@ -252,12 +253,12 @@ export const toggleLike = (firestore, postId, setLike) => {
   };
 };
 
-export const addComment = ({ firebase, firestore }, formData, postId) => {
+export const addComment = (formData: any, postId: string) => {
   return async (dispatch, getState) => {
-    const user = getState().firebase.auth;
+    const user = getState().auth.currentUser;
     try {
-      const newCommentTemp = createNewComment(formData, user, firestore);
-      const commentRef = await firestore.collection('posts').doc(postId)
+      const newCommentTemp = createNewComment(formData, user);
+      const commentRef = await db.collection('posts').doc(postId)
         .collection('comments').add(newCommentTemp);
       await commentRef.update({ id: commentRef.id });
       dispatch(reset('addCommentForm'));
@@ -268,13 +269,13 @@ export const addComment = ({ firebase, firestore }, formData, postId) => {
   };
 };
 
-export const addReply = ({ firestore }, formData, commentId, setToggleReplies) => {
+export const addReply = (formData: any, commentId: string, setToggleReplies: Function) => {
   return async (dispatch, getState) => {
-    const user = getState().firebase.auth;
+    const user = getState().auth.currentUser;
     try {
-      const newReply = createNewComment(formData, user, firestore);
+      const newReply = createNewComment(formData, user);
 
-      const commentRef = firestore.collectionGroup('comments')
+      const commentRef = db.collectionGroup('comments')
         .where('id', '==', commentId);
       commentRef.get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
@@ -299,10 +300,10 @@ export const addReply = ({ firestore }, formData, commentId, setToggleReplies) =
   };
 };
 
-export const updatePost = ({ firestore }: any, formData: any, postId: string) => {
+export const updatePost = (formData: any, postId: string) => {
   return async (dispatch, getState) => {
     try {
-      await firestore.collection('posts').doc(postId).update(formData);
+      await db.collection('posts').doc(postId).update(formData);
       toastr.success('Success!', 'Post has been updated');
     } catch (error) {
       toastr.error('Oops', 'Something went wrong');
@@ -310,10 +311,10 @@ export const updatePost = ({ firestore }: any, formData: any, postId: string) =>
   };
 };
 
-export const getReplies = async (firestore, commentId, setReplies, setLoading) => {
+export const getReplies = async (commentId: string, setReplies: Function, setLoading: Function) => {
   try {
     setLoading(true);
-    const commentRef = await firestore.collectionGroup('comments')
+    const commentRef = await db.collectionGroup('comments')
       .where('id', '==', commentId);
     const querySnapshot = await commentRef.get();
     await querySnapshot.forEach((doc) => {
@@ -334,11 +335,11 @@ export const getReplies = async (firestore, commentId, setReplies, setLoading) =
   }
 };
 
-const createNewPost = (newPostData, user, firestore) => {
+const createNewPost = (newPostData, user) => {
   const { uid, displayName, photoURL } = user;
   return {
     ...newPostData,
-    date: firestore.FieldValue.serverTimestamp(),
+    date: fieldValue.serverTimestamp(),
     authorId: uid,
     authorName: displayName,
     authorPhotoURL: photoURL,
@@ -349,11 +350,11 @@ const createNewPost = (newPostData, user, firestore) => {
   };
 };
 
-const createNewComment = (newCommentData, user, firestore) => {
+const createNewComment = (newCommentData, user) => {
   const { uid, displayName, photoURL } = user;
   return {
     ...newCommentData,
-    date: firestore.FieldValue.serverTimestamp(),
+    date: fieldValue.serverTimestamp(),
     authorId: uid,
     authorName: displayName,
     authorPhotoURL: photoURL,
@@ -362,11 +363,11 @@ const createNewComment = (newCommentData, user, firestore) => {
   };
 };
 
-export const getTags = (firestore) => {
+export const getTags = () => {
   return async (dispatch, getState) => {
     try {
       dispatch(ASYNC_ACTION_STARTED());
-      const tagsRef = await firestore.collection('tags').orderBy('count').get();
+      const tagsRef = await db.collection('tags').orderBy('count').get();
       const tags = tagsRef.docs.map(doc => doc.data());
       dispatch(GET_TAGS(tags));
       dispatch(ASYNC_ACTION_FINISHED());
@@ -378,11 +379,11 @@ export const getTags = (firestore) => {
   };
 };
 
-export const getPostsByTag = (firestore, tagId) => {
+export const getPostsByTag = (tagId: string) => {
   return async (dispatch, getState) => {
     try {
       dispatch(ASYNC_ACTION_STARTED());
-      const postsRef = await firestore.collection('posts')
+      const postsRef = await db.collection('posts')
         .where('hashtags', 'array-contains', tagId)
         .where('deleted', '==', false)
         .orderBy('date', 'desc')

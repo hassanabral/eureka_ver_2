@@ -4,26 +4,27 @@ import { Typography } from '@material-ui/core';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
-import { useFirestoreConnect } from 'react-redux-firebase';
-import { useSelector } from 'react-redux';
 import Loading from '../../../app/common/util/Loading';
+import { db } from '../../../app/firebase';
 
 const PostDetailedComments = ({ postId, isAuthenticated }) => {
 
-  const postCommentsQuery = {
-    collection: 'posts',
-    doc: postId,
-    subcollections: [{ collection: 'comments' }],
-    orderBy: ['date', 'desc'],
-    storeAs: 'postComments'
-  };
-
-  useFirestoreConnect(postCommentsQuery);
-
   const [comments, setComments] = useState(null);
+  const [postComments, setPostComments] = useState(null);
   const [sortByToggle, setSortByToggle] = useState('date');
 
-  const postComments = useSelector((state) => state.firestore.ordered.postComments);
+  useEffect(() => {
+    if (!postId) return;
+
+    const unsubscribe = db.collection('posts').doc(postId)
+      .collection('comments').orderBy('date', 'desc')
+      .onSnapshot((snap) => {
+        const docs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setPostComments(docs);
+      });
+
+    return unsubscribe;
+  }, [postId]);
 
   useEffect(() => {
     if (postComments) {

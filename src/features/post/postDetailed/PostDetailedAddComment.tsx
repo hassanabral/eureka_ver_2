@@ -6,9 +6,8 @@ import Button from '@material-ui/core/Button';
 import { Field, reduxForm } from 'redux-form';
 import { combineValidators, isRequired } from 'revalidate';
 import RichEditor from '../../../app/common/form/RichEditor';
-import { addComment, createPost } from '../postActions';
+import { addComment } from '../postActions';
 import { useDispatch } from 'react-redux';
-import { useFirebase, useFirestore } from 'react-redux-firebase';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,11 +21,9 @@ const validate = combineValidators({
 
 const PostDetailedAddComment = ({ postId, handleSubmit, invalid, submitting }) => {
   const dispatch = useDispatch();
-  const firebase = useFirebase();
-  const firestore = useFirestore();
 
   const handleAddComment = async formData => {
-    await dispatch(addComment({firebase, firestore}, formData, postId));
+    await dispatch(addComment(formData, postId));
   }
 
   const classes = useStyles();

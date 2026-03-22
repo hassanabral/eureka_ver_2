@@ -6,7 +6,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import { useSelector, useDispatch } from 'react-redux';
 import { getPagedFeeds } from '../postActions';
-import { useFirestore } from 'react-redux-firebase';
 import Spinner from '../../../app/common/util/Spinner';
 import Loading from '../../../app/common/util/Loading';
 
@@ -23,20 +22,22 @@ const useStyles = makeStyles(theme => ({
 
 const FeedsPage = () => {
 
-  const { displayName, uid, photoURL } = useSelector((state) => state.firebase.auth);
+  const auth = useSelector((state: any) => state.auth);
+  const displayName = auth.currentUser?.displayName;
+  const uid = auth.currentUser?.uid;
+  const photoURL = auth.currentUser?.photoURL;
 
   const dispatch = useDispatch();
-  const firestore = useFirestore();
   const [loadingInitial, setLoadingInitial] = useState(true);
 
-  const feeds = useSelector(state => state.post.feeds);
-  const moreFeeds = useSelector(state => state.post.moreFeeds);
-  const loading = useSelector(state => state.post.loading);
+  const feeds = useSelector((state: any) => state.post.feeds);
+  const moreFeeds = useSelector((state: any) => state.post.moreFeeds);
+  const loading = useSelector((state: any) => state.post.loading);
 
   useEffect(() => {
     // this function gets called at the start
     const getFeeds = async () => {
-      await dispatch(getPagedFeeds({ firestore }));
+      await dispatch(getPagedFeeds());
     };
 
     if (feeds.length === 0) {
@@ -47,10 +48,10 @@ const FeedsPage = () => {
       setLoadingInitial(false);
     }
 
-  }, [dispatch, firestore, feeds.length]);
+  }, [dispatch, feeds.length]);
 
   const handleGetNextFeeds = async () => {
-    await dispatch(getPagedFeeds({ firestore }));
+    await dispatch(getPagedFeeds());
   };
 
   const classes = useStyles();

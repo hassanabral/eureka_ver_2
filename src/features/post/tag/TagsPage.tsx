@@ -6,7 +6,6 @@ import Divider from '@material-ui/core/Divider';
 import { Card, Box } from '@material-ui/core';
 import FeedCard from '../../post/feed/FeedCard';
 import TagsList from './TagsList';
-import { useFirestore } from 'react-redux-firebase';
 import { useDispatch, useSelector } from 'react-redux';
 import {  getPostsByTag } from '../postActions';
 
@@ -37,16 +36,15 @@ const TagsPage = () => {
   const classes = useStyles();
   const [selectedTag, setSelectedTag] = useState(null);
 
-  const postsByTag = useSelector(state => state.post.postsByTag);
-  const selectedTagRedux = useSelector(state => state.post.selectedTag);
-  const firestore = useFirestore();
+  const postsByTag = useSelector((state: any) => state.post.postsByTag);
+  const selectedTagRedux = useSelector((state: any) => state.post.selectedTag);
   const dispatch = useDispatch();
-  const loading = useSelector(state => state.post.loading);
+  const loading = useSelector((state: any) => state.post.loading);
 
 
   useEffect(() => {
     const handleGetPostsByTag = async () => {
-      await dispatch(getPostsByTag(firestore, selectedTag));
+      await dispatch(getPostsByTag(selectedTag));
     }
 
     if(selectedTag) {

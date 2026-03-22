@@ -14,8 +14,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import moment from 'moment';
 import { stripTags, truncate } from '../../../app/common/util/helpers';
-import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty, isLoaded, useFirestore } from 'react-redux-firebase';
+import { useSelector } from 'react-redux';
 import {deletePost} from '../postActions';
 
 const useStyles = makeStyles(theme => ({
@@ -44,10 +43,9 @@ const FeedCard = ({ elevateCard = true, marginY = 2, dividerBottom = false, post
   const renderBody = stripTags(truncate(post.body, 200));
   const isLongText = renderBody.substr(renderBody.length - 4, renderBody.length) ===
     '... ';
-  const auth = useSelector(state => state.firebase.auth);
-  const isAuthenticated = isLoaded(auth) && !isEmpty(auth);
-  const isAuthenticatedUser = post?.authorId === auth?.uid;
-  const firestore = useFirestore();
+  const auth = useSelector((state: any) => state.auth);
+  const isAuthenticated = auth.isLoaded && auth.authenticated;
+  const isAuthenticatedUser = post?.authorId === auth.currentUser?.uid;
 
   return (
     <Fragment>
@@ -69,7 +67,7 @@ const FeedCard = ({ elevateCard = true, marginY = 2, dividerBottom = false, post
                               color='primary'>
                     <EditIcon fontSize="default"/>
                   </IconButton>
-                  <IconButton onClick={() => deletePost(firestore, post.id)} aria-label="delete"
+                  <IconButton onClick={() => deletePost(post.id)} aria-label="delete"
                               style={{ color: '#ba1818' }}>
                     <DeleteIcon fontSize="default"/>
                   </IconButton>

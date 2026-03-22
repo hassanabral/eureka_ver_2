@@ -1,4 +1,5 @@
 import { toastr } from 'react-redux-toastr';
+import { auth, googleProvider, db, fieldValue } from '../../firebase';
 
 export const truncate = (str, len) => {
   if( str.length > 0 && str.length > len) {
@@ -17,7 +18,7 @@ export const stripTags = (input) => {
 };
 
 export const getHashtags = input => {
-  const regex = /#[^ :\n\t\.,\?\/’'!]+/g;
+  const regex = /#[^ :\n\t\.,\?\/''!]+/g;
   const hashtagsTemp = input.match(regex);
 
   if(!hashtagsTemp) return [];
@@ -30,8 +31,8 @@ export const getHashtags = input => {
 }
 
 // Helper: Reads an array of IDs from a collection concurrently
-export const readIds = async (collection, ids) => {
-  const reads = ids.map(id => collection.doc(id).get() );
+export const readIds = async (collectionName: string, ids: string[]) => {
+  const reads = ids.map(id => db.collection(collectionName).doc(id).get() );
   const result = await Promise.all(reads);
   return result.map(v => {
     return {
@@ -41,13 +42,17 @@ export const readIds = async (collection, ids) => {
   });
 }
 
-export const signInWithGoogle = async (firebase, firestore) => {
+export const signInWithGoogle = async () => {
   try {
-    const user = await firebase.login({ provider: "google", type: "popup"});
-    if (user.additionalUserInfo.isNewUser) {
-      await firebase.updateProfile({
-        createdAt: firestore.FieldValue.serverTimestamp(),
-      })
+    const user = await auth.signInWithPopup(googleProvider);
+    if (user.additionalUserInfo?.isNewUser) {
+      await db.collection('users').doc(user.user!.uid).set({
+        displayName: user.user!.displayName,
+        email: user.user!.email,
+        photoURL: user.user!.photoURL,
+        avatarUrl: user.user!.photoURL,
+        createdAt: fieldValue.serverTimestamp(),
+      });
     }
     toastr.success('Success!', 'You are logged in.');
     return user;
@@ -57,4 +62,3 @@ export const signInWithGoogle = async (firebase, firestore) => {
   }
 
 };
-

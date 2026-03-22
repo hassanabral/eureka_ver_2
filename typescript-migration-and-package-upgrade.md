@@ -48,16 +48,17 @@
 - [x] Verify: Build succeeds, zero tsc errors
 
 ### Phase 6: Remove react-redux-firebase & redux-firestore
-- [ ] Create modular Firebase init
-- [ ] Create useAuth hook
-- [ ] Create useFirestoreQuery hook
-- [ ] Create authSlice
-- [ ] Refactor postActions and userActions to modular SDK
-- [ ] Refactor auth calls
-- [ ] Update rootReducer
-- [ ] Update PrivateRoute
-- [ ] Remove react-redux-firebase, redux-firestore packages
-- [ ] Verify: All Firestore interactions work
+- [x] Create modular Firebase init (auth, db, storage, googleProvider, fieldValue)
+- [x] Create authSlice with onAuthStateChanged listener
+- [x] Create useFirestoreDoc hook
+- [x] Create useFirestoreQuery hook
+- [x] Refactor postActions and userActions to import db/fieldValue directly
+- [x] Refactor auth calls (signInWithGoogle, signOut)
+- [x] Update rootReducer (remove firebaseReducer, firestoreReducer, add auth)
+- [x] Update PrivateRoute, AuthIsLoaded, all auth checks
+- [x] Replace all useFirestoreConnect with custom hooks
+- [x] Remove react-redux-firebase, redux-firestore packages and type declarations
+- [x] Verify: Build succeeds, zero tsc errors
 
 ### Phase 7: Material-UI v4 to MUI v5
 - [ ] Install @mui/material, @mui/icons-material, @emotion/react, @emotion/styled

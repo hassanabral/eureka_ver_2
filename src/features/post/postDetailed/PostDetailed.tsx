@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from 'react';
+import React, { Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -6,10 +6,10 @@ import PostDetailedSidebarRight from './PostDetailedSidebarRight';
 import PostDetailedBody from './PostDetailedBody';
 import PostDetailedAddComment from './PostDetailedAddComment';
 import PostDetailedComments from './PostDetailedComments';
-import { isEmpty, isLoaded, useFirestoreConnect } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
 import Loading from '../../../app/common/util/Loading';
 import { useParams } from 'react-router-dom';
+import { useFirestoreDoc } from '../../../app/hooks/useFirestoreDoc';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -32,18 +32,11 @@ const PostDetailed = () => {
   const classes = useStyles();
   const { id } = useParams();
 
-  const postQuery = useMemo(() => ({
-    collection: 'posts',
-    doc: id,
-    storeAs: 'postDetailed'
-  }), [id]);
+  const { data: post, loading } = useFirestoreDoc('posts', id);
 
-  useFirestoreConnect(postQuery);
-
-  const post = useSelector((state) => (state.firestore.data.postDetailed));
-  const auth = useSelector(state => state.firebase.auth);
-  const isAuthenticated = isLoaded(auth) && !isEmpty(auth);
-  const isAuthenticatedUser = post?.authorId === auth?.uid;
+  const auth = useSelector((state: any) => state.auth);
+  const isAuthenticated = auth.isLoaded && auth.authenticated;
+  const isAuthenticatedUser = post?.authorId === auth.currentUser?.uid;
 
   const mainDiv = <Fragment>
     <Grid container className={classes.root} spacing={3}>
@@ -53,7 +46,7 @@ const PostDetailed = () => {
             post={post}
             isAuthenticatedUser={isAuthenticatedUser}
             isAuthenticated={isAuthenticated}/>}
-          <Loading loading={!post}/>
+          <Loading loading={!post && loading}/>
         </Card>
         {isAuthenticated && <Card className={classes.card}>
           <PostDetailedAddComment postId={id}/>

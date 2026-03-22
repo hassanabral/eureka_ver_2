@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from 'react';
+import React, { Fragment } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
@@ -6,11 +6,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import UserDetailedHeaderInfo from '../../user/UserDetailed/UserDetailedHeaderInfo';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import { useFirestoreConnect } from 'react-redux-firebase';
-import { useSelector } from 'react-redux';
 import Loading from '../../../app/common/util/Loading';
 import { Link as RouterLink } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
+import { useFirestoreDoc } from '../../../app/hooks/useFirestoreDoc';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -29,19 +28,11 @@ const useStyles = makeStyles(theme => ({
 const PostDetailedSidebarRight = ({ authorId }) => {
   const classes = useStyles();
 
-  const authorProfileQuery = useMemo(() => ({
-    collection: 'users',
-    doc: authorId,
-    storeAs: 'authorProfile'
-  }), [authorId]);
-
-  useFirestoreConnect(authorProfileQuery);
-
-  const user = useSelector((state) => (state.firestore.data.authorProfile));
+  const { data: user, loading } = useFirestoreDoc('users', authorId);
 
   return (
     <Fragment>
-      <Loading loading={!user}/>
+      <Loading loading={!user && loading}/>
       {
         user && <Grid container className={classes.root} spacing={2}>
           <Grid item>

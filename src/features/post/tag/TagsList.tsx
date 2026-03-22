@@ -2,7 +2,6 @@ import React, {useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Button } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { useFirestore } from 'react-redux-firebase';
 import { getTags } from '../postActions';
 import Loading from '../../../app/common/util/Loading';
 
@@ -32,19 +31,18 @@ const useStyles = makeStyles(theme => ({
 // related to that tag
 const TagsList = ({ setSelectedTag, selectedTag, loading }) => {
   const classes = useStyles();
-  const tags = useSelector(state => state.post.tags);
-  const firestore = useFirestore();
+  const tags = useSelector((state: any) => state.post.tags);
   const dispatch = useDispatch();
 
   useEffect( () => {
     const handleGetTags = async () => {
-      await dispatch(getTags(firestore));
+      await dispatch(getTags());
     }
     // only get tags from backend if "tags" is null
     if(!tags) {
       handleGetTags();
     }
-  }, [firestore, dispatch, tags]);
+  }, [dispatch, tags]);
 
   return (
     <Box my={2}>

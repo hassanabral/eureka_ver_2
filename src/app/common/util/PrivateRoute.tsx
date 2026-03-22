@@ -1,5 +1,4 @@
 import { Navigate, useLocation } from 'react-router-dom';
-import { isLoaded, isEmpty } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
 import { ReactNode } from 'react';
 
@@ -8,12 +7,12 @@ interface PrivateRouteProps {
 }
 
 const PrivateRoute = ({ children }: PrivateRouteProps) => {
-  const auth = useSelector((state: any) => state.firebase.auth);
+  const auth = useSelector((state: any) => state.auth);
   const location = useLocation();
 
-  if (!isLoaded(auth)) return null;
+  if (!auth.isLoaded) return null;
 
-  if (isEmpty(auth)) {
+  if (!auth.authenticated) {
     return <Navigate to="/feed" state={{ from: location }} replace />;
   }
 
