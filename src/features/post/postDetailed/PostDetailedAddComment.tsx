@@ -7,7 +7,6 @@ import { Field, reduxForm } from 'redux-form';
 import { combineValidators, isRequired } from 'revalidate';
 import RichEditor from '../../../app/common/form/RichEditor';
 import { addComment, createPost } from '../postActions';
-import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useFirebase, useFirestore } from 'react-redux-firebase';
 

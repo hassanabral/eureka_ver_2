@@ -299,12 +299,11 @@ export const addReply = ({ firestore }, formData, commentId, setToggleReplies) =
   };
 };
 
-export const updatePost = ({ firestore }, formData, history, postId) => {
+export const updatePost = ({ firestore }: any, formData: any, postId: string) => {
   return async (dispatch, getState) => {
     try {
       await firestore.collection('posts').doc(postId).update(formData);
       toastr.success('Success!', 'Post has been updated');
-      history.push(`/posts/${postId}`);
     } catch (error) {
       toastr.error('Oops', 'Something went wrong');
     }

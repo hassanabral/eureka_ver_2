@@ -5,7 +5,7 @@ import EditPost from './EditPost';
 import { useParams } from "react-router-dom";
 
 const EditPostWrapper = () => {
-  const {id} = useParams<{ id: string }>();
+  const {id} = useParams();
 
   const editPostQuery = useMemo(() => ({
     collection: 'posts',

@@ -11,7 +11,7 @@ import TextInput from '../../../app/common/form/TextInput';
 import { Field, reduxForm } from 'redux-form';
 import { combineValidators, isRequired } from 'revalidate';
 import RichEditor from '../../../app/common/form/RichEditor';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {getHashtags} from '../../../app/common/util/helpers';
 import { useDispatch } from 'react-redux';
@@ -47,7 +47,7 @@ const validate = combineValidators({
 
 const AddPost = ({ handleSubmit, invalid, submitting }) => {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const firebase = useFirebase();
   const firestore = useFirestore();
@@ -55,7 +55,7 @@ const AddPost = ({ handleSubmit, invalid, submitting }) => {
   const handleCreatePost = async formData => {
     const newPost = {...formData, hashtags: getHashtags(formData.body)}
     const post: any = await dispatch(createPost({firebase, firestore}, newPost));
-    history.push(`/posts/${post.id}`);
+    navigate(`/posts/${post.id}`);
   };
 
   return (

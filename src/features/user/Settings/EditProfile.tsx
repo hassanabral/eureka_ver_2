@@ -18,7 +18,7 @@ import Spinner from '../../../app/common/util/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFirebase } from 'react-redux-firebase';
 import { updateProfile } from '../userActions';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const validate = combineValidators({
   website: composeValidators(
@@ -61,12 +61,13 @@ const EditProfile = ({ handleSubmit, pristine, invalid, submitting }) => {
 
   const dispatch = useDispatch();
   const firebase = useFirebase();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleUpdateProfile = useCallback(
-    (formData) => {
-      return dispatch(updateProfile({firebase}, formData, history, uid))
-    }, [firebase, dispatch, history, uid]
+    async (formData) => {
+      await dispatch(updateProfile({firebase}, formData, uid));
+      navigate(`/users/${uid}`);
+    }, [firebase, dispatch, navigate, uid]
   );
 
   const classes = useStyles();

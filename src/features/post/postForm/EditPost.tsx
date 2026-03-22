@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import { useHistory, withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Field, reduxForm } from 'redux-form';
 import { combineValidators, isRequired } from 'revalidate';
@@ -48,12 +48,13 @@ const EditPost = ({ handleSubmit, pristine, invalid, submitting, postId }) => {
 
   const dispatch = useDispatch();
   const firestore = useFirestore();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleUpdatePost = useCallback(
-    (formData) => {
-      return dispatch(updatePost({ firestore }, formData, history, postId));
-    }, [firestore, dispatch, history, postId]
+    async (formData) => {
+      await dispatch(updatePost({ firestore }, formData, postId));
+      navigate(`/posts/${postId}`);
+    }, [firestore, dispatch, navigate, postId]
   );
 
   return (

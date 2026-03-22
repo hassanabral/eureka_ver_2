@@ -6,7 +6,7 @@ import red from '@material-ui/core/colors/red';
 import green from '@material-ui/core/colors/green';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import ResponsiveDrawer from './features/nav/ResponsiveDrawer';
@@ -76,57 +76,49 @@ const useStyles = makeStyles(theme => ({
   toolbar: theme.mixins.toolbar,
 }));
 
-function App () {
+function AppLayout() {
+  const classes = useStyles();
+  return (
+    <Fragment>
+      <CssBaseline/>
+      <ResponsiveDrawer/>
+      <main className={classes.content}>
+        <div className={classes.toolbar}/>
+        <Container maxWidth={'lg'} className={classes.box}>
+          <Routes>
+            <Route path='/users/:id' element={<UserDetailedPage/>}/>
+            <Route path='/users' element={<UsersPage/>}/>
+            <Route path='/feed' element={<FeedsPage/>}/>
+            <Route path='/edit-profile' element={<PrivateRoute><SettingsPage/></PrivateRoute>}/>
+            <Route path='/posts/add' element={<PrivateRoute><AddPost/></PrivateRoute>}/>
+            <Route path='/posts/:id' element={<PostDetailed/>}/>
+            <Route path='/posts/edit/:id' element={<PrivateRoute><EditPostWrapper/></PrivateRoute>}/>
+            <Route path='/dashboard' element={<PrivateRoute><Dashboard/></PrivateRoute>}/>
+            <Route path='/bookmarks' element={<PrivateRoute><Bookmarks/></PrivateRoute>}/>
+            <Route path='/tags' element={<TagsPage/>}/>
+          </Routes>
+        </Container>
+      </main>
+    </Fragment>
+  );
+}
+
+function App() {
   const classes = useStyles();
   const auth = useSelector((state: any) => state.firebase.auth);
   if (!auth.isLoaded && auth.isEmpty) return <Spinner />;
 
   return (
-      <div className="App">
-        <ThemeProvider theme={theme}>
-          <div className={classes.root}>
-          <Switch>
-            <Route exact path='/' component={Landing}/>
-          </Switch>
-          <Route
-            path='/(.+)'
-            render={() => (
-                <Fragment>
-                  <CssBaseline/>
-                  <ResponsiveDrawer/>
-                  <main className={classes.content}>
-                    <div className={classes.toolbar}/>
-                    <Container maxWidth={'lg'} className={classes.box}>
-                      <Switch>
-                        <Route exact path='/users/:id' component={UserDetailedPage}/>
-                        <Route exact path='/users' component={UsersPage}/>
-                        <Route exact path='/feed' component={FeedsPage}/>
-                        <PrivateRoute exact path = "/edit-profile">
-                          <SettingsPage/>
-                        </PrivateRoute>
-                        <PrivateRoute exact path='/posts/add' >
-                          <AddPost/>
-                        </PrivateRoute>
-                        <Route exact path='/posts/:id' component={PostDetailed}/>
-                        <PrivateRoute exact path='/posts/edit/:id'>
-                          <EditPostWrapper/>
-                        </PrivateRoute>
-                        <PrivateRoute exact path='/dashboard'>
-                          <Dashboard/>
-                        </PrivateRoute>
-                        <PrivateRoute exact path='/bookmarks'>
-                          <Bookmarks/>
-                        </PrivateRoute>
-                        <Route exact path='/tags' component={TagsPage}/>
-                      </Switch>
-                    </Container>
-                  </main>
-                </Fragment>
-              )}
-          />
-          </div>
-        </ThemeProvider>
-      </div>
+    <div className="App">
+      <ThemeProvider theme={theme}>
+        <div className={classes.root}>
+          <Routes>
+            <Route path='/' element={<Landing/>}/>
+            <Route path='/*' element={<AppLayout/>}/>
+          </Routes>
+        </div>
+      </ThemeProvider>
+    </div>
   );
 }
 

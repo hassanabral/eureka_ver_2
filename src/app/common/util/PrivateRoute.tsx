@@ -1,27 +1,23 @@
-import React from "react";
-import { Route, Redirect } from "react-router-dom";
-import { isLoaded, isEmpty } from "react-redux-firebase";
-import { useSelector } from "react-redux";
+import { Navigate, useLocation } from 'react-router-dom';
+import { isLoaded, isEmpty } from 'react-redux-firebase';
+import { useSelector } from 'react-redux';
+import { ReactNode } from 'react';
 
-const PrivateRoute = ({ children, ...remainingProps }) => {
-  const auth = useSelector(state => state.firebase.auth);
-  return (
-    <Route
-      {...remainingProps}
-      render={({ location }) =>
-        isLoaded(auth) && !isEmpty(auth) ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: "/feed",
-              state: { from: location },
-            }}
-          />
-        )
-      }
-    />
-  );
+interface PrivateRouteProps {
+  children: ReactNode;
+}
+
+const PrivateRoute = ({ children }: PrivateRouteProps) => {
+  const auth = useSelector((state: any) => state.firebase.auth);
+  const location = useLocation();
+
+  if (!isLoaded(auth)) return null;
+
+  if (isEmpty(auth)) {
+    return <Navigate to="/feed" state={{ from: location }} replace />;
+  }
+
+  return <>{children}</>;
 };
 
 export default PrivateRoute;

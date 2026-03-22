@@ -21,8 +21,7 @@ import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import {
   Link as RouterLink,
-  useHistory,
-  withRouter,
+  useNavigate,
   useLocation
 } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
@@ -190,13 +189,13 @@ function usePrevious (value) {
 
 function ResponsiveDrawer ({ ...props }) {
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const { pathname: currentLocation } = useLocation();
   const firebase = useFirebase();
 
   const handleLogout = () => {
     firebase.auth().signOut().then(() => {
-      history.push('/');
+      navigate('/');
     });
     toastr.success('Success!', 'You are logged out.');
   };
@@ -415,7 +414,7 @@ function ResponsiveDrawer ({ ...props }) {
                 <IconButton
                   size="medium"
                   style={{ color: '#fff', }}
-                  onClick={() => history.goBack()}
+                  onClick={() => navigate(-1)}
                 >
                   <ArrowBackIosIcon style={{ marginLeft: '7px' }}
                   />
@@ -514,4 +513,4 @@ ResponsiveDrawer.propTypes = {
   container: PropTypes.instanceOf(typeof Element === 'undefined' ? Object : Element),
 };
 
-export default withRouter(ResponsiveDrawer as any);
+export default ResponsiveDrawer;

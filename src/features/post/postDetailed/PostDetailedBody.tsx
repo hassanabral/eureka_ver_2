@@ -45,7 +45,7 @@ const PostDetailedBody = ({ post, isAuthenticated, isAuthenticatedUser }) => {
   const firestore = useFirestore();
   const dispatch = useDispatch();
 
-  const {id} = useParams<{ id: string }>();
+  const {id} = useParams();
 
   const [saved, setSaved] = useState();
 

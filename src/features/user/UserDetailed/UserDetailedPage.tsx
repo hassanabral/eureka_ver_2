@@ -6,6 +6,7 @@ import UserDetailedPageBody from './UserDetailedPageBody';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
 import Loading from '../../../app/common/util/Loading';
+import { useParams } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -16,23 +17,24 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const UserDetailedPage = ({ match: { params } }) => {
+const UserDetailedPage = () => {
 
+  const { id } = useParams();
   const classes = useStyles();
 
   const userProfileQuery = useMemo(() => ({
     collection: 'users',
-    doc: params.id,
+    doc: id,
     storeAs: 'userProfile'
-  }), [params.id]);
+  }), [id]);
 
   const userPostQuery = useMemo(() => ({
     collection: 'posts',
-    where: [['authorId', '==', params.id], ['status', '==', 'published'],
+    where: [['authorId', '==', id], ['status', '==', 'published'],
       ['deleted', '==', false]],
     orderBy: ['date', 'desc'],
     storeAs: 'userPosts'
-  }), [params.id]);
+  }), [id]);
 
   useFirestoreConnect(userProfileQuery);
   useFirestoreConnect(userPostQuery);
@@ -48,7 +50,7 @@ const UserDetailedPage = ({ match: { params } }) => {
         <Grid item lg={8} sm={12} className={classes.gridItem}>
           <Grid container className={classes.root}>
             <Grid item sm={12} className={classes.gridItem}>
-              {user && <UserDetailedHeader user={user} userId={params.id}/>}
+              {user && <UserDetailedHeader user={user} userId={id}/>}
               <Loading loading={!user}/>
             </Grid>
             <Grid item sm={12} className={classes.gridItem}>

@@ -9,6 +9,7 @@ import PostDetailedComments from './PostDetailedComments';
 import { isEmpty, isLoaded, useFirestoreConnect } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
 import Loading from '../../../app/common/util/Loading';
+import { useParams } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -27,14 +28,15 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-const PostDetailed = ({ match: { params } }) => {
+const PostDetailed = () => {
   const classes = useStyles();
+  const { id } = useParams();
 
   const postQuery = useMemo(() => ({
     collection: 'posts',
-    doc: params.id,
+    doc: id,
     storeAs: 'postDetailed'
-  }), [params.id]);
+  }), [id]);
 
   useFirestoreConnect(postQuery);
 
@@ -54,9 +56,9 @@ const PostDetailed = ({ match: { params } }) => {
           <Loading loading={!post}/>
         </Card>
         {isAuthenticated && <Card className={classes.card}>
-          <PostDetailedAddComment postId={params.id}/>
+          <PostDetailedAddComment postId={id}/>
         </Card>}
-        <PostDetailedComments isAuthenticated={isAuthenticated} postId={params.id}/>
+        <PostDetailedComments isAuthenticated={isAuthenticated} postId={id}/>
       </Grid>
       <Grid item lg={4} sm={12} className={classes.gridItem}>
         <Card className={classes.card}>

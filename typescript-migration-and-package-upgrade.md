@@ -33,13 +33,14 @@
 - [x] Verify: Build succeeds, zero tsc errors
 
 ### Phase 4: React Router 5 to React Router 6
-- [ ] Replace Switch with Routes, update Route syntax
-- [ ] Replace useHistory with useNavigate
-- [ ] Replace match.params with useParams
-- [ ] Remove withRouter HOC usages
-- [ ] Refactor action creators to not receive history
-- [ ] Remove react-router-last-location
-- [ ] Verify: All routes and navigation work
+- [x] Replace Switch with Routes, update Route syntax
+- [x] Replace useHistory with useNavigate
+- [x] Replace match.params with useParams
+- [x] Remove withRouter HOC usages (ResponsiveDrawer, ScrollToTop)
+- [x] Refactor action creators to not receive history (postActions, userActions)
+- [x] Remove react-router-last-location
+- [x] Rewrite PrivateRoute with Navigate component
+- [x] Verify: Build succeeds, zero tsc errors
 
 ### Phase 5: Firebase SDK 7 to 10 (Compat Layer)
 - [ ] Update firebase imports to compat paths
