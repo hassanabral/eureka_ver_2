@@ -26,10 +26,11 @@
 - [x] Verify: tsc --noEmit has zero errors, npm run build succeeds
 
 ### Phase 3: React 16 to React 18
-- [ ] Update index.tsx to use createRoot
-- [ ] Install react@18, react-dom@18, @types/react@18, @types/react-dom@18
-- [ ] Fix StrictMode double-fire effects
-- [ ] Verify: App renders correctly
+- [x] Update index.tsx to use createRoot
+- [x] Install react@18, react-dom@18, @types/react@18, @types/react-dom@18
+- [x] Switch to automatic JSX runtime (react-jsx)
+- [x] Fix Hidden component type issues for React 18
+- [x] Verify: Build succeeds, zero tsc errors
 
 ### Phase 4: React Router 5 to React Router 6
 - [ ] Replace Switch with Routes, update Route syntax

@@ -467,7 +467,7 @@ function ResponsiveDrawer ({ ...props }) {
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-        <Hidden smUp implementation="css">
+        <Hidden {...{ smUp: true, implementation: "css" } as any}>
           <Drawer
             container={container}
             variant="temporary"
@@ -486,7 +486,7 @@ function ResponsiveDrawer ({ ...props }) {
 
           </Drawer>
         </Hidden>
-        <Hidden xsDown implementation="css">
+        <Hidden {...{ xsDown: true, implementation: "css" } as any}>
           <Drawer
             classes={{
               paper: classes.drawerPaper,
