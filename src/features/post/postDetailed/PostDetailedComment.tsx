@@ -16,7 +16,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import PostDetailedReplyForm from './PostDetailedReplyForm';
 import PostDetailedReplies from './PostDetailedReplies';
 import { formatDistanceToNow } from 'date-fns';
-import ReactHtmlParser from 'react-html-parser';
+import parse from 'html-react-parser';
 import {
   deleteComment,
   likeOrUnlikeComment,
@@ -122,7 +122,7 @@ const PostDetailedComment = ({ comment, commentOrReply = 'comment', showReplies 
 
     </Box>
     <Box>
-      {ReactHtmlParser(comment.commentBody)}
+      {parse(comment.commentBody)}
     </Box>
 
 

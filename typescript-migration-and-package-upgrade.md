@@ -94,14 +94,14 @@
 - [x] Verify: Build succeeds, zero tsc errors
 
 ### Phase 11: Upgrade Remaining Packages
-- [ ] Upgrade @reduxjs/toolkit to 2.x
-- [ ] Upgrade react-redux to 9.x
-- [ ] Upgrade/replace CKEditor
-- [ ] Replace react-html-parser with html-react-parser
-- [ ] Replace react-infinite-scroller
-- [ ] Replace cuid with nanoid
-- [ ] Upgrade testing libraries
-- [ ] Verify: Build succeeds
+- [x] Upgrade @reduxjs/toolkit to 2.x (fix getDefaultMiddleware callback pattern)
+- [x] Upgrade react-redux to 9.x
+- [x] Replace react-html-parser with html-react-parser
+- [x] Replace react-infinite-scroller with Intersection Observer
+- [x] Remove cuid (unused in codebase), install nanoid
+- [ ] Upgrade/replace CKEditor (deferred — significant API changes)
+- [ ] Upgrade testing libraries (deferred — minimal test coverage)
+- [x] Verify: Build succeeds, zero tsc errors
 
 ### Phase 12: Cloud Functions Upgrade
 - [ ] Upgrade Node runtime to 20

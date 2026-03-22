@@ -9,7 +9,7 @@ import Link from '@mui/material/Link';
 import Avatar from '@mui/material/Avatar';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { format } from 'date-fns';
-import ReactHtmlParser from 'react-html-parser';
+import parse from 'html-react-parser';
 import EditIcon from '@mui/icons-material/Edit';
 import FeedCardButtons from '../feed/FeedCardButtons';
 import {
@@ -124,7 +124,7 @@ const PostDetailedBody = ({ post, isAuthenticated, isAuthenticatedUser }) => {
       </Box>
 
       <Box mt={3} mb={2}>
-          {ReactHtmlParser(post.body)}
+          {parse(post.body)}
       </Box>
 
       <FeedCardButtons likeCount={post.likeCount} commentCount={post.commentCount}
