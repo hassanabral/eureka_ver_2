@@ -1,14 +1,10 @@
 import React, { Fragment } from 'react';
 import './App.css';
-import blue from '@material-ui/core/colors/blue';
-import grey from '@material-ui/core/colors/grey';
-import red from '@material-ui/core/colors/red';
-import green from '@material-ui/core/colors/green';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createTheme, ThemeProvider, Theme, StyledEngineProvider, adaptV4Theme } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
 import { Route, Routes } from 'react-router-dom';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Container from '@material-ui/core/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import Container from '@mui/material/Container';
 import ResponsiveDrawer from './features/nav/ResponsiveDrawer';
 import Landing from './features/layout/Landing';
 import UserDetailedPage from './features/user/UserDetailed/UserDetailedPage';
@@ -25,7 +21,16 @@ import { useSelector } from 'react-redux';
 import Spinner from './app/common/util/Spinner';
 import EditPostWrapper from './features/post/postForm/EditPostWrapper';
 
-const theme = createMuiTheme({
+import { blue, grey, red, green } from '@mui/material/colors';
+
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
+
+
+const theme = createTheme(adaptV4Theme({
   palette: {
     primary: blue,
     secondary: grey,
@@ -35,14 +40,14 @@ const theme = createMuiTheme({
     grey,
     green
   }
-} as any);
+} as any));
 
 const useStyles = makeStyles(theme => ({
   container: {
     padding: theme.spacing(5),
   },
   mainContainer: {
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('lg')]: {
       padding: 0
     }
   },
@@ -51,7 +56,7 @@ const useStyles = makeStyles(theme => ({
   },
   box: {
     padding: theme.spacing(2),
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       padding: theme.spacing(0.5),
     }
   },
@@ -110,14 +115,16 @@ function App() {
 
   return (
     <div className="App">
-      <ThemeProvider theme={theme}>
-        <div className={classes.root}>
-          <Routes>
-            <Route path='/' element={<Landing/>}/>
-            <Route path='/*' element={<AppLayout/>}/>
-          </Routes>
-        </div>
-      </ThemeProvider>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <div className={classes.root}>
+            <Routes>
+              <Route path='/' element={<Landing/>}/>
+              <Route path='/*' element={<AppLayout/>}/>
+            </Routes>
+          </div>
+        </ThemeProvider>
+      </StyledEngineProvider>
     </div>
   );
 }

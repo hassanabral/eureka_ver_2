@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect } from 'react';
 import UserDetailedPageBody from '../../user/UserDetailed/UserDetailedPageBody';
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 import {getBookmarks} from '../postActions';
 import { useDispatch, useSelector } from 'react-redux';
 

@@ -1,17 +1,17 @@
 import React, { Fragment } from 'react';
-import Card from '@material-ui/core/Card';
-import Grid from '@material-ui/core/Grid';
-import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
+import Card from '@mui/material/Card';
+import Grid from '@mui/material/Grid';
+import Avatar from '@mui/material/Avatar';
+import Typography from '@mui/material/Typography';
+import Link from '@mui/material/Link';
 import { Link as RouterLink } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
 import FeedCardButtons from './FeedCardButtons';
-import Box from '@material-ui/core/Box';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import moment from 'moment';
 import { stripTags, truncate } from '../../../app/common/util/helpers';
 import { useSelector } from 'react-redux';
@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
   },
   cardUserPage: {
     padding: theme.spacing(2, 1),
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       paddingLeft: theme.spacing(0),
       paddingRight: theme.spacing(0),
     },
@@ -61,15 +61,20 @@ const FeedCard = ({ elevateCard = true, marginY = 2, dividerBottom = false, post
                         to={`/posts/${post.id}`}>{post.title}</Link>
                 </Box>
                 {isAuthenticated && isAuthenticatedUser && <Box>
-                  <IconButton component={RouterLink}
-                              to={`/posts/edit/${post.id}`}
-                              aria-label="edit"
-                              color='primary'>
-                    <EditIcon fontSize="default"/>
+                  <IconButton
+                    component={RouterLink}
+                    to={`/posts/edit/${post.id}`}
+                    aria-label="edit"
+                    color='primary'
+                    size="large">
+                    <EditIcon fontSize="medium"/>
                   </IconButton>
-                  <IconButton onClick={() => deletePost(post.id)} aria-label="delete"
-                              style={{ color: '#ba1818' }}>
-                    <DeleteIcon fontSize="default"/>
+                  <IconButton
+                    onClick={() => deletePost(post.id)}
+                    aria-label="delete"
+                    style={{ color: '#ba1818' }}
+                    size="large">
+                    <DeleteIcon fontSize="medium"/>
                   </IconButton>
                 </Box>}
               </Box>

@@ -1,5 +1,5 @@
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
+import TextField from '@mui/material/TextField';
 
 const TextInput = ({ input, placeholder, autoFocus, required, width, fullWidth, type, label, meta: { touched, error, warning } }) => {
   return (

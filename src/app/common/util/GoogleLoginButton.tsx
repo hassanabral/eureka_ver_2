@@ -1,10 +1,10 @@
 import React, {Fragment} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import ListItemText from '@mui/material/ListItemText';
+import ListItem from '@mui/material/ListItem';
 import {signInWithGoogle} from './helpers';
 
 const GoogleLoginButton = () => {

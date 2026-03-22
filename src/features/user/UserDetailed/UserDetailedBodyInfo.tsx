@@ -1,11 +1,11 @@
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Link from '@material-ui/core/Link';
-import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
-import ShareIcon from '@material-ui/icons/Share';
-import Box from '@material-ui/core/Box';
-import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
+import Typography from '@mui/material/Typography';
+import makeStyles from '@mui/styles/makeStyles';
+import Link from '@mui/material/Link';
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import ShareIcon from '@mui/icons-material/Share';
+import Box from '@mui/material/Box';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import { Link as RouterLink } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({

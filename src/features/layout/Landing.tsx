@@ -1,13 +1,13 @@
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
+import Typography from '@mui/material/Typography';
+import makeStyles from '@mui/styles/makeStyles';
+import Box from '@mui/material/Box';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { Container } from '@material-ui/core';
+import { Container } from '@mui/material';
 import bgImage from './darkblueBg.jpg';
 import { useSelector } from 'react-redux';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import Button from '@material-ui/core/Button';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import Button from '@mui/material/Button';
 
 const useStyles = makeStyles(theme => ({
   root: {

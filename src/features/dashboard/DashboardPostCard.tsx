@@ -1,16 +1,16 @@
 import React, { Fragment } from 'react';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import Link from '@material-ui/core/Link';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import makeStyles from '@mui/styles/makeStyles';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import Link from '@mui/material/Link';
 import { Link as RouterLink } from 'react-router-dom';
 import FeedCardButtons from '../post/feed/FeedCardButtons';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import moment from 'moment';
 import { stripTags, truncate } from '../../app/common/util/helpers';
 import { deletePost } from '../post/postActions';
@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3),
     margin: theme.spacing(2, 1),
     border: '1px solid rgba(0, 0, 0, 0.12)',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       padding: theme.spacing(3),
       margin: theme.spacing(2, 0),
     }

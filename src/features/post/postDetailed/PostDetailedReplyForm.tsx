@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { TextField } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import Box from '@material-ui/core/Box';
+import { TextField } from '@mui/material';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 import { Field, reduxForm } from 'redux-form';
 import { combineValidators, isRequired } from 'revalidate';
 import { useDispatch } from 'react-redux';

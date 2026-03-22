@@ -1,9 +1,9 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import PostDetailedComment from './PostDetailedComment';
-import { Typography } from '@material-ui/core';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import Button from '@material-ui/core/Button';
-import Box from '@material-ui/core/Box';
+import { Typography } from '@mui/material';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 import Loading from '../../../app/common/util/Loading';
 import { db } from '../../../app/firebase';
 

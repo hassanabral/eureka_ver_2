@@ -1,18 +1,18 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
-import Avatar from '@material-ui/core/Avatar';
-import { Link } from '@material-ui/core';
+import Typography from '@mui/material/Typography';
+import makeStyles from '@mui/styles/makeStyles';
+import Card from '@mui/material/Card';
+import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
+import Avatar from '@mui/material/Avatar';
+import { Link } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import DeleteIcon from '@material-ui/icons/Delete';
-import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
-import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import PostDetailedReplyForm from './PostDetailedReplyForm';
 import PostDetailedReplies from './PostDetailedReplies';
 import moment from 'moment';
@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
   },
   card: {
     padding: theme.spacing(3, 5),
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       padding: theme.spacing(3),
     }
   },
@@ -109,10 +109,13 @@ const PostDetailedComment = ({ comment, commentOrReply = 'comment', showReplies 
       </Box>
       {isAuthenticated && isAuthenticatedUser &&
       <Box component='span' mb={0} pb={0}>
-        <IconButton onClick={() => deleteComment(comment.id)}
-                    className={classes.button} aria-label="delete"
-                    style={{ color: '#ba1818' }}>
-          <DeleteIcon fontSize="default"/>
+        <IconButton
+          onClick={() => deleteComment(comment.id)}
+          className={classes.button}
+          aria-label="delete"
+          style={{ color: '#ba1818' }}
+          size="large">
+          <DeleteIcon fontSize="medium"/>
         </IconButton>
       </Box>
       }

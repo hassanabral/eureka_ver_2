@@ -1,9 +1,9 @@
 import React, { Fragment, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import { Card, Box, Grid } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
+import Typography from '@mui/material/Typography';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import { Card, Box, Grid } from '@mui/material';
 import UserCard from './UserCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUsers } from '../userActions';

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Link from '@material-ui/core/Link';
+import Typography from '@mui/material/Typography';
+import makeStyles from '@mui/styles/makeStyles';
+import Link from '@mui/material/Link';
 import { Link as RouterLink } from 'react-router-dom';
-import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
-import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
-import { Box } from '@material-ui/core';
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import { Box } from '@mui/material';
 import { likeOrUnlike, toggleLike } from '../postActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { toastr } from 'react-redux-toastr';

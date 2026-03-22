@@ -1,14 +1,14 @@
 import React, { useEffect, Fragment } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
-import DashboardOutlinedIcon from '@material-ui/icons/DashboardOutlined';
-import EditIcon from '@material-ui/icons/Edit';
-import MenuIcon from '@material-ui/icons/Menu';
+import makeStyles from '@mui/styles/makeStyles';
+import BottomNavigation from '@mui/material/BottomNavigation';
+import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
+import EditIcon from '@mui/icons-material/Edit';
+import MenuIcon from '@mui/icons-material/Menu';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { signInWithGoogle} from '../../app/common/util/helpers';
 
 const useStyles = makeStyles({

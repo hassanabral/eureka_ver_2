@@ -1,10 +1,10 @@
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
-import LinkIcon from '@material-ui/icons/Link';
-import TodayIcon from '@material-ui/icons/Today';
-import { makeStyles } from '@material-ui/core/styles';
-import { Link, Box } from '@material-ui/core';
+import Typography from '@mui/material/Typography';
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import LinkIcon from '@mui/icons-material/Link';
+import TodayIcon from '@mui/icons-material/Today';
+import makeStyles from '@mui/styles/makeStyles';
+import { Link, Box } from '@mui/material';
 import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({

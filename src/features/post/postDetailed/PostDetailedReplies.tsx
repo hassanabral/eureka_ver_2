@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Fragment } from 'react';
-import Box from '@material-ui/core/Box';
+import Box from '@mui/material/Box';
 import { getReplies } from '../postActions';
 import PostDetailedComment from './PostDetailedComment';
 import Loading from '../../../app/common/util/Loading';

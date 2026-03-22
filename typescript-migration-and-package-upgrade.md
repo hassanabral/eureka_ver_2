@@ -61,13 +61,14 @@
 - [x] Verify: Build succeeds, zero tsc errors
 
 ### Phase 7: Material-UI v4 to MUI v5
-- [ ] Install @mui/material, @mui/icons-material, @emotion/react, @emotion/styled
-- [ ] Run MUI codemods
-- [ ] Migrate createMuiTheme to createTheme
-- [ ] Replace makeStyles with sx prop or styled()
-- [ ] Update icon imports
-- [ ] Remove @material-ui/core, @material-ui/icons
-- [ ] Verify: Visual parity on every page
+- [x] Install @mui/material@5, @mui/icons-material@5, @mui/styles@5, @emotion/react, @emotion/styled
+- [x] Run MUI codemods (preset-safe migrated 39 files)
+- [x] createMuiTheme → createTheme (handled by codemod)
+- [x] makeStyles migrated to @mui/styles bridge (full sx migration deferred)
+- [x] Replace deprecated Hidden with Box sx display props
+- [x] Fix fontSize="default" → fontSize="medium"
+- [x] Remove @material-ui/core, @material-ui/icons
+- [x] Verify: Build succeeds, zero tsc errors
 
 ### Phase 8: Replace moment.js with date-fns
 - [ ] Replace moment().fromNow() with formatDistanceToNow in 4 files

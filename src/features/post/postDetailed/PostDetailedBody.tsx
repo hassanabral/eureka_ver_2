@@ -1,24 +1,24 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
+import Typography from '@mui/material/Typography';
+import makeStyles from '@mui/styles/makeStyles';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import { Link as RouterLink, useParams } from 'react-router-dom';
-import Link from '@material-ui/core/Link';
-import Avatar from '@material-ui/core/Avatar';
-import BookmarkIcon from '@material-ui/icons/Bookmark';
+import Link from '@mui/material/Link';
+import Avatar from '@mui/material/Avatar';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 import moment from 'moment';
 import ReactHtmlParser from 'react-html-parser';
-import EditIcon from '@material-ui/icons/Edit';
+import EditIcon from '@mui/icons-material/Edit';
 import FeedCardButtons from '../feed/FeedCardButtons';
 import {
   deletePost,
   savePost,
   toggleBookmark,
 } from '../postActions';
-import DeleteIcon from '@material-ui/icons/Delete';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ButtonGroup from '@mui/material/ButtonGroup';
 import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({

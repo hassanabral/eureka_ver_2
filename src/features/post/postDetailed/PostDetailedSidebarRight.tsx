@@ -1,14 +1,14 @@
 import React, { Fragment } from 'react';
-import Grid from '@material-ui/core/Grid';
-import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@mui/material/Grid';
+import Avatar from '@mui/material/Avatar';
+import Typography from '@mui/material/Typography';
+import makeStyles from '@mui/styles/makeStyles';
 import UserDetailedHeaderInfo from '../../user/UserDetailed/UserDetailedHeaderInfo';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Loading from '../../../app/common/util/Loading';
 import { Link as RouterLink } from 'react-router-dom';
-import Link from '@material-ui/core/Link';
+import Link from '@mui/material/Link';
 import { useFirestoreDoc } from '../../../app/hooks/useFirestoreDoc';
 
 const useStyles = makeStyles(theme => ({
@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
   profile: {
     width: theme.spacing(15),
     height: theme.spacing(15),
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       width: theme.spacing(12.5),
       height: theme.spacing(12.5),
     }

@@ -1,42 +1,41 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import AppBar from '@material-ui/core/AppBar';
-import Divider from '@material-ui/core/Divider';
-import Drawer from '@material-ui/core/Drawer';
-import Hidden from '@material-ui/core/Hidden';
-import IconButton from '@material-ui/core/IconButton';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import MenuIcon from '@material-ui/icons/Menu';
-import Toolbar from '@material-ui/core/Toolbar';
-import { makeStyles } from '@material-ui/core/styles';
-import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
-import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
-import DashboardOutlinedIcon from '@material-ui/icons/DashboardOutlined';
-import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import Button from '@material-ui/core/Button';
-import Link from '@material-ui/core/Link';
+import AppBar from '@mui/material/AppBar';
+import Divider from '@mui/material/Divider';
+import Drawer from '@mui/material/Drawer';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import MenuIcon from '@mui/icons-material/Menu';
+import Toolbar from '@mui/material/Toolbar';
+import makeStyles from '@mui/styles/makeStyles';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
+import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import Button from '@mui/material/Button';
+import Link from '@mui/material/Link';
 import {
   Link as RouterLink,
   useNavigate,
   useLocation
 } from 'react-router-dom';
-import Box from '@material-ui/core/Box';
-import AddIcon from '@material-ui/icons/Add';
-import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
+import AddIcon from '@mui/icons-material/Add';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { useSelector } from 'react-redux';
-import Avatar from '@material-ui/core/Avatar';
-import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
-import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
-import Typography from '@material-ui/core/Typography';
+import Avatar from '@mui/material/Avatar';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import LabelOutlinedIcon from '@mui/icons-material/LabelOutlined';
+import Typography from '@mui/material/Typography';
 import { auth as firebaseAuth } from '../../app/firebase';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import BottomNavigationBar from './BottomNavigationBar';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import GitHubIcon from '@material-ui/icons/GitHub';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import GoogleLoginButton from '../../app/common/util/GoogleLoginButton';
 import { toastr } from 'react-redux-toastr';
 
@@ -405,7 +404,7 @@ function ResponsiveDrawer ({ ...props }) {
               edge="start"
               onClick={handleDrawerToggle}
               className={classes.menuButton}
-            >
+              size="large">
               <MenuIcon/>
             </IconButton>}
             {
@@ -450,12 +449,13 @@ function ResponsiveDrawer ({ ...props }) {
             {isAuthenticated && <div>
               <IconButton
                 className={classes.menuItem}
-                aria-label="Profile" color="inherit"
+                aria-label="Profile"
+                color="inherit"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 component={RouterLink}
                 to={`/users/${auth.currentUser?.uid}`}
-              >
+                size="large">
                 <Avatar className={classes.small} alt={auth.currentUser?.displayName}
                         src={auth.currentUser?.photoURL}/>
               </IconButton>
@@ -465,7 +465,7 @@ function ResponsiveDrawer ({ ...props }) {
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-        <Hidden {...{ smUp: true, implementation: "css" } as any}>
+        <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
           <Drawer
             container={container}
             variant="temporary"
@@ -477,14 +477,13 @@ function ResponsiveDrawer ({ ...props }) {
               paper: classes.drawerPaper,
             }}
             ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
+              keepMounted: true,
             }}
           >
             {isAuthenticated ? authenticatedMenu : unAuthenticatedMenu}
-
           </Drawer>
-        </Hidden>
-        <Hidden {...{ xsDown: true, implementation: "css" } as any}>
+        </Box>
+        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
           <Drawer
             classes={{
               paper: classes.drawerPaper,
@@ -494,7 +493,7 @@ function ResponsiveDrawer ({ ...props }) {
           >
             {isAuthenticated ? authenticatedMenu : unAuthenticatedMenu}
           </Drawer>
-        </Hidden>
+        </Box>
       </nav>
       {isMobileScreen &&
       <BottomNavigationBar isAuthenticated={isAuthenticated} botNavValue={botNavValue}

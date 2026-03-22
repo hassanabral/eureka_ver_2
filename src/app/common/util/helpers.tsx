@@ -27,7 +27,7 @@ export const getHashtags = input => {
     let temp = hastag.replace(/[><]/, "");
     temp = temp.replace('&nbsp;', "");
     return temp.replace('#', '');
-  })
+  });
 }
 
 // Helper: Reads an array of IDs from a collection concurrently

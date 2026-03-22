@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import makeStyles from '@mui/styles/makeStyles';
+import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
 import PostDetailedSidebarRight from './PostDetailedSidebarRight';
 import PostDetailedBody from './PostDetailedBody';
 import PostDetailedAddComment from './PostDetailedAddComment';
@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
   card: {
     padding: theme.spacing(5),
     marginBottom: theme.spacing(3),
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       padding: theme.spacing(3),
     }
   },
