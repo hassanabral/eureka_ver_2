@@ -5,7 +5,7 @@
     ]
   },
   "hosting": {
-    "site": "eureka-v2",
+    "site": "social-network-231616",
     "public": "dist",
     "ignore": [
       "firebase.json",
