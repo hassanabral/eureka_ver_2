@@ -6,11 +6,9 @@ import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import PersonIcon from '@mui/icons-material/Person';
-import { Field, reduxForm } from 'redux-form';
-import { combineValidators, composeValidators, isRequired } from 'revalidate';
+import { useForm, Controller } from 'react-hook-form';
 import TextInput from '../../../app/common/form/TextInput';
 import CircularProgress from '@mui/material/CircularProgress';
-import { isValidUrl } from '../../../app/common/util/validator';
 import SelectInput from '../../../app/common/form/SelectInput';
 import TextArea from '../../../app/common/form/TextArea';
 import MenuItem from '@mui/material/MenuItem';
@@ -18,15 +16,6 @@ import Spinner from '../../../app/common/util/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateProfile } from '../userActions';
 import { useNavigate } from 'react-router-dom';
-
-const validate = combineValidators({
-  website: composeValidators(
-    isValidUrl
-  )(),
-  profession: isRequired('Job title'),
-  company: isRequired('Company or school'),
-  status: isRequired('User status'),
-});
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -53,16 +42,32 @@ const userStatuses = [
   },
 ];
 
-const EditProfile = ({ handleSubmit, pristine, invalid, submitting }) => {
+const isValidUrl = (value: string) => {
+  if (!value) return true;
+  const pattern = new RegExp('^(https?:\\/\\/)?'+
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+
+    '(\\#[-a-z\\d_]*)?$','i');
+  return pattern.test(value) || 'Please enter valid URL';
+};
+
+const EditProfile = ({ initialValues }: any) => {
 
   const uid = useSelector((state: any) => state.auth.currentUser?.uid);
-
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { control, handleSubmit, formState: { isValid, isSubmitting, isDirty } } = useForm({
+    defaultValues: initialValues || {},
+    values: initialValues,
+    mode: 'onChange',
+  });
+
   const handleUpdateProfile = useCallback(
-    async (formData) => {
+    async (formData: any) => {
       await dispatch(updateProfile(formData, uid));
       navigate(`/users/${uid}`);
     }, [dispatch, navigate, uid]
@@ -83,95 +88,137 @@ const EditProfile = ({ handleSubmit, pristine, invalid, submitting }) => {
               Let's get some information to make your profile stand out</Typography>
             <form onSubmit={handleSubmit(handleUpdateProfile)}>
               <Box mr={2.5} mb={1} component='span'>
-                <Field
-                  required
-                  margin="dense"
-                  label="Job Title"
-                  placeholder='Student, Teacher, Developer, etc.'
+                <Controller
                   name="profession"
-                  component={TextInput}
+                  control={control}
+                  rules={{ required: 'Job title is required' }}
+                  render={({ field, fieldState }) => (
+                    <TextInput
+                      {...field}
+                      required
+                      label="Job Title"
+                      placeholder="Student, Teacher, Developer, etc."
+                      error={!!fieldState.error}
+                      helperText={fieldState.error?.message}
+                    />
+                  )}
                 />
               </Box>
               <Box mr={2} mb={1} component='span'>
-                <Field
-                  required
-                  margin="dense"
-                  label="Company or School"
+                <Controller
                   name="company"
-                  component={TextInput}
+                  control={control}
+                  rules={{ required: 'Company or school is required' }}
+                  render={({ field, fieldState }) => (
+                    <TextInput
+                      {...field}
+                      required
+                      label="Company or School"
+                      error={!!fieldState.error}
+                      helperText={fieldState.error?.message}
+                    />
+                  )}
                 />
               </Box>
               <Box mb={1}>
-                <Field
-                  fullWidth={true}
-                  label="Location"
-                  placeholder='City, State'
-                  margin="dense"
+                <Controller
                   name="location"
-                  component={TextInput}
+                  control={control}
+                  render={({ field }) => (
+                    <TextInput
+                      {...field}
+                      fullWidth
+                      label="Location"
+                      placeholder="City, State"
+                    />
+                  )}
                 />
               </Box>
               <Box mb={1}>
-                <Field
-                  fullWidth={true}
-                  margin="dense"
+                <Controller
                   name="interests"
-                  label="Interests"
-                  placeholder='Reading, Swimming, Hiking etc.'
-                  component={TextInput}
+                  control={control}
+                  render={({ field }) => (
+                    <TextInput
+                      {...field}
+                      fullWidth
+                      label="Interests"
+                      placeholder="Reading, Swimming, Hiking etc."
+                    />
+                  )}
                 />
               </Box>
               <Box mr={2.5} mb={1} component='span'>
-                <Field
-                  margin="dense"
+                <Controller
                   name="website"
-                  label="Website"
-                  component={TextInput}
+                  control={control}
+                  rules={{ validate: isValidUrl }}
+                  render={({ field, fieldState }) => (
+                    <TextInput
+                      {...field}
+                      label="Website"
+                      error={!!fieldState.error}
+                      helperText={fieldState.error?.message}
+                    />
+                  )}
                 />
               </Box>
               <Box mr={2.5} mb={1} component='span'>
-                <Field
-                  margin="dense"
+                <Controller
                   name="githubUsername"
-                  label="Github Profile"
-                  component={TextInput}
+                  control={control}
+                  render={({ field }) => (
+                    <TextInput
+                      {...field}
+                      label="Github Profile"
+                    />
+                  )}
                 />
               </Box>
               <Box mb={1} component='span'>
-                <Field
-                  required={true}
-                  margin="dense"
+                <Controller
                   name="status"
-                  label="User Status"
-                  defaultValue={userStatuses[1].value}
-                  component={SelectInput}
-                >
-                  {userStatuses.map(option => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Field>
+                  control={control}
+                  rules={{ required: 'User status is required' }}
+                  render={({ field, fieldState }) => (
+                    <SelectInput
+                      {...field}
+                      required
+                      label="User Status"
+                      error={!!fieldState.error}
+                      helperText={fieldState.error?.message}
+                    >
+                      {userStatuses.map(option => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </SelectInput>
+                  )}
+                />
               </Box>
               <Box mb={3}>
-                <Field
-                  margin="dense"
+                <Controller
                   name="bio"
-                  label="Bio"
-                  multiline={true}
-                  fullWidth={true}
-                  rows="4"
-                  placeholder="Tell us a little bit about yourself..."
-                  component={TextArea}
+                  control={control}
+                  render={({ field }) => (
+                    <TextArea
+                      {...field}
+                      label="Bio"
+                      fullWidth
+                      rows="4"
+                      placeholder="Tell us a little bit about yourself..."
+                    />
+                  )}
                 />
               </Box>
               <Box mt={3}>
-                <Button disabled={pristine || invalid || submitting}
+                <Button disabled={!isDirty || !isValid || isSubmitting}
                         type='submit'
                         variant='outlined'
                         color='primary'
                         fullWidth={true}>
-                  Save {submitting && <Box ml={1.5} mb={-0.7}><CircularProgress size={20}/></Box>}
+                  Save {isSubmitting && <Box ml={1.5} mb={-0.7}><CircularProgress size={20}/></Box>}
                 </Button>
               </Box>
             </form>
@@ -184,9 +231,4 @@ const EditProfile = ({ handleSubmit, pristine, invalid, submitting }) => {
   );
 };
 
-export default reduxForm({
-  form: 'editProfileForm',
-  enableReinitialize: true,
-  destroyOnUnmount: false,
-  validate
-})(EditProfile);
+export default EditProfile;

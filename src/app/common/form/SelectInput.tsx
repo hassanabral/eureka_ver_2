@@ -1,20 +1,16 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import TextField from '@mui/material/TextField';
 
-const SelectInput = ({ input, type, required, width, label, meta: { touched, error }, children }) => {
+interface SelectInputProps {
+  error?: boolean;
+  helperText?: string;
+  children?: ReactNode;
+  [key: string]: any;
+}
+
+const SelectInput = ({ error, helperText, children, ...rest }: SelectInputProps) => {
   return (
-    <TextField
-      {...input}
-      width={width}
-      required={required}
-      select
-      label={label}
-      margin='dense'
-      type={type}
-      style={{minWidth: 175}}
-      error={touched && !!error}
-      helperText={touched && error}
-    >
+    <TextField select error={error} helperText={helperText} margin="dense" style={{minWidth: 175}} {...rest}>
       {children}
     </TextField>
   );

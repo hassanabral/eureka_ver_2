@@ -7,8 +7,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import MenuItem from '@mui/material/MenuItem';
-import { Field, reduxForm } from 'redux-form';
-import { combineValidators, isRequired } from 'revalidate';
+import { useForm, Controller } from 'react-hook-form';
 import TextInput from '../../../app/common/form/TextInput';
 import SelectInput from '../../../app/common/form/SelectInput';
 import RichEditor from '../../../app/common/form/RichEditor';
@@ -36,20 +35,20 @@ const visibilities = [
   },
 ];
 
-const validate = combineValidators({
-  title: isRequired('Title'),
-  body: isRequired('Body'),
-  status: isRequired('Visibility'),
-});
-
-const EditPost = ({ handleSubmit, pristine, invalid, submitting, postId }) => {
+const EditPost = ({ initialValues, postId }: any) => {
   const classes = useStyles();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { control, handleSubmit, formState: { isValid, isSubmitting, isDirty } } = useForm({
+    defaultValues: initialValues || {},
+    values: initialValues,
+    mode: 'onChange',
+  });
+
   const handleUpdatePost = useCallback(
-    async (formData) => {
+    async (formData: any) => {
       await dispatch(updatePost(formData, postId));
       navigate(`/posts/${postId}`);
     }, [dispatch, navigate, postId]
@@ -63,50 +62,68 @@ const EditPost = ({ handleSubmit, pristine, invalid, submitting, postId }) => {
           <Typography variant='subtitle1'>Update and save your post</Typography>
           <form onSubmit={handleSubmit(handleUpdatePost)}>
             <Box mb={1}>
-              <Field
-                required={true}
-                autoFocus={true}
-                fullWidth={true}
-                margin="dense"
-                label="Post title"
-                placeholder="Let's give this post a title"
+              <Controller
                 name="title"
-                component={TextInput}
+                control={control}
+                rules={{ required: 'Title is required' }}
+                render={({ field, fieldState }) => (
+                  <TextInput
+                    {...field}
+                    label="Post title"
+                    placeholder="Let's give this post a title"
+                    required
+                    autoFocus
+                    fullWidth
+                    error={!!fieldState.error}
+                    helperText={fieldState.error?.message}
+                  />
+                )}
               />
             </Box>
             <Box mr={2} mb={1} component='span'>
-              <Field
-                required={true}
-                margin="dense"
+              <Controller
                 name="status"
-                label="Visibility"
-                defaultValue={visibilities[1].value}
-                style={{ minWidth: 100 }}
-                component={SelectInput}
-              >
-                {visibilities.map(option => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </Field>
+                control={control}
+                rules={{ required: 'Visibility is required' }}
+                render={({ field, fieldState }) => (
+                  <SelectInput
+                    {...field}
+                    required
+                    label="Visibility"
+                    style={{ minWidth: 100 }}
+                    error={!!fieldState.error}
+                    helperText={fieldState.error?.message}
+                  >
+                    {visibilities.map(option => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </SelectInput>
+                )}
+              />
             </Box>
             <Box mb={3} mt={3}>
-              <Field
+              <Controller
                 name="body"
-                config={
-                  {
-                    alignment: {
-                      options: ['left', 'center', 'justify', 'right']
-                    }
-                  }
-                }
-                component={RichEditor}
+                control={control}
+                rules={{ required: 'Body is required' }}
+                render={({ field }) => (
+                  <RichEditor
+                    value={field.value}
+                    onChange={field.onChange}
+                    config={{
+                      alignment: {
+                        options: ['left', 'center', 'justify', 'right']
+                      }
+                    }}
+                  />
+                )}
               />
             </Box>
 
             <Box mt={3}>
-              <Button disabled={pristine || invalid || submitting}
+              <Button disabled={!isDirty || !isValid || isSubmitting}
                       type='submit'
                       variant='outlined'
                       color='primary'
@@ -121,9 +138,4 @@ const EditPost = ({ handleSubmit, pristine, invalid, submitting, postId }) => {
     </Grid>);
 };
 
-export default reduxForm({
-  form: 'editPostForm',
-  enableReinitialize: true,
-  destroyOnUnmount: false,
-  validate
-})(EditPost);
+export default EditPost;

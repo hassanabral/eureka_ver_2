@@ -3,8 +3,7 @@ import Typography from '@mui/material/Typography';
 import makeStyles from '@mui/styles/makeStyles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import { Field, reduxForm } from 'redux-form';
-import { combineValidators, isRequired } from 'revalidate';
+import { useForm, Controller } from 'react-hook-form';
 import RichEditor from '../../../app/common/form/RichEditor';
 import { addComment } from '../postActions';
 import { useDispatch } from 'react-redux';
@@ -15,15 +14,17 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const validate = combineValidators({
-  commentBody: isRequired('Comment body'),
-});
-
-const PostDetailedAddComment = ({ postId, handleSubmit, invalid, submitting }) => {
+const PostDetailedAddComment = ({ postId }: any) => {
   const dispatch = useDispatch();
 
-  const handleAddComment = async formData => {
+  const { control, handleSubmit, reset, formState: { isValid, isSubmitting } } = useForm({
+    defaultValues: { commentBody: '' },
+    mode: 'onChange',
+  });
+
+  const handleAddComment = async (formData: any) => {
     await dispatch(addComment(formData, postId));
+    reset();
   }
 
   const classes = useStyles();
@@ -35,22 +36,26 @@ const PostDetailedAddComment = ({ postId, handleSubmit, invalid, submitting }) =
               Comment
             </Typography>
           </Box>
-          <Field
+          <Controller
             name="commentBody"
-            label="Add Comment"
-            config={
-              {
-                placeholder:"Add a comment...",
-              }
-            }
-            component={RichEditor}
+            control={control}
+            rules={{ required: 'Comment body is required' }}
+            render={({ field }) => (
+              <RichEditor
+                value={field.value}
+                onChange={field.onChange}
+                config={{
+                  placeholder: "Add a comment...",
+                }}
+              />
+            )}
           />
           <Box display='flex' flexDirection='row-reverse' mt={2}>
-            <Button disabled={invalid || submitting} type='submit'  variant='contained' color='primary'>Submit</Button>
+            <Button disabled={!isValid || isSubmitting} type='submit'  variant='contained' color='primary'>Submit</Button>
           </Box>
         </form>
       </Fragment>
   )
 };
 
-export default reduxForm({ form: 'addCommentForm', validate})(PostDetailedAddComment);
+export default PostDetailedAddComment;

@@ -1,5 +1,4 @@
 import { toastr } from 'react-redux-toastr';
-import { reset } from 'redux-form';
 import { readIds } from '../../app/common/util/helpers';
 import { db, fieldValue } from '../../app/firebase';
 
@@ -261,7 +260,6 @@ export const addComment = (formData: any, postId: string) => {
       const commentRef = await db.collection('posts').doc(postId)
         .collection('comments').add(newCommentTemp);
       await commentRef.update({ id: commentRef.id });
-      dispatch(reset('addCommentForm'));
       toastr.success('Success!', 'Commented added');
     } catch (error) {
       toastr.error('Oops', 'Something went wrong');
@@ -291,7 +289,6 @@ export const addReply = (formData: any, commentId: string, setToggleReplies: Fun
         console.log('Error getting documents: ', error);
       });
 
-      dispatch(reset('addReplyForm'));
       toastr.success('Success!', 'Reply added');
     } catch (error) {
       console.log({ error });

@@ -77,12 +77,13 @@
 - [x] Verify: Build succeeds, zero tsc errors
 
 ### Phase 9: Replace redux-form with react-hook-form
-- [ ] Install react-hook-form
-- [ ] Refactor 5 forms to useForm
-- [ ] Refactor form input components
-- [ ] Replace revalidate validators
-- [ ] Remove redux-form, revalidate, FormReducer
-- [ ] Verify: All forms work
+- [x] Install react-hook-form
+- [x] Refactor 5 forms to useForm + Controller pattern
+- [x] Refactor 4 form input components from { input, meta } to standard MUI props
+- [x] Replace revalidate validators with react-hook-form rules
+- [x] Remove redux-form, revalidate, FormReducer from rootReducer
+- [x] Remove redux-form reset() calls from postActions
+- [x] Verify: Build succeeds, zero tsc errors
 
 ### Phase 10: Replace react-redux-toastr with notistack
 - [ ] Install notistack, wrap app with SnackbarProvider

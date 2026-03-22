@@ -1,21 +1,8 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
 
-const TextArea = ({ input, rows, label, required, multiline, fullWidth, placeholder, meta: { touched, error } }) => {
-  return (
-    <TextField
-      error={touched && !!error}
-      helperText={touched && error}
-      required={required}
-      {...input}
-      placeholder={placeholder}
-      rows={rows}
-      fullWidth={fullWidth}
-      multiline={multiline}
-      label={label}
-    >
-    </TextField>
-  );
+const TextArea = ({ error, helperText, ...rest }: any) => {
+  return <TextField error={error} helperText={helperText} multiline {...rest} />;
 };
 
 export default TextArea;

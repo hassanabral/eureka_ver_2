@@ -8,8 +8,7 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import SelectInput from '../../../app/common/form/SelectInput';
 import TextInput from '../../../app/common/form/TextInput';
-import { Field, reduxForm } from 'redux-form';
-import { combineValidators, isRequired } from 'revalidate';
+import { useForm, Controller } from 'react-hook-form';
 import RichEditor from '../../../app/common/form/RichEditor';
 import { useNavigate } from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -38,18 +37,17 @@ const visibilities = [
   },
 ];
 
-const validate = combineValidators({
-  title: isRequired('Title'),
-  body: isRequired('Body'),
-  status: isRequired('Visibility'),
-});
-
-const AddPost = ({ handleSubmit, invalid, submitting }) => {
+const AddPost = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleCreatePost = async formData => {
+  const { control, handleSubmit, formState: { isValid, isSubmitting } } = useForm({
+    defaultValues: { title: '', body: '', status: 'unpublished' },
+    mode: 'onChange',
+  });
+
+  const handleCreatePost = async (formData: any) => {
     const newPost = {...formData, hashtags: getHashtags(formData.body)}
     const post: any = await dispatch(createPost(newPost));
     navigate(`/posts/${post.id}`);
@@ -63,51 +61,69 @@ const AddPost = ({ handleSubmit, invalid, submitting }) => {
           <Typography variant='subtitle1'>What is on your mind?</Typography>
           <form onSubmit={handleSubmit(handleCreatePost)}>
             <Box mb={1}>
-              <Field
-                required={true}
-                autoFocus={true}
-                fullWidth={true}
-                margin="dense"
-                label="Post title"
-                placeholder="Let's give this post a title"
+              <Controller
                 name="title"
-                component={TextInput}
+                control={control}
+                rules={{ required: 'Title is required' }}
+                render={({ field, fieldState }) => (
+                  <TextInput
+                    {...field}
+                    label="Post title"
+                    placeholder="Let's give this post a title"
+                    required
+                    autoFocus
+                    fullWidth
+                    error={!!fieldState.error}
+                    helperText={fieldState.error?.message}
+                  />
+                )}
               />
             </Box>
             <Box mr={2} mb={1} component='span'>
-              <Field
-                required={true}
-                margin="dense"
+              <Controller
                 name="status"
-                label="Visibility"
-                defaultValue={visibilities[1].value}
-                style={{minWidth: 100}}
-                component={SelectInput}
-              >
-                {visibilities.map(option => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </Field>
+                control={control}
+                rules={{ required: 'Visibility is required' }}
+                render={({ field, fieldState }) => (
+                  <SelectInput
+                    {...field}
+                    required
+                    label="Visibility"
+                    style={{minWidth: 100}}
+                    error={!!fieldState.error}
+                    helperText={fieldState.error?.message}
+                  >
+                    {visibilities.map(option => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </SelectInput>
+                )}
+              />
             </Box>
             <Box mb={3} mt={3}>
               <Box mb={1}>
                 <Typography variant='body1'>Body</Typography>
               </Box>
-              <Field
+              <Controller
                 name="body"
-                config={
-                  {
-                    placeholder:"Enter more details (Note: you can add hashtags by including #your-tag)...",
-                  }
-                }
-                component={RichEditor}
+                control={control}
+                rules={{ required: 'Body is required' }}
+                render={({ field }) => (
+                  <RichEditor
+                    value={field.value}
+                    onChange={field.onChange}
+                    config={{
+                      placeholder: "Enter more details (Note: you can add hashtags by including #your-tag)...",
+                    }}
+                  />
+                )}
               />
             </Box>
 
             <Box mt={3}>
-              <Button disabled={invalid || submitting}  type='submit' variant='outlined' color='primary' fullWidth={true}>Submit {submitting && <Box ml={1.5} mb={-0.7}><CircularProgress size={20}/></Box>}</Button>
+              <Button disabled={!isValid || isSubmitting}  type='submit' variant='outlined' color='primary' fullWidth={true}>Submit {isSubmitting && <Box ml={1.5} mb={-0.7}><CircularProgress size={20}/></Box>}</Button>
             </Box>
           </form>
         </Card>
@@ -116,4 +132,4 @@ const AddPost = ({ handleSubmit, invalid, submitting }) => {
   )
 };
 
-export default reduxForm({ form: 'addPostForm', validate})(AddPost);
+export default AddPost;
