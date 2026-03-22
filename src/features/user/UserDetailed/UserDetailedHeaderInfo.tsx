@@ -5,7 +5,7 @@ import LinkIcon from '@mui/icons-material/Link';
 import TodayIcon from '@mui/icons-material/Today';
 import makeStyles from '@mui/styles/makeStyles';
 import { Link, Box } from '@mui/material';
-import moment from 'moment';
+import { formatDistanceToNow } from 'date-fns';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -45,7 +45,7 @@ const UserDetailedHeaderInfo = ({ location, website, createdAt }) => {
         <Typography variant="body2" display="inline"
                     gutterBottom={true}>
           <TodayIcon color="action" className={classes.icon} fontSize='small'/>
-          Joined {moment(createdAt.toDate()).fromNow()}
+          Joined {formatDistanceToNow(createdAt.toDate(), { addSuffix: true })}
         </Typography>
       </Box>
     </div>

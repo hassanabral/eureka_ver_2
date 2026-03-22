@@ -8,7 +8,7 @@ import { Link as RouterLink, useParams } from 'react-router-dom';
 import Link from '@mui/material/Link';
 import Avatar from '@mui/material/Avatar';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import moment from 'moment';
+import { format } from 'date-fns';
 import ReactHtmlParser from 'react-html-parser';
 import EditIcon from '@mui/icons-material/Edit';
 import FeedCardButtons from '../feed/FeedCardButtons';
@@ -76,7 +76,7 @@ const PostDetailedBody = ({ post, isAuthenticated, isAuthenticatedUser }) => {
           </Box>
           <Box mt={2} mx={1} component='span'>
             <Typography display='inline' variant="body1" style={{ color: '#757575' }}>
-              Written on {moment(post.date.toDate()).format('LL')}
+              Written on {format(post.date.toDate(), 'MMMM d, yyyy')}
             </Typography>
           </Box>
           {isAuthenticated &&

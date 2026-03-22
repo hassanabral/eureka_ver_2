@@ -11,7 +11,7 @@ import FeedCardButtons from '../post/feed/FeedCardButtons';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import moment from 'moment';
+import { format } from 'date-fns';
 import { stripTags, truncate } from '../../app/common/util/helpers';
 import { deletePost } from '../post/postActions';
 
@@ -57,7 +57,7 @@ const DashboardPostCard = ({ post }) => {
                     to={`/posts/${post.id}`}>{post.title}</Link>
               <Box mt={0.5} mb={1}>
                 <Typography variant="body2" style={{ color: '#757575' }}>
-                  Written on {moment(post.date.toDate()).format('LL')}
+                  Written on {format(post.date.toDate(), 'MMMM d, yyyy')}
                 </Typography>
               </Box>
               <Typography variant="body1" paragraph={true}>

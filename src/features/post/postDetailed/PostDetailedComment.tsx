@@ -15,7 +15,7 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import PostDetailedReplyForm from './PostDetailedReplyForm';
 import PostDetailedReplies from './PostDetailedReplies';
-import moment from 'moment';
+import { formatDistanceToNow } from 'date-fns';
 import ReactHtmlParser from 'react-html-parser';
 import {
   deleteComment,
@@ -102,7 +102,7 @@ const PostDetailedComment = ({ comment, commentOrReply = 'comment', showReplies 
         <Box ml={1} component='span'>
           <Typography variant="body2" style={{ color: '#757575' }} paragraph={true}
                       display='inline'>
-            Posted {comment?.date && moment(comment.date.toDate()).fromNow()}
+            Posted {comment?.date && formatDistanceToNow(comment.date.toDate(), { addSuffix: true })}
           </Typography>
         </Box>
 

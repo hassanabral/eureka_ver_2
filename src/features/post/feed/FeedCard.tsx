@@ -12,7 +12,7 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import moment from 'moment';
+import { formatDistanceToNow } from 'date-fns';
 import { stripTags, truncate } from '../../../app/common/util/helpers';
 import { useSelector } from 'react-redux';
 import {deletePost} from '../postActions';
@@ -94,7 +94,7 @@ const FeedCard = ({ elevateCard = true, marginY = 2, dividerBottom = false, post
               </Box>
               <Box mt={0.5}>
                 <Typography variant="body2" style={{ color: '#757575' }}>
-                  Written {moment(post.date.toDate()).fromNow()}
+                  Written {formatDistanceToNow(post.date.toDate(), { addSuffix: true })}
                 </Typography>
               </Box>
             </Grid>

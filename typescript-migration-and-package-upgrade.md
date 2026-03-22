@@ -71,9 +71,10 @@
 - [x] Verify: Build succeeds, zero tsc errors
 
 ### Phase 8: Replace moment.js with date-fns
-- [ ] Replace moment().fromNow() with formatDistanceToNow in 4 files
-- [ ] Remove moment package
-- [ ] Verify: Date formatting works
+- [x] Replace moment().fromNow() with formatDistanceToNow in 5 files
+- [x] Replace moment().format('LL') with format() from date-fns
+- [x] Remove moment package
+- [x] Verify: Build succeeds, zero tsc errors
 
 ### Phase 9: Replace redux-form with react-hook-form
 - [ ] Install react-hook-form
