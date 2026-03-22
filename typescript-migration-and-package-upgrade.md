@@ -15,15 +15,15 @@
 - [x] Verify: npm run dev starts and npm run build succeeds
 
 ### Phase 2: Convert All JS Files to TypeScript
-- [ ] Define domain types in src/types/index.ts
-- [ ] Define Redux types and typed hooks
-- [ ] Convert utility & form components (13 files)
-- [ ] Convert leaf components (~16 files)
-- [ ] Convert Redux slices & actions (4 files)
-- [ ] Convert page components (~18 files)
-- [ ] Install type packages (@types/react-router-dom, etc.)
-- [ ] Create custom declarations for react-redux-firebase, redux-firestore, revalidate
-- [ ] Verify: npm run build has zero TS errors
+- [x] Define domain types in src/types/index.ts
+- [x] Define Redux types and typed hooks
+- [x] Convert utility & form components (13 files)
+- [x] Convert leaf components (~16 files)
+- [x] Convert Redux slices & actions (4 files)
+- [x] Convert page components (~18 files)
+- [x] Install type packages (@types/react-router-dom, etc.)
+- [x] Create custom declarations for react-redux-firebase, redux-firestore, revalidate, redux-form, ckeditor
+- [x] Verify: tsc --noEmit has zero errors, npm run build succeeds
 
 ### Phase 3: React 16 to React 18
 - [ ] Update index.tsx to use createRoot
