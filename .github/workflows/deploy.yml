@@ -22,7 +22,7 @@ jobs:
            VITE_STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
            VITE_MESSAGING_SENDER_ID: ${{ secrets.MESSAGING_SENDER_ID }}
            VITE_APP_ID: ${{ secrets.APP_ID }}
-      - uses: w9jds/firebase-action@master
+      - uses: w9jds/firebase-action@v15.11.0
         with:
           args: deploy --only hosting
         env:
