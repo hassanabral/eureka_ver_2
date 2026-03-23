@@ -265,9 +265,9 @@ function ResponsiveDrawer ({ ...props }) {
       position: 'absolute',
       bottom: '25px',
     }}>
-      <Typography>Created with <span role='img' aria-label='love emoji'>❤️</span> by <Link href="https://github.com/hassanyakef"
+      <Typography>Created with <span role='img' aria-label='love emoji'>❤️</span> by <Link href="https://github.com/hassanabral"
                                            target='_blank'>Hassan
-        Yakefujiang</Link></Typography>
+        Abral</Link></Typography>
     </Box>
   );
 
